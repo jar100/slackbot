@@ -25,12 +25,6 @@ public class SlackController {
 		this.service = service;
 	}
 
-	@GetMapping("/init")
-	public String init() {
-		return "Hello World";
-	}
-
-
 	@GetMapping("/batch")
 	public ResponseEntity<?> batch() {
 		return ResponseEntity.ok().build();
@@ -42,9 +36,6 @@ public class SlackController {
 		final SlackRequest slackRequest = objectMapper.convertValue(reqJson, SlackRequest.class);
 		log.info("slack request : {}",slackRequest);
 		log.info(reqJson.toString());
-
-
-
 
 		switch (RequestType.of(reqJson.get("type").asText())) {
 			case URL_VERIFICATION:
