@@ -22,11 +22,12 @@ public class MessageEventService {
 		String message = null;
 
 		final String text = request.getEvent().getText();
+		log.info("text : {}", text);
 		if (StringUtils.isEmpty(text)) {
 			log.error("택스트를 찾을 수 없음");
 			return;
 		}
-		if (text.contains(MessageEventType.LUNCH.name())) {
+		if (text.contains(MessageEventType.LUNCH.getLabel())) {
 			final int random = (int) Math.round(Math.random() * (Restaurant.values().length - 1));
 			message = Restaurant.of(random).getName();
 		}

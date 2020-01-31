@@ -1,5 +1,6 @@
 package com.lq.slackbot.service;
 
+import com.lq.slackbot.domain.MessageEventType;
 import com.lq.slackbot.domain.Restaurant;
 import org.junit.jupiter.api.Test;
 
@@ -20,5 +21,11 @@ class MessageEventServiceTest {
 		String message = Restaurant.of(random).getName();
 
 		System.out.println(message);
+	}
+
+	@Test
+	void name3() {
+		final boolean contains = "점심!".contains(MessageEventType.LUNCH.getLabel());
+		System.out.println(contains);
 	}
 }

@@ -17,4 +17,7 @@ public enum MessageEventType {
 	public static MessageEventType of(String name) {
 		return Arrays.stream(values()).filter(o->o.label.equals(name)).findFirst().orElse(NONE);
 	}
+	public String getLabel() {
+		return this.label;
+	}
 }
