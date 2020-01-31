@@ -4,6 +4,7 @@ import com.lq.slackbot.domain.MessageEventType;
 import com.lq.slackbot.domain.Restaurant;
 import com.lq.slackbot.domain.SlackRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils;
 public class MessageEventService {
 	private MessageService messageService;
 
+	@Autowired
 	public MessageEventService(final MessageService messageService) {
 		this.messageService = messageService;
 	}

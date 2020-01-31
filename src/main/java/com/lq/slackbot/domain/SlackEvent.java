@@ -16,7 +16,7 @@ public class SlackEvent {
 	private String event_ts;
 	private String channel_type;
 
-	public boolean isBot() {
+	public boolean isUser() {
 		return StringUtils.isEmpty(bot_id);
 	}
 }

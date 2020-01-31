@@ -64,7 +64,7 @@ public class SlackController {
 	private void slackBotEvent(@RequestBody final JsonNode reqJson, final SlackRequest slackRequest) throws JsonProcessingException {
 		switch (EventType.of(slackRequest.eventType())) {
 			case MESSAGE:
-				if (!slackRequest.getEvent().isBot()) {
+				if (slackRequest.getEvent().isUser()) {
 					messageEventService.run(slackRequest);
 				}
 				return;
