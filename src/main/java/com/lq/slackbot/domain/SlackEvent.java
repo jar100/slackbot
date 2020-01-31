@@ -1,10 +1,12 @@
 package com.lq.slackbot.domain;
 
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 @Data
 public class SlackEvent {
 	private String client_msg_id;
+	private String bot_id;
 	private String type;
 	private String text;
 	private String user;
@@ -14,5 +16,7 @@ public class SlackEvent {
 	private String event_ts;
 	private String channel_type;
 
-
+	public boolean isBot() {
+		return StringUtils.isEmpty(bot_id);
+	}
 }

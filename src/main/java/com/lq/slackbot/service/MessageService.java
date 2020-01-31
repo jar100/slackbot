@@ -17,20 +17,22 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public class SlackService {
+public class MessageService {
 
 	private static final String BASE_URL = "https://slack.com/api";
+	private static final String POST_MESSAGE = "/chat.postMessage";
 	private static final String TOKEN = "Bearer " + System.getenv("BOT_TOKEN");
 
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
 
-	public SlackService(ObjectMapper objectMapper) {
+	public MessageService(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 		this.webClient = initWebClient();
 	}
 
 	public void sendMessage(EventCallbackRequest request) {
+		log.info("app_mention : {}", request);
 		send("/chat.postMessage", new Message(request.getChannel(), "Hello World!"));
 	}
 
@@ -41,6 +43,11 @@ public class SlackService {
 		}
 		return;
 	}
+
+	public void sendMessageV3(String channel, String message) {
+		send(POST_MESSAGE, new Message(channel, message));
+	}
+
 
 	private WebClient initWebClient() {
 		ExchangeStrategies strategies = ExchangeStrategies.builder()

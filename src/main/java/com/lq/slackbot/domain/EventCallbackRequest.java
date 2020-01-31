@@ -1,10 +1,11 @@
 package com.lq.slackbot.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor
+@Data
 public class EventCallbackRequest {
 	private Event event;
 

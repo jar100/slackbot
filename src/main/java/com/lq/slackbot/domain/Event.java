@@ -1,9 +1,10 @@
 package com.lq.slackbot.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 class Event {
 	private String type;
