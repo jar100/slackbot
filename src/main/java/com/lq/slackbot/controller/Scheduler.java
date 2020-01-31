@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Scheduler {
 	private static final String BASE_URL = System.getenv("SLACKBOT_BASE_URL");
 
-	@Scheduled(cron="0 */15 * * * *")
+	@Scheduled(cron="0 */10 *? * * *")
 	public void check() {
 		log.info("실행시간 : {}", LocalDateTime.now());
 		final WebClient webClient = WebClient.create(BASE_URL);
