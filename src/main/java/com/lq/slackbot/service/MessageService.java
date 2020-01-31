@@ -45,7 +45,6 @@ public class MessageService {
 	}
 
 	public void sendMessageV3(String channel, String message) {
-
 		send(POST_MESSAGE, new Message(channel, message));
 	}
 
