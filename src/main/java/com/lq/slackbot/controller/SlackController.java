@@ -61,6 +61,13 @@ public class SlackController {
 
 	}
 
+	@PostMapping("/slack/modal")
+	public ResponseEntity<?> event(@RequestBody JsonNode request) {
+		log.info("test modal");
+		log.info(request.toString());
+		return ResponseEntity.ok().build();
+	}
+
 	private void slackBotEvent(@RequestBody final JsonNode reqJson, final SlackRequest slackRequest) throws JsonProcessingException {
 		String test = "{\n" +
 				"\t\t\"type\": \"section\",\n" +
