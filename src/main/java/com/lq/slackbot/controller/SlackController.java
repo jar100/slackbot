@@ -243,7 +243,7 @@ public class SlackController {
 				}
 				return;
 			case APP_MENTION:
-				if (slackRequest.getEvent().getText().equals("주문")) {
+				if (slackRequest.getEvent().getText().contains("주문")) {
 					service.sendMessageV3(jsonToDto(reqJson, EventCallbackRequest.class), test);
 				}
 				service.sendMessage(jsonToDto(reqJson, EventCallbackRequest.class));
