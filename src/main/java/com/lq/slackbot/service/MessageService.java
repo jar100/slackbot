@@ -36,6 +36,11 @@ public class MessageService {
 		send("/chat.postMessage", new Message(request.getChannel(), "Hello World!"));
 	}
 
+	public void sendMessageV3(EventCallbackRequest request, String body) {
+		log.info("app_mention : {}", request);
+		send("/chat.postMessage", new Message(request.getChannel(), body));
+	}
+
 
 	public void sendMessageV2(SlackRequest slackRequest) {
 		if ("123".equals(slackRequest.getEvent().getText())) {
