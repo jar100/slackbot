@@ -4,8 +4,6 @@ import com.lq.slackbot.domain.MessageEventType;
 import com.lq.slackbot.domain.Restaurant;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class MessageEventServiceTest {
 
 	@Test
@@ -17,10 +15,15 @@ class MessageEventServiceTest {
 
 	@Test
 	void name2() {
-		final int random = (int) Math.round(Math.random() * (Restaurant.values().length - 1));
-		String message = Restaurant.of(random).getName();
+		for (int i = 0; i < 100; i++) {
+			final int random = (int) (Math.random() * (Restaurant.values().length - 1)) + 1;
+			System.out.println(random);
+			String message = Restaurant.of(random).getName();
 
-		System.out.println(message);
+			System.out.println(message);
+		}
+
+
 	}
 
 	@Test

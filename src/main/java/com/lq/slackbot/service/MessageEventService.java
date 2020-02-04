@@ -28,10 +28,10 @@ public class MessageEventService {
 			return;
 		}
 		if (text.contains(MessageEventType.LUNCH.getLabel())) {
-			final int random = (int) Math.round(Math.random() * (Restaurant.values().length - 1));
+			final int random = (int) (Math.random() * (Restaurant.values().length - 1)) + 1;
 			message = Restaurant.of(random).getName();
+			messageService.sendMessageV3(request.getChannel(),message);
 		}
 		log.info(message);
-		messageService.sendMessageV3(request.getChannel(),message);
 	}
 }
