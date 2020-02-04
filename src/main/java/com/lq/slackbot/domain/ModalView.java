@@ -13,12 +13,15 @@ public class ModalView {
 	String type = "modal";
 	Content title;
 	Content submit;
-	private List<ModalBlock> blocks;
+	Content close;
+	//private List<ModalBlock> blocks;
+	private String blocks;
 
 	@Data
 	@Builder
 	public static class Content {
 	 String type;
 	 String text;
+	 boolean emoji;
 	}
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.lq.slackbot.domain.EventCallbackRequest;
 import com.lq.slackbot.domain.EventType;
 import com.lq.slackbot.domain.RequestType;
 import com.lq.slackbot.domain.SlackRequest;
@@ -13,6 +12,7 @@ import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SlackBotEventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -53,7 +53,7 @@ public class SlackController {
 			case URL_VERIFICATION:
 				return ResponseEntity.ok(reqJson.get("challenge"));
 			case EVENT_CALLBACK:
-				slackBotEvent(reqJson, slackRequest);
+				slackBotEvent(slackRequest);
 				return ResponseEntity.ok().build();
 			default:
 				return ResponseEntity.badRequest().build();
@@ -62,27 +62,30 @@ public class SlackController {
 	}
 
 	@PostMapping("/slack/modal")
-	public ResponseEntity<?> event(@RequestParam Map<String, String> body ) {
+	public ResponseEntity<?> event(@RequestParam Map<String,String> body ) throws JsonProcessingException {
 		log.info("test modal");
 		log.info(body.toString());
 		final String payload = body.get("payload");
-		Gson g = new Gson();
-		final Map map = g.fromJson(payload, Map.class);
 
-
-		service.sendMessageByModal(map);
+		log.info("페이로드 : {}",payload);
+		final Actions actions = objectMapper.readValue(payload, Actions.class);
+		log.info("엑션스 : {}",actions);
+		service.sendMessageByModal(actions);
 		return ResponseEntity.ok().build();
 	}
 
-	private void slackBotEvent(@RequestBody final JsonNode reqJson, final SlackRequest slackRequest) throws JsonProcessingException {
-		switch (EventType.of(slackRequest.eventType())) {
+	private void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {
+
+		final EventType of = EventType.of(slackRequest.eventType());
+		log.info("이벤트 타입 : {}",of);
+		switch (of) {
 			case MESSAGE:
 				if (slackRequest.getEvent().isUser()) {
 					messageEventService.run(slackRequest);
 				}
 				return;
 			case APP_MENTION:
-				service.sendMessage(jsonToDto(reqJson, EventCallbackRequest.class));
+				service.sendMessageV2(slackRequest);
 				return;
 			default:
 		}

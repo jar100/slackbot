@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 public class ModalResponse {
 	private String trigger_id;
-	//private ModalView view;
+//	private ModalView view;
 	private String view;
 }
