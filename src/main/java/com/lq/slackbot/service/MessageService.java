@@ -9,11 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -23,6 +24,8 @@ public class MessageService {
 	private static final String POST_MESSAGE = "/chat.postMessage";
 	private static final String MODAL_URL = "/views.open";
 	private static final String TOKEN = "Bearer " + System.getenv("BOT_TOKEN");
+	private static final String PLAIN_TEXT = "plain_text";
+
 
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
@@ -31,11 +34,6 @@ public class MessageService {
 		this.objectMapper = objectMapper;
 		this.webClient = initWebClient();
 	}
-
-//	public void sendMessage(EventCallbackRequest request) {
-//		log.info("app_mention : {}", request);
-//		send("/chat.postMessage", new Message(request.getChannel(), "Hello World!"));
-//	}
 
 	public void sendMessageByModal(Actions body) {
 		String view = null;
@@ -130,213 +128,111 @@ public class MessageService {
 					"}";
 		}
 
-		if (body.getAction().equals("test")) {
-			view = "{\n" +
-					"\t\"type\": \"modal\",\n" +
-					"\t\"title\": {\n" +
-					"\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\"text\": \"App menu\",\n" +
-					"\t\t\"emoji\": true\n" +
-					"\t},\n" +
-					"\t\"submit\": {\n" +
-					"\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\"text\": \"Submit\",\n" +
-					"\t\t\"emoji\": true\n" +
-					"\t},\n" +
-					"\t\"close\": {\n" +
-					"\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\"text\": \"Cancel\",\n" +
-					"\t\t\"emoji\": true\n" +
-					"\t},\n" +
-					"\t\"blocks\": [\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"section\",\n" +
-					"\t\t\t\"text\": {\n" +
-					"\t\t\t\t\"type\": \"mrkdwn\",\n" +
-					"\t\t\t\t\"text\": \"*Hi <fakelink.toUser.com|@David>!* Here's how I can help you:\"\n" +
-					"\t\t\t}\n" +
-					"\t\t},\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"divider\"\n" +
-					"\t\t},\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"section\",\n" +
-					"\t\t\t\"text\": {\n" +
-					"\t\t\t\t\"type\": \"mrkdwn\",\n" +
-					"\t\t\t\t\"text\": \":calendar: *Create event*\\nCreate a new event\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"accessory\": {\n" +
-					"\t\t\t\t\"type\": \"button\",\n" +
-					"\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\"text\": \"Create event\",\n" +
-					"\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t},\n" +
-					"\t\t\t\t\"style\": \"primary\",\n" +
-					"\t\t\t\t\"value\": \"click_me_123\"\n" +
-					"\t\t\t}\n" +
-					"\t\t},\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"section\",\n" +
-					"\t\t\t\"text\": {\n" +
-					"\t\t\t\t\"type\": \"mrkdwn\",\n" +
-					"\t\t\t\t\"text\": \":clipboard: *List of events*\\nChoose from different event lists\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"accessory\": {\n" +
-					"\t\t\t\t\"type\": \"static_select\",\n" +
-					"\t\t\t\t\"placeholder\": {\n" +
-					"\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\"text\": \"Choose list\",\n" +
-					"\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t},\n" +
-					"\t\t\t\t\"options\": [\n" +
-					"\t\t\t\t\t{\n" +
-					"\t\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\t\"text\": \"My events\",\n" +
-					"\t\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\t\"value\": \"value-0\"\n" +
-					"\t\t\t\t\t},\n" +
-					"\t\t\t\t\t{\n" +
-					"\t\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\t\"text\": \"All events\",\n" +
-					"\t\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\t\"value\": \"value-1\"\n" +
-					"\t\t\t\t\t},\n" +
-					"\t\t\t\t\t{\n" +
-					"\t\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\t\"text\": \"Event invites\",\n" +
-					"\t\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\t\"value\": \"value-1\"\n" +
-					"\t\t\t\t\t}\n" +
-					"\t\t\t\t]\n" +
-					"\t\t\t}\n" +
-					"\t\t},\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"section\",\n" +
-					"\t\t\t\"text\": {\n" +
-					"\t\t\t\t\"type\": \"mrkdwn\",\n" +
-					"\t\t\t\t\"text\": \":gear: *Settings*\\nManage your notifications and team settings\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"accessory\": {\n" +
-					"\t\t\t\t\"type\": \"static_select\",\n" +
-					"\t\t\t\t\"placeholder\": {\n" +
-					"\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\"text\": \"Edit settings\",\n" +
-					"\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t},\n" +
-					"\t\t\t\t\"options\": [\n" +
-					"\t\t\t\t\t{\n" +
-					"\t\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\t\"text\": \"Notifications\",\n" +
-					"\t\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\t\"value\": \"value-0\"\n" +
-					"\t\t\t\t\t},\n" +
-					"\t\t\t\t\t{\n" +
-					"\t\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\t\"text\": \"Team settings\",\n" +
-					"\t\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\t\"value\": \"value-1\"\n" +
-					"\t\t\t\t\t}\n" +
-					"\t\t\t\t]\n" +
-					"\t\t\t}\n" +
-					"\t\t},\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"actions\",\n" +
-					"\t\t\t\"elements\": [\n" +
-					"\t\t\t\t{\n" +
-					"\t\t\t\t\t\"type\": \"button\",\n" +
-					"\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\"text\": \"Send feedback\",\n" +
-					"\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\"value\": \"click_me_123\"\n" +
-					"\t\t\t\t},\n" +
-					"\t\t\t\t{\n" +
-					"\t\t\t\t\t\"type\": \"button\",\n" +
-					"\t\t\t\t\t\"text\": {\n" +
-					"\t\t\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\t\t\"text\": \"FAQs\",\n" +
-					"\t\t\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t\t\t},\n" +
-					"\t\t\t\t\t\"value\": \"click_me_123\"\n" +
-					"\t\t\t\t}\n" +
-					"\t\t\t]\n" +
-					"\t\t}\n" +
-					"\t]\n" +
-					"}";
+		if (body.getAction().equals("scheduler")) {
+			view = createSchedulerBlock();
 		}
+		System.out.println(view);
+		if (StringUtils.isEmpty(view)) {
+			return;
+		}
+
+		final ModalView modalView = ModalView.builder()
+				.type("modal")
+				.title(ModalView.Content.builder().type(PLAIN_TEXT).text("b2b 봇").emoji(true).build())
+				.submit(ModalView.Content.builder().type(PLAIN_TEXT).text("submit").emoji(true).build())
+				.close(ModalView.Content.builder().type(PLAIN_TEXT).text("cancel").emoji(true).build())
+				.blocks(view)
+				.build();
 
 		ModalResponse response = ModalResponse.builder()
 				.trigger_id(body.getTrigger_id())
-				.view(view)
+				.view(modalView)
 				.build();
 
-		log.info("모달리스폰스 : {}", response);
+		log.info("모달리스폰스 1 : {}", response);
 		send(MODAL_URL, response);
+	}
+
+	private String createSchedulerBlock() {
+		Gson gson = new Gson();
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.text(ModalBlock.Content.builder()
+						.type(PLAIN_TEXT)
+						.text(":wave: 반복할 메세지를 세팅해 주세요 (1건만 됨)")
+						.emoji(true)
+						.build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("divider")
+				.build());
+		blockList.add(ModalBlock.builder()
+				.block_id("scheduleMessage")
+				.type("input")
+				.label(ModalBlock.Content.builder()
+						.type(PLAIN_TEXT)
+						.text("메세지 세팅")
+						.emoji(false)
+						.build())
+				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(false).action_id("scheduleMessage").build())
+				.optional(false)
+				.build());
+		blockList.add(ModalBlock.builder()
+				.block_id("scheduleTime")
+				.type("input")
+				.label(ModalBlock.Content.builder()
+						.type(PLAIN_TEXT)
+						.text("반복시간 세팅")
+						.emoji(false)
+						.build())
+				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(false).action_id("scheduleTime").build())
+				.optional(false)
+				.build());
+		return gson.toJson(blockList);
 	}
 
 
 	public void sendMessageV2(SlackRequest slackRequest) {
-		log.info("slackrequest : {}",slackRequest);
-		if (slackRequest.getEvent().getText().contains("123")) {
-			send(POST_MESSAGE, Message.builder().channel(slackRequest.getChannel()).text("123").build());
-		}
-		else if (slackRequest.getEvent().getText().contains("주문")) {
-			send(POST_MESSAGE,Message.builder()
+		log.info("slackrequest : {}", slackRequest);
+		if (slackRequest.getEvent().getText().contains("하이")) {
+			send(POST_MESSAGE, Message.builder().channel(slackRequest.getChannel()).text("Hello World").build());
+		} else {
+			send(POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("test")
-					.blocks("[\n" +
-							"        {\n" +
-							"            \"type\": \"section\",\n" +
-							"            \"text\": {\n" +
-							"                \"type\": \"mrkdwn\",\n" +
-							"                \"text\": \"Danny Torrence left the following review for your property:\"\n" +
-							"            }\n" +
-							"        },\n" +
-							"        {\n" +
-							"            \"type\": \"actions\",\n" +
-							"            \"elements\": [\n" +
-							"                {\n" +
-							"                    \"action_id\": \"test\",\n" +
-							"                    \"type\": \"button\",\n" +
-							"                    \"text\": {\n" +
-							"                        \"type\": \"plain_text\",\n" +
-							"                        \"text\": \"test\",\n" +
-							"                        \"emoji\": false\n" +
-							"                    }\n" +
-							"                }\n" +
-							"            ]\n" +
-							"        },\n" +
-							"        {\n" +
-							"            \"type\": \"actions\",\n" +
-							"            \"elements\": [\n" +
-							"                {\n" +
-							"                    \"action_id\": \"findOrder\",\n" +
-							"                    \"type\": \"button\",\n" +
-							"                    \"text\": {\n" +
-							"                        \"type\": \"plain_text\",\n" +
-							"                        \"text\": \"findOrder\",\n" +
-							"                        \"emoji\": false\n" +
-							"                    }\n" +
-							"                }\n" +
-							"            ]\n" +
-							"        }\n" +
-							"    ]")
+					.blocks(createSelectBlock())
 					.build());
 		}
-		return;
 	}
+
+	private String createSelectBlock() {
+		Gson gson = new Gson();
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text("기능").build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("actions")
+				.elements(Arrays.asList(ModalBlock.Elements.builder()
+						.action_id("findOrder")
+						.type("button")
+						.text(ModalBlock.Content.builder().type(PLAIN_TEXT).text("주문 찾기 (미구현)").emoji(false).build())
+						.build()))
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("actions")
+				.elements(Arrays.asList(ModalBlock.Elements.builder()
+						.action_id("scheduler")
+						.type("button")
+						.text(ModalBlock.Content.builder().type(PLAIN_TEXT).text("스케줄링 세팅 (미구현)").emoji(false).build())
+						.build()))
+				.build());
+
+		return gson.toJson(blockList);
+	}
+
 
 	public void sendMessageV3(String channel, String message) {
 		send(POST_MESSAGE, Message.builder().channel(channel).text(message).build());

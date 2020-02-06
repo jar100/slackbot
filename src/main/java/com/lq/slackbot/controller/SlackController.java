@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.lq.slackbot.domain.EventType;
-import com.lq.slackbot.domain.RequestType;
-import com.lq.slackbot.domain.SlackRequest;
+import com.lq.slackbot.domain.*;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SlackBotEventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -43,6 +40,13 @@ public class SlackController {
 	}
 
 
+	@PostMapping("/test")
+	public ResponseEntity<?> adfe(@RequestBody JsonNode jsonNode) {
+		log.warn("body : {}",jsonNode.toString());
+
+		return ResponseEntity.ok("ok");
+	}
+
 	@PostMapping("/slack/events")
 	public ResponseEntity<?> handleEvents(@RequestBody JsonNode reqJson) throws JsonProcessingException {
 		final SlackRequest slackRequest = objectMapper.convertValue(reqJson, SlackRequest.class);
@@ -61,16 +65,21 @@ public class SlackController {
 
 	}
 
-	@PostMapping("/slack/modal")
+	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
 	public ResponseEntity<?> event(@RequestParam Map<String,String> body ) throws JsonProcessingException {
 		log.info("test modal");
 		log.info(body.toString());
 		final String payload = body.get("payload");
-
 		log.info("페이로드 : {}",payload);
 		final Actions actions = objectMapper.readValue(payload, Actions.class);
 		log.info("엑션스 : {}",actions);
-		service.sendMessageByModal(actions);
+		if (actions.getAction() != null) {
+			service.sendMessageByModal(actions);
+		} else {
+			final SlackMessageEvent blockList = objectMapper.readValue(payload, SlackMessageEvent.class);
+			log.info("모달블럭 : {}",blockList);
+		}
+
 		return ResponseEntity.ok().build();
 	}
 

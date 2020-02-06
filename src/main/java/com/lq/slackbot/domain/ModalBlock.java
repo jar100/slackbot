@@ -1,32 +1,44 @@
 package com.lq.slackbot.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ModalBlock {
 	String type;
 	String block_id;
 	Content text;
-	Accessory accessory;
-	String view;
+	Content label;
+	List<Elements> elements;
+	Elements element;
+	Boolean optional;
 
 	@Data
 	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class Content {
 		String text;
 		String type;
+		Boolean emoji;
 	}
 
 	@Data
 	@Builder
-	public static class Accessory {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class Elements {
 		String type;
-		List<Content> text;
-		String action_id = "button-identifier";
+		Content text;
+		String action_id;
+		Boolean multiline;
 	}
 
 }
