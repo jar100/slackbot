@@ -3,7 +3,7 @@ package com.lq.slackbot.domain;
 import java.util.Arrays;
 
 public enum MessageEventType {
-	LUNCH("점심!"),
+	LUNCH("밥!"),
 	ORDER("주문검색!"),
 	NONE("없음");
 
