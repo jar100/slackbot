@@ -41,8 +41,8 @@ public class Scheduler {
 	}
 
 
-//	@Scheduled(cron = "0 0 17 * * THU")
-	@Scheduled(cron = "0 */1 *? * * THU")
+	@Scheduled(cron = "0 0 17 * * THU")
+//	@Scheduled(cron = "0 */1 *? * * THU")
 	public void scheduleMessage() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
 		send("test", Message.builder().text("<!here> qa 문서를 작성을 해주세요").build());

@@ -197,7 +197,7 @@ public class MessageService {
 		log.info("slackrequest : {}", slackRequest);
 		if (slackRequest.getEvent().getText().contains("하이")) {
 			send(POST_MESSAGE, Message.builder().channel(slackRequest.getChannel()).text("Hello World").build());
-		} else {
+		} else if (slackRequest.getEvent().getText().contains("명령어")){
 			send(POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("test")
