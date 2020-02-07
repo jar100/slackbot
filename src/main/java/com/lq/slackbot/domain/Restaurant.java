@@ -15,10 +15,8 @@ public enum Restaurant {
 	NO10(10, "크라이치즈버"),
 	NO11(11, "포포빈"),
 	NO12(12, "카레마치"),
-	NO13(12, "소공동"),
+	NO13(13, "소공동"),
 	NONE(0,"없음");
-
-	;
 
 	private int index;
 	private String name;
