@@ -16,6 +16,7 @@ public enum Restaurant {
 	NO11(11, "포포빈"),
 	NO12(12, "카레마치"),
 	NO13(13, "소공동"),
+	NO14(14, "얌샘김밥"),
 	NONE(0,"없음");
 
 	private int index;
