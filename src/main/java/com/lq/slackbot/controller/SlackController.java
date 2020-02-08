@@ -19,19 +19,12 @@ import java.util.Map;
 public class SlackController {
 	private final ObjectMapper objectMapper;
 	private final MessageService service;
-	private final SlackBotEventService eventService;
 	private final MessageEventService messageEventService;
 
-	public SlackController(final ObjectMapper objectMapper, final MessageService service, final SlackBotEventService eventService, final MessageEventService messageEventService) {
+	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService) {
 		this.objectMapper = objectMapper;
 		this.service = service;
-		this.eventService = eventService;
 		this.messageEventService = messageEventService;
-	}
-
-	@GetMapping("/batch")
-	public ResponseEntity<?> batch() {
-		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/init")
@@ -43,7 +36,6 @@ public class SlackController {
 	@PostMapping("/test")
 	public ResponseEntity<?> adfe(@RequestBody JsonNode jsonNode) {
 		log.warn("body : {}",jsonNode.toString());
-
 		return ResponseEntity.ok("ok");
 	}
 

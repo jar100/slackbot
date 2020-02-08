@@ -6,12 +6,17 @@ import com.lq.slackbot.domain.SlackRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @Slf4j
 public class MessageEventService {
 	private MessageService messageService;
+	private List<Restaurant> restaurantList = Restaurant.list();
 
 	@Autowired
 	public MessageEventService(final MessageService messageService) {
@@ -20,7 +25,6 @@ public class MessageEventService {
 
 	public void run(final SlackRequest request) {
 		String message = null;
-
 		final String text = request.getEvent().getText();
 		log.info("text : {}", text);
 		if (StringUtils.isEmpty(text)) {
@@ -28,10 +32,20 @@ public class MessageEventService {
 			return;
 		}
 		if (text.contains(MessageEventType.LUNCH.getLabel())) {
-			final int random = (int) (Math.random() * (Restaurant.values().length - 1)) + 1;
-			message = Restaurant.of(random).getName();
-			messageService.sendMessageV3(request.getChannel(),message);
+			message = restaurantEvent(request);
 		}
 		log.info(message);
+	}
+
+	private String restaurantEvent(final SlackRequest request) {
+		if (restaurantList.isEmpty()) {
+			restaurantList = Restaurant.list();
+			messageService.sendMessageV3(request.getChannel(),"전부 출력했습니다. 초기화 합니다.");
+		}
+		Collections.shuffle(restaurantList);
+		final String restaurant = restaurantList.remove(0).getName();
+
+		messageService.sendMessageV3(request.getChannel(),restaurant);
+		return restaurant;
 	}
 }

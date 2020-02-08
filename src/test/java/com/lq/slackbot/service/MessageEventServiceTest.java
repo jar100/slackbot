@@ -1,35 +1,31 @@
 package com.lq.slackbot.service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.MessageEventType;
+import com.lq.slackbot.domain.ModalResponseV2;
+import com.lq.slackbot.domain.ModalView;
+import com.lq.slackbot.domain.Restaurant;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ReactiveHttpOutputMessage;
-import org.springframework.web.reactive.function.BodyInserter;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
 class MessageEventServiceTest {
+	@Autowired
+	private MessageEventService messageEventService;
 
 	@Test
 	void name() {
 		final double random = Math.random() * (Restaurant.values().length - 1);
 		System.out.println(random);
-
-	}
-
-	@Test
-	void name2() {
-		for (int i = 0; i < 100; i++) {
-			final int random = (int) (Math.random() * (Restaurant.values().length - 1)) + 1;
-			System.out.println(random);
-			String message = Restaurant.of(random).getName();
-
-			System.out.println(message);
-		}
-
 
 	}
 
@@ -236,7 +232,6 @@ class MessageEventServiceTest {
 		final Mono<ClientResponse> exchange = WebClient.create("https://c3b0a121.ngrok.io/").post().uri("test").body(BodyInserters.fromValue(build1)).exchange();
 
 
-
 		///
 		final Mono<ClientResponse> exchange2 = WebClient.create("https://c3b0a121.ngrok.io/").post().uri("test").body(BodyInserters.fromValue(build2)).exchange();
 		System.out.println(exchange.block().bodyToMono(String.class));
@@ -244,4 +239,19 @@ class MessageEventServiceTest {
 		System.out.println(exchange2.block().bodyToMono(String.class));
 
 	}
+
+
+//	@Test
+//	void stringParse() {
+//		//given
+//		String test = "밥! (123,ㅂㅈㄷ,5454,ㅊㅇㄹㄷㄱ,ㅁㅇㄴㅁㄹㄷㄱ,)";
+//
+//		//when
+//		String[] text = messageEventService.parseMessage(test);
+//
+//		System.out.println(text);
+//
+//		//then
+//		assertThat(text).isEqualTo("123,ㅂㅈㄷ,5454,ㅊㅇㄹㄷㄱ,ㅁㅇㄴㅁㄹㄷㄱ,");
+//	}
 }

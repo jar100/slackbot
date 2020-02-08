@@ -1,6 +1,8 @@
 package com.lq.slackbot.domain;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Restaurant {
 	NO1(1, "후레쉬빌"),
@@ -12,12 +14,11 @@ public enum Restaurant {
 	NO7(7, "희래등"),
 	NO8(8, "삼군김치찌개"),
 	NO9(9, "교동전선생"),
-	NO10(10, "크라이치즈버"),
+	NO10(10, "크라이치즈버거"),
 	NO11(11, "포포빈"),
 	NO12(12, "카레마치"),
 	NO13(13, "소공동"),
-	NO14(14, "얌샘김밥"),
-	NONE(0,"없음");
+	NO14(14, "얌샘김밥");
 
 	private int index;
 	private String name;
@@ -27,8 +28,12 @@ public enum Restaurant {
 		this.name = name;
 	}
 
-	public static Restaurant of(int index) {
-		return Arrays.stream(values()).filter(o->o.index == index).findFirst().orElse(NONE);
+//	public static Restaurant of(int index) {
+//		return Arrays.stream(values()).filter(o->o.index == index).findFirst().orElse(NONE);
+//	}
+
+	public static List<Restaurant> list() {
+		return Arrays.stream(values()).collect(Collectors.toList());
 	}
 
 	public String getName() {

@@ -2,6 +2,7 @@ package com.lq.slackbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.Message;
+import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,10 +20,6 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class Scheduler {
-	private static final String BASE_URL = System.getenv("SLACKBOT_BASE_URL");
-	private static final String TOKEN = "Bearer " + System.getenv("BOT_TOKEN");
-	private static final String WEB_HOOK_URL = System.getenv("WEB_HOOK_URL");
-
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
 
@@ -35,7 +32,7 @@ public class Scheduler {
 	@Scheduled(cron = "0 */10 *? * * *")
 	public void check() {
 		log.info("실행시간 nonSleep : {}", LocalDateTime.now());
-		final WebClient webClient = WebClient.create(BASE_URL);
+		final WebClient webClient = WebClient.create(SystemUtils.SLACKBOT_BASE_URL);
 		final Mono<String> stringMono = Objects.requireNonNull(webClient.get().uri("/init").exchange().block()).bodyToMono(String.class);
 		log.info("nonSleep : {}", stringMono.block());
 	}
@@ -55,8 +52,8 @@ public class Scheduler {
 				).build();
 		return WebClient.builder()
 				.exchangeStrategies(strategies)
-				.baseUrl(WEB_HOOK_URL)
-				.defaultHeader(HttpHeaders.AUTHORIZATION, TOKEN)
+				.baseUrl(SystemUtils.WEB_HOOK_URL)
+				.defaultHeader(HttpHeaders.AUTHORIZATION, SystemUtils.TOKEN)
 				.build();
 	}
 

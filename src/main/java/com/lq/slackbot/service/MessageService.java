@@ -37,97 +37,6 @@ public class MessageService {
 
 	public void sendMessageByModal(Actions body) {
 		String view = null;
-		if (body.getAction().equals("findOrder")) {
-			view = "{\n" +
-					"\t\"type\": \"modal\",\n" +
-					"\t\"title\": {\n" +
-					"\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\"text\": \"주문 검색\",\n" +
-					"\t\t\"emoji\": true\n" +
-					"\t},\n" +
-					"\t\"submit\": {\n" +
-					"\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\"text\": \"Submit\",\n" +
-					"\t\t\"emoji\": true\n" +
-					"\t},\n" +
-					"\t\"close\": {\n" +
-					"\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\"text\": \"Cancel\",\n" +
-					"\t\t\"emoji\": true\n" +
-					"\t},\n" +
-					"\t\"blocks\": [\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"section\",\n" +
-					"\t\t\t\"text\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\"text\": \":wave: 찾을 주문을 검색해 주세요\",\n" +
-					"\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t}\n" +
-					"\t\t},\n" +
-					"\t\t{\n" +
-					"\t\t\t\"type\": \"divider\"\n" +
-					"\t\t},\n" +
-					"        {\n" +
-					"\t\t\t\"type\": \"input\",\n" +
-					"\t\t\t\"label\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\"text\": \"이름?\",\n" +
-					"\t\t\t\t\"emoji\": true\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"element\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text_input\",\n" +
-					"\t\t\t\t\"multiline\": false,\n" +
-					"                \"action_id\": \"name\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"optional\": true\n" +
-					"\t\t},\n" +
-					"        {\n" +
-					"\t\t\t\"type\": \"input\",\n" +
-					"\t\t\t\"label\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\"text\": \"전화번호\",\n" +
-					"\t\t\t\t\"emoji\": false\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"element\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text_input\",\n" +
-					"\t\t\t\t\"multiline\": false,\n" +
-					"                \"action_id\": \"call\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"optional\": true\n" +
-					"\t\t},\n" +
-					"        \n" +
-					"\t\t{\t\n" +
-					"\t\t\t\"type\": \"input\",\n" +
-					"\t\t\t\"label\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\"text\": \"쿠폰번호?\",\n" +
-					"\t\t\t\t\"emoji\": false\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"element\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text_input\",\n" +
-					"\t\t\t\t\"multiline\": false,\n" +
-					"                \"action_id\": \"couponCd\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"optional\": true\n" +
-					"\t\t},\n" +
-					"        {\n" +
-					"\t\t\t\"type\": \"input\",\n" +
-					"\t\t\t\"label\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text\",\n" +
-					"\t\t\t\t\"text\": \"주문번호,핀?\",\n" +
-					"\t\t\t\t\"emoji\": false\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"element\": {\n" +
-					"\t\t\t\t\"type\": \"plain_text_input\",\n" +
-					"\t\t\t\t\"multiline\": false,\n" +
-					"                \"action_id\": \"pin\"\n" +
-					"\t\t\t},\n" +
-					"\t\t\t\"optional\": true\n" +
-					"\t\t}\n" +
-					"\t]\n" +
-					"}";
-		}
-
 		if (body.getAction().equals("scheduler")) {
 			view = createSchedulerBlock();
 		}
@@ -213,14 +122,14 @@ public class MessageService {
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("기능").build())
 				.build());
-		blockList.add(ModalBlock.builder()
-				.type("actions")
-				.elements(Arrays.asList(ModalBlock.Elements.builder()
-						.action_id("findOrder")
-						.type("button")
-						.text(ModalBlock.Content.builder().type(PLAIN_TEXT).text("주문 찾기 (미구현)").emoji(false).build())
-						.build()))
-				.build());
+//		blockList.add(ModalBlock.builder()
+//				.type("actions")
+//				.elements(Arrays.asList(ModalBlock.Elements.builder()
+//						.action_id("findOrder")
+//						.type("button")
+//						.text(ModalBlock.Content.builder().type(PLAIN_TEXT).text("주문 찾기 (미구현)").emoji(false).build())
+//						.build()))
+//				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
