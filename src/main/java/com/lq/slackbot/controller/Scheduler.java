@@ -2,8 +2,10 @@ package com.lq.slackbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.Message;
+import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -22,9 +24,12 @@ import java.util.Objects;
 public class Scheduler {
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
+	private final MessageEventService messageEventService;
 
-	public Scheduler(final ObjectMapper objectMapper) {
+	@Autowired
+	public Scheduler(final ObjectMapper objectMapper, final MessageEventService messageEventService) {
 		this.objectMapper = objectMapper;
+		this.messageEventService = messageEventService;
 		this.webClient = initWebClient();
 	}
 
@@ -63,5 +68,11 @@ public class Scheduler {
 				.exchange().block()).bodyToMono(String.class)
 				.block();
 		log.info("WebClient Response: {}", response);
+	}
+
+
+	@Scheduled(cron = "0 */10 *? * * *")
+	private void resetRestaurant() {
+		messageEventService.resetRestaurant();
 	}
 }

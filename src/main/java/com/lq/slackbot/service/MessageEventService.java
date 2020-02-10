@@ -38,14 +38,18 @@ public class MessageEventService {
 	}
 
 	private String restaurantEvent(final SlackRequest request) {
-		if (restaurantList.isEmpty()) {
-			restaurantList = Restaurant.list();
-			messageService.sendMessageV3(request.getChannel(),"전부 출력했습니다. 초기화 합니다.");
+		if (restaurantList.isEmpty() || request.getEvent().getText().contains("초기화")) {
+			resetRestaurant();
+			messageService.sendMessageV3(request.getChannel(),"초기화 합니다.");
 		}
 		Collections.shuffle(restaurantList);
 		final String restaurant = restaurantList.remove(0).getName();
 
 		messageService.sendMessageV3(request.getChannel(),restaurant);
 		return restaurant;
+	}
+
+	public void resetRestaurant() {
+		restaurantList = Restaurant.list();
 	}
 }
