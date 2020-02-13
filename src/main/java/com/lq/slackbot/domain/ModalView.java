@@ -14,7 +14,7 @@ import java.util.List;
 public class ModalView {
 //	String id;
 //	String team_id;
-	String type = "modal";
+	String type;
 	Content title;
 	Content submit;
 	Content close;

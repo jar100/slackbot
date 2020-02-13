@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.lq.slackbot.controller.Actions;
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,13 +20,6 @@ import java.util.*;
 @Service
 @Slf4j
 public class MessageService {
-
-	private static final String BASE_URL = "https://slack.com/api";
-	private static final String POST_MESSAGE = "/chat.postMessage";
-	private static final String MODAL_URL = "/views.open";
-	private static final String TOKEN = "Bearer " + System.getenv("BOT_TOKEN");
-	private static final String PLAIN_TEXT = "plain_text";
-
 
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
@@ -47,9 +41,9 @@ public class MessageService {
 
 		final ModalView modalView = ModalView.builder()
 				.type("modal")
-				.title(ModalView.Content.builder().type(PLAIN_TEXT).text("b2b 봇").emoji(true).build())
-				.submit(ModalView.Content.builder().type(PLAIN_TEXT).text("submit").emoji(true).build())
-				.close(ModalView.Content.builder().type(PLAIN_TEXT).text("cancel").emoji(true).build())
+				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
+				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
+				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
 				.blocks(view)
 				.build();
 
@@ -59,7 +53,7 @@ public class MessageService {
 				.build();
 
 		log.info("모달리스폰스 1 : {}", response);
-		send(MODAL_URL, response);
+		send(SystemUtils.MODAL_URL, response);
 	}
 
 	private String createSchedulerBlock() {
@@ -68,7 +62,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder()
-						.type(PLAIN_TEXT)
+						.type(SystemUtils.PLAIN_TEXT)
 						.text(":wave: 반복할 메세지를 세팅해 주세요 (1건만 됨)")
 						.emoji(true)
 						.build())
@@ -80,7 +74,7 @@ public class MessageService {
 				.block_id("scheduleMessage")
 				.type("input")
 				.label(ModalBlock.Content.builder()
-						.type(PLAIN_TEXT)
+						.type(SystemUtils.PLAIN_TEXT)
 						.text("메세지 세팅")
 						.emoji(false)
 						.build())
@@ -91,7 +85,7 @@ public class MessageService {
 				.block_id("scheduleTime")
 				.type("input")
 				.label(ModalBlock.Content.builder()
-						.type(PLAIN_TEXT)
+						.type(SystemUtils.PLAIN_TEXT)
 						.text("반복시간 세팅")
 						.emoji(false)
 						.build())
@@ -105,9 +99,9 @@ public class MessageService {
 	public void sendMessageV2(SlackRequest slackRequest) {
 		log.info("slackrequest : {}", slackRequest);
 		if (slackRequest.getEvent().getText().contains("하이")) {
-			send(POST_MESSAGE, Message.builder().channel(slackRequest.getChannel()).text("Hello World").build());
+			send(SystemUtils.POST_MESSAGE, Message.builder().channel(slackRequest.getChannel()).text("Hello World").build());
 		} else if (slackRequest.getEvent().getText().contains("명령어")){
-			send(POST_MESSAGE, Message.builder()
+			send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("test")
 					.blocks(createSelectBlock())
@@ -122,20 +116,12 @@ public class MessageService {
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("기능").build())
 				.build());
-//		blockList.add(ModalBlock.builder()
-//				.type("actions")
-//				.elements(Arrays.asList(ModalBlock.Elements.builder()
-//						.action_id("findOrder")
-//						.type("button")
-//						.text(ModalBlock.Content.builder().type(PLAIN_TEXT).text("주문 찾기 (미구현)").emoji(false).build())
-//						.build()))
-//				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 						.action_id("scheduler")
 						.type("button")
-						.text(ModalBlock.Content.builder().type(PLAIN_TEXT).text("스케줄링 세팅 (미구현)").emoji(false).build())
+						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄링 세팅 (미구현)").emoji(false).build())
 						.build()))
 				.build());
 
@@ -144,7 +130,7 @@ public class MessageService {
 
 
 	public void sendMessageV3(String channel, String message) {
-		send(POST_MESSAGE, Message.builder().channel(channel).text(message).build());
+		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text(message).build());
 	}
 
 
@@ -155,8 +141,8 @@ public class MessageService {
 				).build();
 		return WebClient.builder()
 				.exchangeStrategies(strategies)
-				.baseUrl(BASE_URL)
-				.defaultHeader(HttpHeaders.AUTHORIZATION, TOKEN)
+				.baseUrl(SystemUtils.BASE_URL)
+				.defaultHeader(HttpHeaders.AUTHORIZATION, SystemUtils.TOKEN)
 				.build();
 	}
 
@@ -170,6 +156,6 @@ public class MessageService {
 	}
 
 	public String getToken() {
-		return TOKEN;
+		return SystemUtils.TOKEN;
 	}
 }
