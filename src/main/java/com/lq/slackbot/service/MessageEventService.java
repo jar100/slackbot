@@ -41,12 +41,17 @@ public class MessageEventService {
 
 	private String restaurantEvent(final SlackRequest request) {
 		String restaurant = null;
+		resetRestaurantByChannel(request);
+		restaurant = findRestaurant(request.getChannel());
+		messageService.sendMessageV3(request.getChannel(), restaurant);
+		return restaurant;
+	}
+
+	private void resetRestaurantByChannel(final SlackRequest request) {
 		if (request.getEvent().getText().contains("초기화")) {
+			slackChannels.put(request.getChannel(), Restaurant.list());
 			messageService.sendMessageV3(request.getChannel(),"초기화 합니다.");
 		}
-		restaurant = findRestaurant(request.getChannel());
-		messageService.sendMessageV3(request.getChannel(),slackChannels.get(request.getChannel()).toString() + "  = " + restaurant);
-		return restaurant;
 	}
 
 	public void resetRestaurant() {
@@ -58,6 +63,6 @@ public class MessageEventService {
 		if (restaurantList == null || restaurantList.isEmpty()) {
 			slackChannels.put(sessionKey,Restaurant.list());
 		}
-		return slackChannels.get(sessionKey).remove(0).name();
+		return slackChannels.get(sessionKey).remove(0).getName();
 	}
 }
