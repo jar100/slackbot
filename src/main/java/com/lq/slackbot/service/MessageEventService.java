@@ -9,15 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class MessageEventService {
 	private MessageService messageService;
-	private List<Restaurant> restaurantList = Restaurant.list();
-
+	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
 	@Autowired
 	public MessageEventService(final MessageService messageService) {
 		this.messageService = messageService;
@@ -38,18 +40,24 @@ public class MessageEventService {
 	}
 
 	private String restaurantEvent(final SlackRequest request) {
-		if (restaurantList.isEmpty() || request.getEvent().getText().contains("초기화")) {
-			resetRestaurant();
+		String restaurant = null;
+		if (request.getEvent().getText().contains("초기화")) {
 			messageService.sendMessageV3(request.getChannel(),"초기화 합니다.");
 		}
-		Collections.shuffle(restaurantList);
-		final String restaurant = restaurantList.remove(0).getName();
-
-		messageService.sendMessageV3(request.getChannel(),restaurant);
+		restaurant = findRestaurant(request.getChannel());
+		messageService.sendMessageV3(request.getChannel(),slackChannels.get(request.getChannel()).toString() + "  = " + restaurant);
 		return restaurant;
 	}
 
 	public void resetRestaurant() {
-		restaurantList = Restaurant.list();
+		slackChannels = new HashMap<>();
+	}
+
+	public String findRestaurant(String sessionKey) {
+		final List<Restaurant> restaurantList = slackChannels.get(sessionKey);
+		if (restaurantList == null || restaurantList.isEmpty()) {
+			slackChannels.put(sessionKey,Restaurant.list());
+		}
+		return slackChannels.get(sessionKey).remove(0).name();
 	}
 }

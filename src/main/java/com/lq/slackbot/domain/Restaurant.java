@@ -1,6 +1,7 @@
 package com.lq.slackbot.domain;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,9 @@ public enum Restaurant {
 //	}
 
 	public static List<Restaurant> list() {
-		return Arrays.stream(values()).collect(Collectors.toList());
+		final List<Restaurant> collect = Arrays.stream(values()).collect(Collectors.toList());
+		Collections.shuffle(collect);
+		return collect;
 	}
 
 	public String getName() {

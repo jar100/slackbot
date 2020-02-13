@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
