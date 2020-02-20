@@ -47,7 +47,8 @@ public class Scheduler {
 //	@Scheduled(cron = "0 */1 *? * * THU")
 	public void scheduleMessage() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
-		send(Message.builder().text("<!here> qna 문서를 작성을 해주세요 \n https://confluence.yanolja.in/pages/viewpage.action?pageId=162456110").build());
+		send(Message.builder().text("<!here> \n LQ_TechCS 문서를 작성을 해주세요 \n " + SystemUtils.SLACK_BOT_B2B_URL
+		).build());
 	}
 
 	private WebClient initWebClient() {

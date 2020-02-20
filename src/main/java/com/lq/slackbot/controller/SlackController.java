@@ -3,11 +3,9 @@ package com.lq.slackbot.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
-import com.lq.slackbot.service.SlackBotEventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +18,13 @@ public class SlackController {
 	private final ObjectMapper objectMapper;
 	private final MessageService service;
 	private final MessageEventService messageEventService;
+	private final Scheduler scheduler;
 
-	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService) {
+	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final Scheduler scheduler) {
 		this.objectMapper = objectMapper;
 		this.service = service;
 		this.messageEventService = messageEventService;
+		this.scheduler = scheduler;
 	}
 
 	@GetMapping("/init")
@@ -34,8 +34,8 @@ public class SlackController {
 
 
 	@PostMapping("/test")
-	public ResponseEntity<?> adfe(@RequestBody JsonNode jsonNode) {
-		log.warn("body : {}",jsonNode.toString());
+	public ResponseEntity<?> adfe() {
+		scheduler.scheduleMessage();
 		return ResponseEntity.ok("ok");
 	}
 

@@ -8,4 +8,5 @@ public class SystemUtils {
 	public static final String POST_MESSAGE = "/chat.postMessage";
 	public static final String MODAL_URL = "/views.open";
 	public static final String PLAIN_TEXT = "plain_text";
+	public static final String SLACK_BOT_B2B_URL = System.getenv("SLACK_BOT_B2B_URL");
 }
