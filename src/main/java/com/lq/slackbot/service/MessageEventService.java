@@ -20,6 +20,7 @@ import java.util.Map;
 public class MessageEventService {
 	private MessageService messageService;
 	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
+
 	@Autowired
 	public MessageEventService(final MessageService messageService) {
 		this.messageService = messageService;

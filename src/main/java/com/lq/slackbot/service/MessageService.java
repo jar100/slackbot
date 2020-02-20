@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
@@ -59,6 +58,11 @@ public class MessageService {
 
 	private String createSchedulerBlock() {
 		Gson gson = new Gson();
+		List<ModalBlock> blockList = getScheduleBlocks();
+		return gson.toJson(blockList);
+	}
+
+	private List<ModalBlock> getScheduleBlocks() {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -93,14 +97,16 @@ public class MessageService {
 				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(false).action_id("scheduleTime").build())
 				.optional(false)
 				.build());
-		return gson.toJson(blockList);
+		return blockList;
 	}
 
 
 	public void sendMessageV2(SlackRequest slackRequest) {
 		log.info("slackrequest : {}", slackRequest);
 		if (slackRequest.getEvent().getText().contains("하이")) {
-			send(SystemUtils.POST_MESSAGE, Message.builder().channel(slackRequest.getChannel()).text("Hello World").build());
+			send(SystemUtils.POST_MESSAGE, Message.builder()
+					.channel(slackRequest.getChannel())
+					.text("Hello World").build());
 		} else if (slackRequest.getEvent().getText().contains("명령어")){
 			send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
