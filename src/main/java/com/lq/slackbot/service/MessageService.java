@@ -6,6 +6,7 @@ import com.lq.slackbot.controller.Actions;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -20,16 +21,15 @@ import java.util.*;
 @Service
 @Slf4j
 public class MessageService {
+	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static WebClient webClient = initWebClient();
 
-	private final ObjectMapper objectMapper;
-	private final WebClient webClient;
+//	public MessageService(final ObjectMapper objectMapper) {
+//		MessageService.objectMapper = objectMapper;
+//		webClient = initWebClient();
+//	}
 
-	public MessageService(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-		this.webClient = initWebClient();
-	}
-
-	public void sendMessageByModal(Actions body) {
+	public static void sendMessageByModal(Actions body) {
 		String view = null;
 		if (body.getAction().equals("scheduler")) {
 			view = createSchedulerBlock();
@@ -56,13 +56,13 @@ public class MessageService {
 		send(SystemUtils.MODAL_URL, response);
 	}
 
-	private String createSchedulerBlock() {
+	private static String createSchedulerBlock() {
 		Gson gson = new Gson();
 		List<ModalBlock> blockList = getScheduleBlocks();
 		return gson.toJson(blockList);
 	}
 
-	private List<ModalBlock> getScheduleBlocks() {
+	private static List<ModalBlock> getScheduleBlocks() {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -101,7 +101,7 @@ public class MessageService {
 	}
 
 
-	public void sendMessageV2(SlackRequest slackRequest) {
+	public static void sendMessageV2(SlackRequest slackRequest) {
 		log.info("slackrequest : {}", slackRequest);
 		if (slackRequest.getEvent().getText().contains("하이")) {
 			send(SystemUtils.POST_MESSAGE, Message.builder()
@@ -116,7 +116,7 @@ public class MessageService {
 		}
 	}
 
-	private String createSelectBlock() {
+	private static String createSelectBlock() {
 		Gson gson = new Gson();
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
@@ -136,12 +136,12 @@ public class MessageService {
 	}
 
 
-	public void sendMessageV3(String channel, String message) {
+	public static void sendMessageV3(String channel, String message) {
 		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text(message).build());
 	}
 
 
-	private WebClient initWebClient() {
+	private static WebClient initWebClient() {
 		ExchangeStrategies strategies = ExchangeStrategies.builder()
 				.codecs(config ->
 						config.customCodecs().encoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON))
@@ -153,7 +153,7 @@ public class MessageService {
 				.build();
 	}
 
-	private void send(String url, Object dto) {
+	private static void send(String url, Object dto) {
 		String response = Objects.requireNonNull(webClient.post()
 				.uri(url)
 				.body(BodyInserters.fromValue(dto))
