@@ -89,7 +89,6 @@ public class SlackController {
 				return;
 			case APP_MENTION:
 				messageHandler.handling(slackRequest);
-//				service.sendMessageV2(slackRequest);
 				return;
 			default:
 		}
