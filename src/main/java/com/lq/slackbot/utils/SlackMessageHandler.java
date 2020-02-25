@@ -44,7 +44,7 @@ public class SlackMessageHandler {
 					.blocks(createSelectBlock())
 					.build());
 		} else if (text.contains("schedule!")){
-			// @adfqwef schedule! "클론식" "메세지ㅁㄴㅇㄹㅁㄴㄹㅇㅁㄴㅇㄹㄴㅇㄹ"
+			// @adfqwef schedule! "클론식" "메세지ㅁㄴㅇㄹㅁㄴㄹㅇㅁㄴㅇㄹㄴㅇ ㄹ"
 			final String[] split = text.split("\"");
 			schedulerService.addSchedule(JobRequest.builder()
 					.jobName(UUID.randomUUID().toString())
