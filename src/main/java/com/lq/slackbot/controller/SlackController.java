@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
+import com.lq.slackbot.service.SchedulerService;
+import com.lq.slackbot.utils.SlackMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +20,15 @@ public class SlackController {
 	private final ObjectMapper objectMapper;
 	private final MessageService service;
 	private final MessageEventService messageEventService;
-	private final Scheduler scheduler;
+	private final SchedulerService schelduleService;
+	private final SlackMessageHandler messageHandler;
 
-	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final Scheduler scheduler) {
+	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final SchedulerService schelduleService, final SlackMessageHandler messageHandler) {
 		this.objectMapper = objectMapper;
 		this.service = service;
 		this.messageEventService = messageEventService;
-		this.scheduler = scheduler;
+		this.schelduleService = schelduleService;
+		this.messageHandler = messageHandler;
 	}
 
 	@GetMapping("/init")
@@ -35,7 +39,6 @@ public class SlackController {
 
 	@PostMapping("/test")
 	public ResponseEntity<?> adfe() {
-		scheduler.scheduleMessage();
 		return ResponseEntity.ok("ok");
 	}
 
@@ -76,7 +79,6 @@ public class SlackController {
 	}
 
 	private void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {
-
 		final EventType of = EventType.of(slackRequest.eventType());
 		log.info("이벤트 타입 : {}",of);
 		switch (of) {
@@ -86,7 +88,8 @@ public class SlackController {
 				}
 				return;
 			case APP_MENTION:
-				service.sendMessageV2(slackRequest);
+				messageHandler.handling(slackRequest);
+//				service.sendMessageV2(slackRequest);
 				return;
 			default:
 		}

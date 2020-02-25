@@ -10,21 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class SchelduleService {
+public class SchedulerService {
 	private SchedulerFactoryBean schedulerFactoryBean;
 	private ApplicationContext context;
+	private ChannelRepository channelRepository;
 
-	public SchelduleService(final SchedulerFactoryBean schedulerFactoryBean, final ApplicationContext context) {
+	public SchedulerService(final SchedulerFactoryBean schedulerFactoryBean, final ApplicationContext context, final ChannelRepository channelRepository) {
 		this.schedulerFactoryBean = schedulerFactoryBean;
 		this.context = context;
+		this.channelRepository = channelRepository;
 	}
 
 	public boolean isJobExists(final JobKey jobKey) {
@@ -86,21 +88,9 @@ public class SchelduleService {
 			Scheduler scheduler = schedulerFactoryBean.getScheduler();
 			for (String groupName : scheduler.getJobGroupNames()) {
 				numOfGroups++;
-				for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-					List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
-					JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(jobKey);
-					jobResponse = JobResponse.builder()
-							.jobName(jobKey.getName())
-							.groupName(jobKey.getGroup())
-							.scheduleTime(triggers.get(0).getStartTime().toString())
-							.lastFiredTime(triggers.get(0).getPreviousFireTime().toString())
-							.nextFireTime(triggers.get(0).getNextFireTime().toString())
-							.message(jobDetail.getJobDataMap().get("message").toString())
-							.build();
-					numOfAllJobs++;
-					jobs.add(jobResponse);
-				}
+				jobs.addAll(createJobs(groupName));
 			}
+			numOfAllJobs = jobs.size();
 		} catch (SchedulerException e) {
 			log.error("[schedulerdebug] error while fetching all job info", e);
 		}
@@ -130,5 +120,55 @@ public class SchelduleService {
 			return new ResponseEntity<>(new ApiResponse(true, "Job created successfully"), HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>(new ApiResponse(false, "Job created false"), HttpStatus.CREATED);
+	}
+
+	public void deleteGroup(final String channelId) {
+		try {
+			final List<JobKey> collect = new ArrayList<>(schedulerFactoryBean.getScheduler().getJobKeys(GroupMatcher.jobGroupEquals(channelId)));
+			schedulerFactoryBean.getScheduler().deleteJobs(collect);
+		} catch (SchedulerException e) {
+			log.error("스캐줄 삭제 실패 : {} ", e.getMessage(), e);
+		}
+	}
+
+	public JobStatusResponse getAllJobGroup(final String channelId) {
+		JobStatusResponse jobStatusResponse = new JobStatusResponse();
+		List<JobResponse> jobs = new ArrayList<>();
+		int numOfRunningJobs = 0;
+		int numOfGroups = 0;
+		int numOfAllJobs = 0;
+		try {
+			jobs.addAll(createJobs(channelId));
+		} catch (SchedulerException e) {
+			log.error("[schedulerdebug] error while fetching all job info", e);
+		}
+		jobStatusResponse.setNumOfAllJobs(numOfAllJobs);
+		jobStatusResponse.setNumOfRunningJobs(numOfRunningJobs);
+		jobStatusResponse.setNumOfGroups(numOfGroups);
+		jobStatusResponse.setJobs(jobs);
+		return jobStatusResponse;
+	}
+
+	private List<JobResponse> createJobs(String channelId) throws SchedulerException {
+		final Scheduler scheduler = schedulerFactoryBean.getScheduler();
+		List<JobResponse> jobs = new ArrayList<>();
+		JobResponse jobResponse;
+		for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(channelId))) {
+			List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+			JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(jobKey);
+			Channel channel = channelRepository.findById(jobKey.getGroup()).orElse(new Channel());
+
+			jobResponse = JobResponse.builder()
+					.jobName(jobKey.getName())
+					.groupName(jobKey.getGroup())
+					.scheduleTime(triggers.get(0).getStartTime().toString())
+					.lastFiredTime(triggers.get(0).getPreviousFireTime().toString())
+					.nextFireTime(triggers.get(0).getNextFireTime().toString())
+					.message(jobDetail.getJobDataMap().get("message").toString())
+					.channelName(channel.getName())
+					.build();
+			jobs.add(jobResponse);
+		}
+		return jobs;
 	}
 }

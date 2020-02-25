@@ -21,7 +21,7 @@ public class JobUtils {
 		factoryBean.setGroup(jobRequest.getJobGroup());
 		factoryBean.setApplicationContext(context);
 		if (jobRequest.getJobDataMap() != null) {
-			factoryBean.setJobDataMap(createJobDataMap(jobRequest.getJobDataMap()));
+			factoryBean.setJobDataMap(createJobDataMap("message", jobRequest.getJobDataMap()));
 		}
 		factoryBean.afterPropertiesSet();
 		return factoryBean.getObject();
@@ -30,6 +30,12 @@ public class JobUtils {
 	private static JobDataMap createJobDataMap(String jobDataMap) {
 		JobDataMap jobDataMap1 = new JobDataMap();
 		jobDataMap1.put("message", jobDataMap);
+		return jobDataMap1;
+	}
+
+	private static JobDataMap createJobDataMap(String key, String jobDataMap) {
+		JobDataMap jobDataMap1 = new JobDataMap();
+		jobDataMap1.put(key, jobDataMap);
 		return jobDataMap1;
 	}
 

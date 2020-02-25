@@ -113,10 +113,15 @@ public class MessageService {
 					.text("test")
 					.blocks(createSelectBlock())
 					.build());
+		} else if (slackRequest.getEvent().getText().contains("스캐줄!")){
+			send(SystemUtils.POST_MESSAGE, Message.builder()
+					.channel(slackRequest.getChannel())
+					.text("스캐줄 등록 완료")
+					.build());
 		}
 	}
 
-	private static String createSelectBlock() {
+	public static String createSelectBlock() {
 		Gson gson = new Gson();
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
@@ -153,7 +158,7 @@ public class MessageService {
 				.build();
 	}
 
-	private static void send(String url, Object dto) {
+	public static void send(String url, Object dto) {
 		String response = Objects.requireNonNull(webClient.post()
 				.uri(url)
 				.body(BodyInserters.fromValue(dto))

@@ -12,4 +12,5 @@ public class JobResponse {
 	private	String lastFiredTime;
 	private	String nextFireTime;
 	private String message;
+	private String channelName;
 }

@@ -24,6 +24,6 @@ public class CronJob extends QuartzJobBean {
 		currThread = Thread.currentThread();
 
 		log.info("CronJob ended :: jobKey : {} - {}, message : {}", jobKey, currThread.getName(), message);
-		MessageService.sendMessageV3("GTCF877M3",message);
+		MessageService.sendMessageV3(jobKey.getGroup(), message);
 	}
 }

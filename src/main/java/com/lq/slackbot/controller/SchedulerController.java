@@ -1,11 +1,9 @@
 package com.lq.slackbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lq.slackbot.domain.ApiResponse;
-import com.lq.slackbot.domain.ChannelResponse;
-import com.lq.slackbot.domain.JobRequest;
-import com.lq.slackbot.domain.JobStatusResponse;
-import com.lq.slackbot.service.SchelduleService;
+import com.lq.slackbot.domain.*;
+import com.lq.slackbot.service.ChannelService;
+import com.lq.slackbot.service.SchedulerService;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
@@ -31,10 +29,12 @@ public class SchedulerController {
 //	Job 멈춤 : PUT /scheduler/job/pause
 //	Job 재시작 : PUT /scheduler/job/resume
 //
-	private SchelduleService scheduleService;
+	private SchedulerService scheduleService;
+	private ChannelService channelService;
 
-	public SchedulerController(final SchelduleService scheduleService) {
+	public SchedulerController(final SchedulerService scheduleService, final ChannelService channelService) {
 		this.scheduleService = scheduleService;
+		this.channelService = channelService;
 	}
 
 	@RequestMapping(value = "/job", method = RequestMethod.POST)
@@ -51,6 +51,20 @@ public class SchedulerController {
 					HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ApiResponse(true, "Job not found"), HttpStatus.BAD_REQUEST);
+	}
+
+	@RequestMapping(value = "/deleteGroups", method = RequestMethod.GET)
+	public ResponseEntity<?> deleteAllScheduleGroup(@RequestBody String channelId) {
+		try {
+			scheduleService.deleteGroup(channelId);
+			return new ResponseEntity<>(new ApiResponse(true, "Job deleted"),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("exception : {}", e.getMessage(), e);
+			return new ResponseEntity<>(new ApiResponse(true, "Job not found"), HttpStatus.BAD_REQUEST);
+		}
+
+
 	}
 
 	@GetMapping("/allJob")
@@ -71,7 +85,15 @@ public class SchedulerController {
 				.build();
 
 		final ChannelResponse block = Objects.requireNonNull(webClient.get().uri(SystemUtils.CHANNEL_LIST).exchange().block()).bodyToMono(ChannelResponse.class).block();
-		log.info("체널리스트 : {}", block);
+		assert block != null;
+		log.info("체널리스트 : {}", block.getGroups());
+		channelService.Save(block.getGroups());
 		return block.toString();
+	}
+
+	@GetMapping("/deleteAll")
+	public String deleteAll() {
+		channelService.deleteAll();
+		return "ok";
 	}
 }
