@@ -165,4 +165,5 @@ public class MessageService {
 	public String getToken() {
 		return SystemUtils.TOKEN;
 	}
+
 }

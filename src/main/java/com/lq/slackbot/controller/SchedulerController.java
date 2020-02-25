@@ -1,11 +1,22 @@
 package com.lq.slackbot.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchelduleService;
+import com.lq.slackbot.service.SlackBotEventService;
+import com.lq.slackbot.utils.SystemUtils;
 import org.quartz.JobKey;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/scheduler")
@@ -42,5 +53,20 @@ public class SchedulerController {
 	@GetMapping("/allJob")
 	public JobStatusResponse allJob() {
 		return scheduleService.getAllJobs();
+	}
+
+	@GetMapping("/channelList")
+	public String channelList() {
+		ExchangeStrategies strategies = ExchangeStrategies.builder()
+				.codecs(config ->
+						config.customCodecs().encoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.APPLICATION_JSON))
+				).build();
+		final WebClient webClient = WebClient.builder()
+				.exchangeStrategies(strategies)
+				.baseUrl(SystemUtils.BASE_URL)
+				.defaultHeader(HttpHeaders.AUTHORIZATION, SystemUtils.TOKEN)
+				.build();
+
+		return Objects.requireNonNull(webClient.get().uri(SystemUtils.CHANNEL_LIST).exchange().block()).bodyToMono(String.class).block();
 	}
 }

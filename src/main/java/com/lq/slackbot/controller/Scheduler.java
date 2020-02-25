@@ -76,4 +76,9 @@ public class Scheduler {
 	private void resetRestaurant() {
 		messageEventService.resetRestaurant();
 	}
+
+	@Scheduled(cron = "0 */10 *? * * *")
+	private void getChannelList() {
+
+	}
 }
