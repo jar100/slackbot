@@ -1,11 +1,13 @@
 package com.lq.slackbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lq.slackbot.domain.*;
-import com.lq.slackbot.service.MessageService;
+import com.lq.slackbot.domain.ApiResponse;
+import com.lq.slackbot.domain.ChannelResponse;
+import com.lq.slackbot.domain.JobRequest;
+import com.lq.slackbot.domain.JobStatusResponse;
 import com.lq.slackbot.service.SchelduleService;
-import com.lq.slackbot.service.SlackBotEventService;
 import com.lq.slackbot.utils.SystemUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,11 +20,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
+@Slf4j
 @RestController
 @RequestMapping("/scheduler")
 public class SchedulerController {
 
-//	Job 추가 : POST /scheduler/job
+	//	Job 추가 : POST /scheduler/job
 //	모든 등록된 Job 조회 : GET /scheduler/jobs
 //	Job 삭제 : DELETE /scheduler/job
 //	Job 멈춤 : PUT /scheduler/job/pause
@@ -67,6 +70,8 @@ public class SchedulerController {
 				.defaultHeader(HttpHeaders.AUTHORIZATION, SystemUtils.TOKEN)
 				.build();
 
-		return Objects.requireNonNull(webClient.get().uri(SystemUtils.CHANNEL_LIST).exchange().block()).bodyToMono(String.class).block();
+		final ChannelResponse block = Objects.requireNonNull(webClient.get().uri(SystemUtils.CHANNEL_LIST).exchange().block()).bodyToMono(ChannelResponse.class).block();
+		log.info("체널리스트 : {}", block);
+		return block.toString();
 	}
 }
