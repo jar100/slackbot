@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -161,10 +162,10 @@ public class SchedulerService {
 			jobResponse = JobResponse.builder()
 					.jobName(jobKey.getName())
 					.groupName(jobKey.getGroup())
-					.scheduleTime(triggers.get(0).getStartTime().toString())
-					.lastFiredTime(triggers.get(0).getPreviousFireTime().toString())
-					.nextFireTime(triggers.get(0).getNextFireTime().toString())
-					.message(jobDetail.getJobDataMap().get("message").toString())
+					.scheduleTime(String.valueOf(triggers.get(0).getStartTime()))
+					.lastFiredTime(String.valueOf(triggers.get(0).getPreviousFireTime()))
+					.nextFireTime(String.valueOf(triggers.get(0).getNextFireTime()))
+					.message(String.valueOf(jobDetail.getJobDataMap().get("message")))
 					.channelName(channel.getName())
 					.build();
 			jobs.add(jobResponse);
