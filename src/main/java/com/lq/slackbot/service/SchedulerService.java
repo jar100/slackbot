@@ -1,6 +1,10 @@
 package com.lq.slackbot.service;
 
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.schedule.CronJob;
+import com.lq.slackbot.domain.schedule.JobRequest;
+import com.lq.slackbot.domain.schedule.JobResponse;
+import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.utils.JobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -10,12 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -107,11 +108,7 @@ public class SchedulerService {
 		JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());
 		boolean isSuccess = false;
 		if (!isJobExists(jobKey)) {
-			if (jobRequest.getCronExpression() == null) {
-				isSuccess = addJob(jobRequest, SimpleJob.class);
-			} else {
-				isSuccess = addJob(jobRequest, CronJob.class);
-			}
+			isSuccess = addJob(jobRequest, CronJob.class);
 		}
 		return apiResponse(isSuccess);
 	}

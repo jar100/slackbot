@@ -1,4 +1,4 @@
-package com.lq.slackbot.domain;
+package com.lq.slackbot.domain.schedule;
 
 import java.util.List;
 

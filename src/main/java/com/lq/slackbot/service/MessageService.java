@@ -24,11 +24,6 @@ public class MessageService {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private static WebClient webClient = initWebClient();
 
-//	public MessageService(final ObjectMapper objectMapper) {
-//		MessageService.objectMapper = objectMapper;
-//		webClient = initWebClient();
-//	}
-
 	public static void sendMessageByModal(Actions body) {
 		String view = null;
 		if (body.getAction().equals("scheduler")) {
@@ -41,6 +36,7 @@ public class MessageService {
 
 		final ModalView modalView = ModalView.builder()
 				.type("modal")
+				.callback_id("scheduleModal")
 				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
 				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
 				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
@@ -66,9 +62,10 @@ public class MessageService {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
+				.block_id("schedulerSubmit")
 				.text(ModalBlock.Content.builder()
 						.type(SystemUtils.PLAIN_TEXT)
-						.text(":wave: 반복할 메세지를 세팅해 주세요 (1건만 됨)")
+						.text(":wave: 반복할 메세지를 세팅해 주세요")
 						.emoji(true)
 						.build())
 				.build());

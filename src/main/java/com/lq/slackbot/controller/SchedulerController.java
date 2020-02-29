@@ -2,6 +2,8 @@ package com.lq.slackbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.schedule.JobRequest;
+import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.service.ChannelService;
 import com.lq.slackbot.service.SchedulerService;
 import com.lq.slackbot.utils.SystemUtils;

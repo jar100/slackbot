@@ -12,13 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModalView {
-//	String id;
-//	String team_id;
 	String type;
+	String callback_id;
 	Content title;
 	Content submit;
 	Content close;
-//	private List<ModalBlock> blocks;
 	private String blocks;
 
 	@Data

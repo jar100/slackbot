@@ -1,8 +1,8 @@
 package com.lq.slackbot.utils;
 
 import com.google.gson.Gson;
-import com.lq.slackbot.domain.JobRequest;
-import com.lq.slackbot.domain.JobStatusResponse;
+import com.lq.slackbot.domain.schedule.JobRequest;
+import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.domain.Message;
 import com.lq.slackbot.domain.SlackRequest;
 import com.lq.slackbot.service.MessageService;
@@ -58,7 +58,6 @@ public class SlackMessageHandler {
 					.build());
 		} else if (text.contains("scheduleList!")) {
 			final JobStatusResponse allJobGroup = schedulerService.getAllJobGroup(slackRequest.getChannel());
-
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text(gson.toJson(allJobGroup))

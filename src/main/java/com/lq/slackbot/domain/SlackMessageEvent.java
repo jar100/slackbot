@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SlackMessageEvent {
+	private String type;
 	private View view;
 
 	@Data
@@ -17,7 +18,10 @@ public class SlackMessageEvent {
 	@NoArgsConstructor
 	public static class View {
 		private String type;
-		State state;
+		private State state;
+		private String callback_id;
+		private List<ModalBlock> blocks;
+
 	}
 
 	@Data

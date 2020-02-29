@@ -1,7 +1,7 @@
 package com.lq.slackbot.utils;
 
-import com.lq.slackbot.domain.CronJob;
-import com.lq.slackbot.domain.JobRequest;
+import com.lq.slackbot.domain.schedule.CronJob;
+import com.lq.slackbot.domain.schedule.JobRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.context.ApplicationContext;
