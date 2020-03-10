@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.schedule.JobRequest;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
@@ -62,17 +63,23 @@ public class SlackController {
 
 	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
 	public ResponseEntity<?> event(@RequestParam Map<String,String> body ) throws JsonProcessingException {
-		log.info("test modal");
-		log.info(body.toString());
 		final String payload = body.get("payload");
 		log.info("페이로드 : {}",payload);
 		final Actions actions = objectMapper.readValue(payload, Actions.class);
 		log.info("엑션스 : {}",actions);
+		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		if (actions.getAction() != null) {
-			service.sendMessageByModal(actions);
-		} else {
-			final SlackMessageEvent blockList = objectMapper.readValue(payload, SlackMessageEvent.class);
-			log.info("모달블럭 : {}",blockList);
+			//메세지 엑션
+			MessageService.sendMessageByModal(actions,payload1.getChannelId());
+		} else if (payload1.isViewSubmission()) {
+			log.info("모달블럭 : {}",payload1);
+			final ResponseEntity<ApiResponse> apiResponseResponseEntity = schelduleService.addSchedule(JobRequest.builder()
+					.jobGroup(payload1.getSubmissionChannelId())
+					.jobName(payload1.getScheduleTitle())
+					.cronExpression(payload1.getScheduleTimes())
+					.jobDataMap(payload1.getScheduleMessages())
+					.build());
+			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
 		}
 
 		return ResponseEntity.ok().build();

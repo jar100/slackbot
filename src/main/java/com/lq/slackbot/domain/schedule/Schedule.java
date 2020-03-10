@@ -23,5 +23,7 @@ public class Schedule {
 
 	private String message;
 
+	private String channel;
+
 	private boolean use;
 }

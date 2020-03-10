@@ -24,7 +24,7 @@ public class MessageService {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private static WebClient webClient = initWebClient();
 
-	public static void sendMessageByModal(Actions body) {
+	public static void sendMessageByModal(Actions body, String channel) {
 		String view = null;
 		if (body.getAction().equals("scheduler")) {
 			view = createSchedulerBlock();
@@ -36,7 +36,7 @@ public class MessageService {
 
 		final ModalView modalView = ModalView.builder()
 				.type("modal")
-				.callback_id("scheduleModal")
+				.callback_id("scheduleModal_" + channel)
 				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
 				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
 				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
@@ -48,7 +48,6 @@ public class MessageService {
 				.view(modalView)
 				.build();
 
-		log.info("모달리스폰스 1 : {}", response);
 		send(SystemUtils.MODAL_URL, response);
 	}
 
@@ -73,14 +72,14 @@ public class MessageService {
 				.type("divider")
 				.build());
 		blockList.add(ModalBlock.builder()
-				.block_id("scheduleMessage")
+				.block_id("scheduleTitle")
 				.type("input")
 				.label(ModalBlock.Content.builder()
 						.type(SystemUtils.PLAIN_TEXT)
-						.text("메세지 세팅")
+						.text("제목 세팅")
 						.emoji(false)
 						.build())
-				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(false).action_id("scheduleMessage").build())
+				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(false).action_id("scheduleTitle").build())
 				.optional(false)
 				.build());
 		blockList.add(ModalBlock.builder()
@@ -94,28 +93,18 @@ public class MessageService {
 				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(false).action_id("scheduleTime").build())
 				.optional(false)
 				.build());
+		blockList.add(ModalBlock.builder()
+				.block_id("scheduleMessage")
+				.type("input")
+				.label(ModalBlock.Content.builder()
+						.type(SystemUtils.PLAIN_TEXT)
+						.text("메세지 세팅")
+						.emoji(false)
+						.build())
+				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(true).action_id("scheduleMessage").build())
+				.optional(false)
+				.build());
 		return blockList;
-	}
-
-
-	public static void sendMessageV2(SlackRequest slackRequest) {
-		log.info("slackrequest : {}", slackRequest);
-		if (slackRequest.getEvent().getText().contains("하이")) {
-			send(SystemUtils.POST_MESSAGE, Message.builder()
-					.channel(slackRequest.getChannel())
-					.text("Hello World").build());
-		} else if (slackRequest.getEvent().getText().contains("명령어")){
-			send(SystemUtils.POST_MESSAGE, Message.builder()
-					.channel(slackRequest.getChannel())
-					.text("test")
-					.blocks(createSelectBlock())
-					.build());
-		} else if (slackRequest.getEvent().getText().contains("스캐줄!")){
-			send(SystemUtils.POST_MESSAGE, Message.builder()
-					.channel(slackRequest.getChannel())
-					.text("스캐줄 등록 완료")
-					.build());
-		}
 	}
 
 	public static String createSelectBlock() {
@@ -130,7 +119,7 @@ public class MessageService {
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 						.action_id("scheduler")
 						.type("button")
-						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄링 세팅 (미구현)").emoji(false).build())
+						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄링 세팅").emoji(false).build())
 						.build()))
 				.build());
 

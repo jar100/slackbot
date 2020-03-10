@@ -1,10 +1,7 @@
 package com.lq.slackbot.service;
 
 import com.lq.slackbot.domain.*;
-import com.lq.slackbot.domain.schedule.CronJob;
-import com.lq.slackbot.domain.schedule.JobRequest;
-import com.lq.slackbot.domain.schedule.JobResponse;
-import com.lq.slackbot.domain.schedule.JobStatusResponse;
+import com.lq.slackbot.domain.schedule.*;
 import com.lq.slackbot.utils.JobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -24,11 +21,13 @@ public class SchedulerService {
 	private SchedulerFactoryBean schedulerFactoryBean;
 	private ApplicationContext context;
 	private ChannelRepository channelRepository;
+	private ScheduleRepository scheduleRepository;
 
-	public SchedulerService(final SchedulerFactoryBean schedulerFactoryBean, final ApplicationContext context, final ChannelRepository channelRepository) {
+	public SchedulerService(final SchedulerFactoryBean schedulerFactoryBean, final ApplicationContext context, final ChannelRepository channelRepository, final ScheduleRepository scheduleRepository) {
 		this.schedulerFactoryBean = schedulerFactoryBean;
 		this.context = context;
 		this.channelRepository = channelRepository;
+		this.scheduleRepository = scheduleRepository;
 	}
 
 	public boolean isJobExists(final JobKey jobKey) {
@@ -104,16 +103,25 @@ public class SchedulerService {
 		return jobStatusResponse;
 	}
 
-	public ResponseEntity<?> addSchedule(final JobRequest jobRequest) {
+	public ResponseEntity<ApiResponse> addSchedule(final JobRequest jobRequest) {
 		JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());
 		boolean isSuccess = false;
 		if (!isJobExists(jobKey)) {
 			isSuccess = addJob(jobRequest, CronJob.class);
 		}
+		if (isSuccess) {
+			scheduleRepository.save(Schedule.builder()
+					.channel(jobRequest.getChannelName())
+					.name(jobRequest.getJobName())
+					.message(jobRequest.getJobDataMap())
+					.cronExpression(jobRequest.getCronExpression())
+					.use(true)
+					.build());
+		}
 		return apiResponse(isSuccess);
 	}
 
-	private ResponseEntity<?> apiResponse(final boolean isSuccess) {
+	private ResponseEntity<ApiResponse> apiResponse(final boolean isSuccess) {
 		if (isSuccess) {
 			return new ResponseEntity<>(new ApiResponse(true, "Job created successfully"), HttpStatus.CREATED);
 		}

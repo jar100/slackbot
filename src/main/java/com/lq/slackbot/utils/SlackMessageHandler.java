@@ -1,6 +1,8 @@
 package com.lq.slackbot.utils;
 
 import com.google.gson.Gson;
+import com.lq.slackbot.controller.Actions;
+import com.lq.slackbot.domain.ApiResponse;
 import com.lq.slackbot.domain.schedule.JobRequest;
 import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.domain.Message;
@@ -9,8 +11,10 @@ import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.lq.slackbot.service.MessageService.createSelectBlock;
@@ -44,17 +48,17 @@ public class SlackMessageHandler {
 					.blocks(createSelectBlock())
 					.build());
 		} else if (text.contains("schedule!")){
-			// @adfqwef schedule! "클론식" "메세지ㅁㄴㅇㄹㅁㄴㄹㅇㅁㄴㅇㄹㄴㅇ ㄹ"
+			// @adfqwef schedule! "제목" "클론식" "메세지ㅁㄴㅇㄹㅁㄴㄹㅇㅁㄴㅇㄹㄴㅇ ㄹ"
 			final String[] split = text.split("\"");
-			schedulerService.addSchedule(JobRequest.builder()
-					.jobName(UUID.randomUUID().toString())
+			final ResponseEntity<ApiResponse> responseEntity = schedulerService.addSchedule(JobRequest.builder()
+					.jobName(split[1])
 					.jobGroup(slackRequest.getChannel())
-					.jobDataMap(split[3])
-					.cronExpression(split[1])
+					.jobDataMap(split[5])
+					.cronExpression(split[3])
 					.build());
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
-					.text("스캐줄 등록 완료")
+					.text(Objects.requireNonNull(responseEntity.getBody()).getMessage())
 					.build());
 		} else if (text.contains("scheduleList!")) {
 			final JobStatusResponse allJobGroup = schedulerService.getAllJobGroup(slackRequest.getChannel());
