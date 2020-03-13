@@ -25,6 +25,7 @@ public class Actions {
 
 	@Data
 	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class Acution {
 		private String action_id;
 	}

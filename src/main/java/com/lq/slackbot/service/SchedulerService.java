@@ -115,7 +115,7 @@ public class SchedulerService {
 					.name(jobRequest.getJobName())
 					.message(jobRequest.getJobDataMap())
 					.cronExpression(jobRequest.getCronExpression())
-					.use(true)
+					.used(true)
 					.build());
 		}
 		return apiResponse(isSuccess);
