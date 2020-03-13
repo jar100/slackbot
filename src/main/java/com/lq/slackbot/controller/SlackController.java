@@ -11,6 +11,7 @@ import com.lq.slackbot.service.SchedulerService;
 import com.lq.slackbot.utils.SlackMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -86,9 +87,12 @@ public class SlackController {
 		return ResponseEntity.ok().build();
 	}
 
-	private void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {
+	/**
+	 * 응답을 먼저 반환해야 slack에서 재요청을 안보냄 그래서 비동기처리
+	 * */
+	@Async
+	public void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {
 		final EventType of = EventType.of(slackRequest.eventType());
-		log.info("이벤트 타입 : {}",of);
 		switch (of) {
 			case MESSAGE:
 				if (slackRequest.getEvent().isUser()) {

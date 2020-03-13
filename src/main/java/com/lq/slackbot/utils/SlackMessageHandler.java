@@ -1,21 +1,20 @@
 package com.lq.slackbot.utils;
 
 import com.google.gson.Gson;
-import com.lq.slackbot.controller.Actions;
 import com.lq.slackbot.domain.ApiResponse;
-import com.lq.slackbot.domain.schedule.JobRequest;
-import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.domain.Message;
 import com.lq.slackbot.domain.SlackRequest;
+import com.lq.slackbot.domain.schedule.JobRequest;
+import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import static com.lq.slackbot.service.MessageService.createSelectBlock;
 
@@ -30,24 +29,24 @@ public class SlackMessageHandler {
 	}
 
 	/**
- * 하는역할 슬랙에서 온 메세지를 핸들링하고 적절한 서비스에 분배해주는 역할
- * 앱맨션일경우 메세지를 핸들링해보자.
- *
- * @param slackRequest*/
-
+	 * 하는역할 슬랙에서 온 메세지를 핸들링하고 적절한 서비스에 분배해주는 역할
+	 * 앱맨션일경우 메세지를 핸들링해보자.
+	 *
+	 * @param slackRequest
+	 */
 	public String handling(final SlackRequest slackRequest) {
 		final String text = slackRequest.getEvent().getText();
 		if (text.contains("하이")) {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("Hello World").build());
-		} else if (text.contains("명령어")){
+		} else if (text.contains("명령어")) {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("test")
 					.blocks(createSelectBlock())
 					.build());
-		} else if (text.contains("schedule!")){
+		} else if (text.contains("schedule!")) {
 			// @adfqwef schedule! "제목" "클론식" "메세지ㅁㄴㅇㄹㅁㄴㄹㅇㅁㄴㅇㄹㄴㅇ ㄹ"
 			final String[] split = text.split("\"");
 			final ResponseEntity<ApiResponse> responseEntity = schedulerService.addSchedule(JobRequest.builder()
@@ -66,7 +65,7 @@ public class SlackMessageHandler {
 					.channel(slackRequest.getChannel())
 					.text(gson.toJson(allJobGroup))
 					.build());
-		}  else if (text.contains("deleteScheduleAll!")) {
+		} else if (text.contains("deleteScheduleAll!")) {
 			schedulerService.deleteGroup(slackRequest.getChannel());
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
@@ -75,7 +74,7 @@ public class SlackMessageHandler {
 		} else if (text.contains("deleteSchedule!")) {
 			final String[] split = text.split("\"");
 
-			schedulerService.deleteJob(new JobKey(split[1],slackRequest.getChannel()));
+			schedulerService.deleteJob(new JobKey(split[1], slackRequest.getChannel()));
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("스캐줄 삭제 완료")
