@@ -6,6 +6,7 @@ import com.lq.slackbot.utils.JobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class SchedulerService {
+public class SchedulerService implements InitializingBean {
 	private SchedulerFactoryBean schedulerFactoryBean;
 	private ApplicationContext context;
 	private ChannelRepository channelRepository;
@@ -102,11 +103,14 @@ public class SchedulerService {
 		jobStatusResponse.setJobs(jobs);
 		return jobStatusResponse;
 	}
+	private Boolean validJob(JobRequest jobRequest) {
+		JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());
+		return !isJobExists(jobKey);
+	}
 
 	public ResponseEntity<ApiResponse> addSchedule(final JobRequest jobRequest) {
-		JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());
 		boolean isSuccess = false;
-		if (!isJobExists(jobKey)) {
+		if (validJob(jobRequest)) {
 			isSuccess = addJob(jobRequest, CronJob.class);
 		}
 		if (isSuccess) {
@@ -176,5 +180,17 @@ public class SchedulerService {
 			jobs.add(jobResponse);
 		}
 		return jobs;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		scheduleRepository.findAllByUsed(true).forEach(this::accept);
+	}
+
+	private void accept(Schedule e) {
+		final JobRequest jobRequest = e.toJobRequest();
+		if (validJob(jobRequest)) {
+			addJob(jobRequest, CronJob.class);
+		}
 	}
 }

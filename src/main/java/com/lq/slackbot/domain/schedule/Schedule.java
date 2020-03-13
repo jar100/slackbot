@@ -30,4 +30,9 @@ public class Schedule {
 	private String channel;
 
 	private Boolean used;
+
+
+	public JobRequest toJobRequest(){
+		return JobRequest.builder().jobGroup(this.channel).jobName(this.name).cronExpression(this.cronExpression).jobDataMap(this.message).build();
+	}
 }
