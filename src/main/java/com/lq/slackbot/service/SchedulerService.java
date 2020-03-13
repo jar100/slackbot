@@ -111,7 +111,7 @@ public class SchedulerService {
 		}
 		if (isSuccess) {
 			scheduleRepository.save(Schedule.builder()
-					.channel(jobRequest.getChannelName())
+					.channel(jobRequest.getJobGroup())
 					.name(jobRequest.getJobName())
 					.message(jobRequest.getJobDataMap())
 					.cronExpression(jobRequest.getCronExpression())

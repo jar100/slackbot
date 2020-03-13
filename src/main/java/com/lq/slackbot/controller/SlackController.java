@@ -69,9 +69,10 @@ public class SlackController {
 		log.info("엑션스 : {}",actions);
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		if (actions.getAction() != null) {
-			//메세지 엑션
+			//메세지 팝업창
 			MessageService.sendMessageByModal(actions,payload1.getChannelId());
 		} else if (payload1.isViewSubmission()) {
+			//동작
 			log.info("모달블럭 : {}",payload1);
 			final ResponseEntity<ApiResponse> apiResponseResponseEntity = schelduleService.addSchedule(JobRequest.builder()
 					.jobGroup(payload1.getSubmissionChannelId())
