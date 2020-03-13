@@ -1,13 +1,9 @@
 package com.lq.slackbot.controller;
 
-import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Data
