@@ -3,6 +3,7 @@ package com.lq.slackbot.service;
 import com.lq.slackbot.domain.WorkLogUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -24,6 +25,7 @@ public class WorkLogService {
 		return workLogUserMono.block();
 	}
 
+	@Async
 	public String startJob(String slackId) {
 		final WorkLogUser login = login(slackId);
 		final ClientResponse work = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(login.toWorkLogRequest("WORK"))).exchange().block();

@@ -12,6 +12,7 @@ import com.lq.slackbot.service.WorkLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -36,6 +37,7 @@ public class SlackMessageHandler {
 	 *
 	 * @param slackRequest
 	 */
+	@Async
 	public String handling(final SlackRequest slackRequest) {
 		final String text = slackRequest.getEvent().getText();
 		if (text.contains("하이")) {
@@ -104,6 +106,10 @@ public class SlackMessageHandler {
 						.build());
 				return "111";
 			}
+			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+					.channel(slackRequest.getChannel())
+					.text("퇴근 완료!")
+					.build());
 		}
 		return "213";
 	}
