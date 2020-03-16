@@ -27,6 +27,8 @@ public class WorkLogService {
 	public String startJob(String slackId) {
 		final WorkLogUser login = login(slackId);
 		final ClientResponse work = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(login.toWorkLogRequest("WORK"))).exchange().block();
+		log.info("work result : {}",work.statusCode());
+
 		assert work != null;
 		if (work.statusCode() != HttpStatus.OK) {
 			return "요청 실패";
