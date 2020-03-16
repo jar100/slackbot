@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.lq.slackbot.controller.Actions;
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.schedule.Schedule;
+import com.lq.slackbot.domain.schedule.ScheduleRepository;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,11 @@ import java.util.*;
 public class MessageService {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private static WebClient webClient = initWebClient();
+	private static ScheduleRepository scheduleRepository;
+
+	public MessageService(ScheduleRepository scheduleRepository) {
+		this.scheduleRepository = scheduleRepository;
+	}
 
 	public static void sendMessageByModal(Actions body, String channel) {
 		String view = null;
@@ -31,6 +38,22 @@ public class MessageService {
 		}
 		if (body.getAction().equals("schedulerList")) {
 			view = createSchedulerListBlock();
+			final ModalView modalView = ModalView.builder()
+					.type("modal")
+					.callback_id("scheduleModal_" + channel)
+					.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
+					.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
+					.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
+					.blocks(view)
+					.build();
+
+			ModalResponse response = ModalResponse.builder()
+					.trigger_id(body.getTrigger_id())
+					.view(modalView)
+					.build();
+
+			send(SystemUtils.MODAL_URL, response);
+			return;
 		}
 
 		System.out.println(view);
@@ -62,6 +85,9 @@ public class MessageService {
 	}
 
 	private static List<ModalBlock> getScheduleListBlocks() {
+		// 스캐줄리스트를 가져온다.
+		// 가져온리스트로 블럭을 에드한다.
+		final List<Schedule> allByUsed = scheduleRepository.findAllByUsed(true);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -75,17 +101,32 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("divider")
 				.build());
-		blockList.add(ModalBlock.builder()
-				.block_id("scheduleMessage")
-				.type("input")
-				.label(ModalBlock.Content.builder()
-						.type(SystemUtils.PLAIN_TEXT)
-						.text("메세지 세팅")
-						.emoji(false)
-						.build())
-				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(true).action_id("scheduleMessage").build())
-				.optional(false)
-				.build());
+		//포문
+		if (allByUsed.isEmpty()) {
+			return blockList;
+		}
+
+		for (Schedule schedule : allByUsed) {
+			blockList.add(ModalBlock.builder()
+					.block_id("scheduleMessage_"+schedule.getName())
+					.type("section")
+					.text(ModalBlock.Content.builder().type("mrkdwn").text("*<fakeLink.toHotelPage.com|" +
+							schedule.getName() +
+							">*\n" +
+							schedule.getCronExpression() +
+							"\n" +
+							schedule.getMessage() +
+							"\n").build())
+					.build());
+			blockList.add(ModalBlock.builder()
+					.block_id("scheduleUpdate_" + schedule.getName())
+					.type("actions")
+					.elements(Arrays.asList(
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).value("scheduleUpdate_action_"+ schedule.getName()).build(),
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).value("scheduleDeleted_action_"+schedule.getName()).build()
+					))
+					.build());
+		}
 		return blockList;
 	}
 

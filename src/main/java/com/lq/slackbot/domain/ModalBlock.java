@@ -38,6 +38,7 @@ public class ModalBlock {
 		String type;
 		Content text;
 		String action_id;
+		String value;
 		Boolean multiline;
 	}
 

@@ -75,7 +75,6 @@ public class SlackMessageHandler {
 					.build());
 		} else if (text.contains("deleteSchedule!")) {
 			final String[] split = text.split("\"");
-
 			schedulerService.deleteJob(new JobKey(split[1], slackRequest.getChannel()));
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())

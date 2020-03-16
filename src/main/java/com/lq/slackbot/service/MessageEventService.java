@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,7 @@ public class MessageEventService {
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(request.getChannel())
-					.text("출근 완료!")
+					.text("출근 완료! \n " + String.format("https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s",request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 		} else if (text.contains("퇴근!")) {
 			final String result = workLogService.endJob(request.getEvent().getUser());
@@ -60,7 +62,7 @@ public class MessageEventService {
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(request.getChannel())
-					.text("퇴근 완료!")
+					.text("퇴근 완료! \n " + String.format("https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s",request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 		}
 		log.info(message);
