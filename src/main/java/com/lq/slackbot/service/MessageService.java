@@ -29,6 +29,10 @@ public class MessageService {
 		if (body.getAction().equals("scheduler")) {
 			view = createSchedulerBlock();
 		}
+		if (body.getAction().equals("schedulerList")) {
+			view = createSchedulerListBlock();
+		}
+
 		System.out.println(view);
 		if (StringUtils.isEmpty(view)) {
 			return;
@@ -49,6 +53,40 @@ public class MessageService {
 				.build();
 
 		send(SystemUtils.MODAL_URL, response);
+	}
+
+	private static String createSchedulerListBlock() {
+		Gson gson = new Gson();
+		List<ModalBlock> blockList = getScheduleListBlocks();
+		return gson.toJson(blockList);
+	}
+
+	private static List<ModalBlock> getScheduleListBlocks() {
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.block_id("schedulerList")
+				.text(ModalBlock.Content.builder()
+						.type(SystemUtils.PLAIN_TEXT)
+						.text(":wave: 반복할 메세지를 세팅해 주세요")
+						.emoji(true)
+						.build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("divider")
+				.build());
+		blockList.add(ModalBlock.builder()
+				.block_id("scheduleMessage")
+				.type("input")
+				.label(ModalBlock.Content.builder()
+						.type(SystemUtils.PLAIN_TEXT)
+						.text("메세지 세팅")
+						.emoji(false)
+						.build())
+				.element(ModalBlock.Elements.builder().type("plain_text_input").multiline(true).action_id("scheduleMessage").build())
+				.optional(false)
+				.build());
+		return blockList;
 	}
 
 	private static String createSchedulerBlock() {
@@ -119,7 +157,12 @@ public class MessageService {
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 						.action_id("scheduler")
 						.type("button")
-						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄링 세팅").emoji(false).build())
+						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄 생성").emoji(false).build())
+						.build(),
+						ModalBlock.Elements.builder()
+						.action_id("schedulerList")
+						.type("button")
+						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄 리스트").emoji(false).build())
 						.build()))
 				.build());
 

@@ -8,6 +8,7 @@ import com.lq.slackbot.domain.schedule.JobRequest;
 import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
+import com.lq.slackbot.service.WorkLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import static com.lq.slackbot.service.MessageService.createSelectBlock;
 @Component
 public class SlackMessageHandler {
 	private SchedulerService schedulerService;
+	private WorkLogService workLogService;
 	private Gson gson = new Gson();
 
 	public SlackMessageHandler(final com.lq.slackbot.service.SchedulerService schedulerService) {
@@ -79,6 +81,29 @@ public class SlackMessageHandler {
 					.channel(slackRequest.getChannel())
 					.text("스캐줄 삭제 완료")
 					.build());
+		} else if (text.contains("출근!")) {
+			// 출근컨트롤러
+			final String result = workLogService.startJob(slackRequest.getEvent().getUser());
+			if (result.equals("요청 실패")) {
+				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+						.channel(slackRequest.getChannel())
+						.text("출근 실패!")
+						.build());
+				return "111";
+			}
+			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+					.channel(slackRequest.getChannel())
+					.text("출근 완료!")
+					.build());
+		} else if (text.contains("퇴근!")) {
+			final String result = workLogService.endJob(slackRequest.getEvent().getUser());
+			if (result.equals("요청 실패")) {
+				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+						.channel(slackRequest.getChannel())
+						.text("퇴근 실패!")
+						.build());
+				return "111";
+			}
 		}
 		return "213";
 	}
