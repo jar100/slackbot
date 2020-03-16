@@ -1,16 +1,15 @@
 package com.lq.slackbot.service;
 
+import com.lq.slackbot.domain.Message;
 import com.lq.slackbot.domain.MessageEventType;
 import com.lq.slackbot.domain.Restaurant;
 import com.lq.slackbot.domain.SlackRequest;
+import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpSession;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +18,13 @@ import java.util.Map;
 @Slf4j
 public class MessageEventService {
 	private MessageService messageService;
+	private WorkLogService workLogService;
 	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
 
 	@Autowired
-	public MessageEventService(final MessageService messageService) {
+	public MessageEventService(final MessageService messageService, final WorkLogService workLogService) {
 		this.messageService = messageService;
+		this.workLogService = workLogService;
 	}
 
 	public void run(final SlackRequest request) {
@@ -36,6 +37,31 @@ public class MessageEventService {
 		}
 		if (text.contains(MessageEventType.LUNCH.getLabel())) {
 			message = restaurantEvent(request);
+		} else if (text.contains("출근!")) {
+			// 출근컨트롤러
+			final String result = workLogService.startJob(request.getEvent().getUser());
+			if (result.equals("요청 실패")) {
+				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+						.channel(request.getChannel())
+						.text("출근 실패!")
+						.build());
+			}
+			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+					.channel(request.getChannel())
+					.text("출근 완료!")
+					.build());
+		} else if (text.contains("퇴근!")) {
+			final String result = workLogService.endJob(request.getEvent().getUser());
+			if (result.equals("요청 실패")) {
+				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+						.channel(request.getChannel())
+						.text("퇴근 실패!")
+						.build());
+			}
+			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
+					.channel(request.getChannel())
+					.text("퇴근 완료!")
+					.build());
 		}
 		log.info(message);
 	}
