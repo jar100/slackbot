@@ -12,7 +12,6 @@ import com.lq.slackbot.service.WorkLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -26,8 +25,9 @@ public class SlackMessageHandler {
 	private WorkLogService workLogService;
 	private Gson gson = new Gson();
 
-	public SlackMessageHandler(final com.lq.slackbot.service.SchedulerService schedulerService) {
+	public SlackMessageHandler(final SchedulerService schedulerService, final WorkLogService workLogService) {
 		this.schedulerService = schedulerService;
+		this.workLogService = workLogService;
 	}
 
 	/**
