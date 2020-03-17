@@ -54,7 +54,7 @@ public class WorkLogService {
 		}
 		final Mono<String> stringMono = byebye.bodyToMono(String.class);
 		log.info("퇴근성공 : {}", stringMono.block());
-		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), LocalDate.now().format(DateTimeFormatter.ofPattern("YYYY-mm-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("YYYY-mm-dd")));
+		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), LocalDate.now().toString(), LocalDate.now().toString());
 		log.info("format : {}",format);
 		final ClientResponse dailyWork = workLogClient.get().uri(format).exchange().block();
 		log.info("daily work httpcode; {}",dailyWork.statusCode());
