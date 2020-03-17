@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -52,12 +54,13 @@ public class WorkLogService {
 		}
 		final Mono<String> stringMono = byebye.bodyToMono(String.class);
 		log.info("퇴근성공 : {}", stringMono.block());
-		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), request.getTarget_date(), request.getTarget_date());
+		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), LocalDate.now().format(DateTimeFormatter.ofPattern("YYYY-mm-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("YYYY-mm-dd")));
 		log.info("format : {}",format);
 		final ClientResponse dailyWork = workLogClient.get().uri(format).exchange().block();
 		log.info("daily work httpcode; {}",dailyWork.statusCode());
 		final Mono<String> listMono = dailyWork.bodyToMono(String.class);
-		log.info("테스트 : {}",listMono.block());
+		final Mono<List> listMono1 = dailyWork.bodyToMono(List.class);
+		log.info("테스트 : {} , 리스트 : {}",listMono.block(),listMono1.block());
 		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
 
 
