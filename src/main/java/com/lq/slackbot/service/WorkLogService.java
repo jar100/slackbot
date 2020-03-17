@@ -52,7 +52,9 @@ public class WorkLogService {
 		}
 		final Mono<String> stringMono = byebye.bodyToMono(String.class);
 		log.info("퇴근성공 : {}", stringMono.block());
-		final ClientResponse dailyWork = workLogClient.get().uri(String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), request.getTarget_date(), request.getTarget_date())).exchange().block();
+		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), request.getTarget_date(), request.getTarget_date());
+		log.info("format : {}",format);
+		final ClientResponse dailyWork = workLogClient.get().uri(format).exchange().block();
 		log.info("daily work httpcode; {}",dailyWork.statusCode());
 		final Mono<String> listMono = dailyWork.bodyToMono(String.class);
 		log.info("테스트 : {}",listMono.block());
