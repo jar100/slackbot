@@ -1,9 +1,6 @@
 package com.lq.slackbot.service;
 
-import com.lq.slackbot.domain.Message;
-import com.lq.slackbot.domain.MessageEventType;
-import com.lq.slackbot.domain.Restaurant;
-import com.lq.slackbot.domain.SlackRequest;
+import com.lq.slackbot.domain.*;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,28 +38,28 @@ public class MessageEventService {
 			message = restaurantEvent(request);
 		} else if (text.contains("출근!")) {
 			// 출근컨트롤러
-			final String result = workLogService.startJob(request.getEvent().getUser());
-			if (result.equals("요청 실패")) {
+			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser());
+			if (result.isResult()) {
 				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 						.channel(request.getChannel())
-						.text("출근 실패!")
+						.text(result.getUserName() + "님 출근 실패!")
 						.build());
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(request.getChannel())
-					.text("출근 완료! \n " + String.format("https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s",request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 출근 완료! %n https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 		} else if (text.contains("퇴근!")) {
-			final String result = workLogService.endJob(request.getEvent().getUser());
+			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
 			if (result.equals("요청 실패")) {
 				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 						.channel(request.getChannel())
-						.text("퇴근 실패!")
+						.text(result.getUserName() + "님 퇴근 실패!")
 						.build());
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(request.getChannel())
-					.text("퇴근 완료! \n " + String.format("https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s",request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 퇴근 완료! %n https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 		}
 		log.info(message);

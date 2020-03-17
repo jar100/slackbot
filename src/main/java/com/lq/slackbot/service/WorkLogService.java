@@ -1,5 +1,7 @@
 package com.lq.slackbot.service;
 
+import com.lq.slackbot.domain.WorkLogRequest;
+import com.lq.slackbot.domain.WorkLogResult;
 import com.lq.slackbot.domain.WorkLogUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -25,30 +29,34 @@ public class WorkLogService {
 		return workLogUserMono.block();
 	}
 
-	@Async
-	public String startJob(String slackId) {
+	public WorkLogResult startWork(String slackId) {
 		final WorkLogUser login = login(slackId);
 		final ClientResponse work = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(login.toWorkLogRequest("WORK"))).exchange().block();
 		log.info("work result : {}",work.statusCode());
 
-		assert work != null;
 		if (work.statusCode() != HttpStatus.OK) {
-			return "요청 실패";
+			return WorkLogResult.builder().result(false).userName(login.getReal_name()).build();
 		}
 		final Mono<String> stringMono = work.bodyToMono(String.class);
 		log.info("출근성공 : {}", stringMono.block());
-		return "요청 성공";
+		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
+
 	}
 
-	public String endJob(String slackId) {
+	public WorkLogResult endWork(String slackId) {
 		final WorkLogUser login = login(slackId);
-		final ClientResponse byebye = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(login.toWorkLogRequest("BYEBYE"))).exchange().block();
-		assert byebye != null;
+		final WorkLogRequest request = login.toWorkLogRequest("BYEBYE");
+		final ClientResponse byebye = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(request)).exchange().block();
 		if (byebye.statusCode() != HttpStatus.OK) {
-			return "요청 실패";
+			return WorkLogResult.builder().result(false).userName(login.getReal_name()).build();
 		}
 		final Mono<String> stringMono = byebye.bodyToMono(String.class);
 		log.info("퇴근성공 : {}", stringMono.block());
-		return "요청 성공";
+		final ClientResponse dailyWork = workLogClient.get().uri(String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), request.getTarget_date(), request.getTarget_date())).exchange().block();
+		final Mono<List> listMono = dailyWork.bodyToMono(List.class);
+		log.info("테스트 : {}",listMono.block());
+		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
+
+
 	}
 }
