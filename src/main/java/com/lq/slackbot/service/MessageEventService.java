@@ -39,7 +39,7 @@ public class MessageEventService {
 		} else if (text.contains("출근!")) {
 			// 출근컨트롤러
 			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser());
-			if (result.isResult()) {
+			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 						.channel(request.getChannel())
 						.text(result.getUserName() + "님 출근 실패!")
@@ -51,7 +51,7 @@ public class MessageEventService {
 					.build());
 		} else if (text.contains("퇴근!")) {
 			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
-			if (result.equals("요청 실패")) {
+			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 						.channel(request.getChannel())
 						.text(result.getUserName() + "님 퇴근 실패!")
