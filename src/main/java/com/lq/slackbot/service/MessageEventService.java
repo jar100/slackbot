@@ -47,7 +47,7 @@ public class MessageEventService {
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(request.getChannel())
-					.text(String.format("%s 님 출근 완료! %n https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 출근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 		} else if (text.contains("퇴근!")) {
 			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
@@ -59,7 +59,7 @@ public class MessageEventService {
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(request.getChannel())
-					.text(String.format("%s 님 퇴근 완료! %n https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 퇴근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 		}
 		log.info(message);
