@@ -63,8 +63,8 @@ public class SlackController {
 	}
 
 	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
-	public ResponseEntity<?> event(@RequestParam String body ) throws JsonProcessingException {
-		log.info("123 : {}" ,body);
+	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload ) throws JsonProcessingException {
+		log.info("payload : {}" , payload);
 //		final String payload = body.get("payload");
 //		log.info("페이로드 : {}",payload);
 //		final Actions actions = objectMapper.readValue(payload, Actions.class);
@@ -86,7 +86,7 @@ public class SlackController {
 //		} else if(payload1.isCoffee()) {
 //			MessageService.update();
 //		}
-//
+
 		return ResponseEntity.ok().build();
 	}
 
