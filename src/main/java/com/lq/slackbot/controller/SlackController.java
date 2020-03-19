@@ -71,6 +71,7 @@ public class SlackController {
 		log.info("모달블럭 : {}",payload1);
 		log.info("get action value : {}",actions.getActions().get(0).getValue());
 		if(actions.isCoffeeAction()) {
+			log.info("coffee text : {}",actions.getMessage().blocks.get(0).getText());
 			MessageService.update(actions);
 			log.info("커피 이밴트 발생");
 			return ResponseEntity.ok().build();

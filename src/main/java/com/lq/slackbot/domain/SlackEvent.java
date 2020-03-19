@@ -8,6 +8,7 @@ public class SlackEvent {
 	private String client_msg_id;
 	private String bot_id;
 	private String type;
+	private String subtype;
 	private String text;
 	private String user;
 	private String ts;

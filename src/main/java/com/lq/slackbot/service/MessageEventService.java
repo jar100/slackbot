@@ -32,6 +32,11 @@ public class MessageEventService {
 		String message = null;
 		final String text = request.getEvent().getText();
 		log.info("text : {}", text);
+		if (!"message_changed".equals(request.getEvent().getSubtype()) ) {
+
+		}
+
+
 		if (StringUtils.isEmpty(text)) {
 			log.error("택스트를 찾을 수 없음");
 			return;
