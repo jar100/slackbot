@@ -3,6 +3,7 @@ package com.lq.slackbot.controller;
 import com.lq.slackbot.domain.Blocks;
 import com.lq.slackbot.domain.Channel;
 import com.lq.slackbot.domain.Message;
+import com.lq.slackbot.domain.ModalBlock;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,7 +45,7 @@ public class Actions {
 		private String text;
 		private String user;
 		private String ts;
-		private Blocks blocks;
+		List<ModalBlock> blocks;
 	}
 
 	public boolean isCoffeeAction() {
