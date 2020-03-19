@@ -15,6 +15,7 @@ public class Actions {
 	private List<Acution> actions;
 	private String trigger_id;
 	private String ts;
+	private String user;
 
 	public Object getAction() {
 		if (actions == null) {
