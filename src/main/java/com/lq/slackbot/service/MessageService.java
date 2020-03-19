@@ -265,6 +265,7 @@ public class MessageService {
 
 	private static String updateCoffeeBlack(Actions actions) {
 		String comma = "";
+		log.info("aptpwl ; {}",actions.getUpdateCoffeeMessage());
 		if (actions.getUpdateCoffeeMessage().length() > 1) {
 			comma = ",";
 		}
@@ -275,7 +276,7 @@ public class MessageService {
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
 		blockList.add(ModalBlock.builder()
-				.type("plain_text")
+				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getMessage().getUser())).build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
@@ -298,11 +299,11 @@ public class MessageService {
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("뽑기가 완료 되었습니다.").build())
 				.build());
 		blockList.add(ModalBlock.builder()
-				.type("plain_text")
+				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text(actions.getUpdateCoffeeMessage()).build())
 				.build());
 		blockList.add(ModalBlock.builder()
-				.type("plain_text")
+				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("당첨자는 %s 입니다.", user)).build())
 				.build());
 		return gson.toJson(blockList);
