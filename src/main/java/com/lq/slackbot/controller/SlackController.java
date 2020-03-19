@@ -69,6 +69,7 @@ public class SlackController {
 		log.info("엑션스 : {}",actions);
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		log.info("모달블럭 : {}",payload1);
+		log.info("get action value : {}",actions.getActions().get(0).getValue());
 		if (actions.getAction() != null) {
 			//메세지 팝업창
 			MessageService.sendMessageByModal(actions,payload1.getChannelId());

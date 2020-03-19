@@ -251,6 +251,15 @@ public class MessageService {
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
+		blockList.add(ModalBlock.builder()
+				.type("actions")
+				.elements(Arrays.asList(ModalBlock.Elements.builder()
+								.action_id("coffe_action")
+								.type("button")
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("뽑기시작").emoji(false).build())
+								.build()
+				))
+				.build());
 		return gson.toJson(blockList);
 	}
 
@@ -261,6 +270,7 @@ public class MessageService {
 				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getMessage().getText() + " @%s", actions.getMessage().getUser())).build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
+
 		return gson.toJson(blockList);
 	}
 
