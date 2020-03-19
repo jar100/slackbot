@@ -83,7 +83,7 @@ public class SlackController {
 					.build());
 			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
 		} else if(payload1.isCoffee()) {
-
+			MessageService.update();
 		}
 
 		return ResponseEntity.ok().build();

@@ -3,10 +3,7 @@ package com.lq.slackbot.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.lq.slackbot.controller.Actions;
-import com.lq.slackbot.domain.Message;
-import com.lq.slackbot.domain.ModalBlock;
-import com.lq.slackbot.domain.ModalResponse;
-import com.lq.slackbot.domain.ModalView;
+import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.domain.schedule.ScheduleRepository;
 import com.lq.slackbot.utils.SystemUtils;
@@ -247,24 +244,40 @@ public class MessageService {
 		send(SystemUtils.POST_MESSAGE, Message.builder()
 				.channel(channel)
 				.text("커피 뽑기")
-				.blocks(CoffeeBlack())
+				.blocks(CoffeeBlack(null))
 				.build());
 	}
 
-	private static String CoffeeBlack() {
+	private static String CoffeeBlack(List<SlackUser> users) {
+		String joinUsers = userList(users);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세").build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("참가자는 버튼을 눌러주세요 %s", joinUsers)).build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("into").build())
 				.build());
 		return gson.toJson(blockList);
 	}
 
-	public static void update() {
-
+	public static void update(List<SlackUser> users) {
+		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
+				.channel("123")
+				.text("커피 뽑기")
+				.ts("123")
+				.blocks(CoffeeBlack(users))
+				.build());
 	}
 
+	private static String userList(List<SlackUser> users) {
+		if (users.isEmpty()) {
+			return "";
+		}
+		String userList = "@" + users.remove(0).getSlackId();
+		for (SlackUser user : users) {
+			userList = userList + ", @" + user.getSlackId();
+		}
+		return userList;
+	}
 
 	public String getToken() {
 		return SystemUtils.TOKEN;

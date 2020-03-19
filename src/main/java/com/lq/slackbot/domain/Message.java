@@ -13,6 +13,7 @@ public class Message {
 	private String channel;
 	private String text;
 	private String blocks;
+	private String ts;
 //
 //	public Message(String channel, String text) {
 //		this.channel = channel;

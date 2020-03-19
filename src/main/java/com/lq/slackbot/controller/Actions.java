@@ -14,6 +14,7 @@ import java.util.List;
 public class Actions {
 	private List<Acution> actions;
 	private String trigger_id;
+	private String ts;
 
 	public Object getAction() {
 		if (actions == null) {
