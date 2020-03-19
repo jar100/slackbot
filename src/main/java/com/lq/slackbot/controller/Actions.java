@@ -52,7 +52,7 @@ public class Actions {
 		return "coffee_into".equals(this.actions.get(0).value);
 	}
 	public String getUpdateCoffeeMessage() {
-		if (this.message.blocks.size() > 1) {
+		if (this.message.blocks.size() > 2) {
 			return this.message.blocks.get(1).getMessageText();
 		}
 		return "";
