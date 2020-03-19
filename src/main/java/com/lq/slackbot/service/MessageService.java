@@ -241,11 +241,20 @@ public class MessageService {
 		send(SystemUtils.POST_MESSAGE, Message.builder()
 				.channel(channel)
 				.text("커피 뽑기")
-				.blocks(CoffeeBlack(Collections.emptyList()))
+				.blocks(coffeeBlack())
 				.build());
 	}
+	private static String coffeeBlack() {
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
+				.build());
+		return gson.toJson(blockList);
+	}
 
-	private static String CoffeeBlack(Actions actions) {
+	private static String updateCoffeeBlack(Actions actions) {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -255,12 +264,12 @@ public class MessageService {
 		return gson.toJson(blockList);
 	}
 
-	public static void update() {
+	public static void update(Actions actions) {
 		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
-				.channel("123")
+				.channel(actions.getChannel().getId())
 				.text("커피 뽑기")
-				.ts("123")
-				.blocks(CoffeeBlack(users))
+				.ts(actions.getMessage().getTs())
+				.blocks(updateCoffeeBlack(actions))
 				.build());
 	}
 

@@ -82,7 +82,7 @@ public class SlackController {
 					.build());
 			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
 		} else if(actions.isCoffeeAction()) {
-//			MessageService.update(actions);
+			MessageService.update(actions);
 			log.info("커피 이밴트 발생");
 		}
 
