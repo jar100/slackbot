@@ -18,6 +18,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -26,6 +28,8 @@ public class MessageService {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private static WebClient webClient = initWebClient();
 	private static ScheduleRepository scheduleRepository;
+	private static Gson gson = new Gson();
+
 
 	public MessageService(ScheduleRepository scheduleRepository) {
 		this.scheduleRepository = scheduleRepository;
@@ -56,7 +60,6 @@ public class MessageService {
 			return;
 		}
 
-		System.out.println(view);
 		if (StringUtils.isEmpty(view)) {
 			return;
 		}
@@ -110,9 +113,9 @@ public class MessageService {
 			blockList.add(ModalBlock.builder()
 					.block_id("scheduleMessage_"+schedule.getName())
 					.type("section")
-					.text(ModalBlock.Content.builder().type("mrkdwn").text("*<fakeLink.toHotelPage.com|" +
+					.text(ModalBlock.Content.builder().type("mrkdwn").text("*" +
 							schedule.getName() +
-							">*\n" +
+							"*\n" +
 							schedule.getCronExpression() +
 							"\n" +
 							schedule.getMessage() +
@@ -236,6 +239,25 @@ public class MessageService {
 				.block();
 		log.info("WebClient Response: {}", response);
 	}
+
+	public static void sendByCoffeeRequest(final String channel) {
+		send(SystemUtils.POST_MESSAGE,Message.builder()
+				.channel(channel)
+				.text("커피 뽑기")
+				.blocks(CoffeeBlack())
+				.build());
+	}
+
+	private static String CoffeeBlack() {
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("into").build())
+				.build());
+		return gson.toJson(blockList);
+	}
+
 
 	public String getToken() {
 		return SystemUtils.TOKEN;

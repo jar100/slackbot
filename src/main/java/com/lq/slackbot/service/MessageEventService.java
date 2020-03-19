@@ -18,12 +18,14 @@ import java.util.Map;
 public class MessageEventService {
 	private MessageService messageService;
 	private WorkLogService workLogService;
+	private CoffeeService coffeeService;
 	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
 
 	@Autowired
-	public MessageEventService(final MessageService messageService, final WorkLogService workLogService) {
+	public MessageEventService(final MessageService messageService, final WorkLogService workLogService, final CoffeeService coffeeService) {
 		this.messageService = messageService;
 		this.workLogService = workLogService;
+		this.coffeeService = coffeeService;
 	}
 
 	public void run(final SlackRequest request) {
@@ -61,6 +63,8 @@ public class MessageEventService {
 					.channel(request.getChannel())
 					.text(String.format("%s 님 퇴근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
+		} else if (text.contains("커피!")) {
+			MessageService.sendByCoffeeRequest(request.getChannel());
 		}
 		log.info(message);
 	}

@@ -17,6 +17,7 @@ public class ModalBlock {
 	Content text;
 	Content label;
 	List<Elements> elements;
+	Elements accessory;
 	Elements element;
 	Boolean optional;
 
