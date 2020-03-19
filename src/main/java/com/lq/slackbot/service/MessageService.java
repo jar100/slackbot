@@ -3,12 +3,14 @@ package com.lq.slackbot.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.lq.slackbot.controller.Actions;
-import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.Message;
+import com.lq.slackbot.domain.ModalBlock;
+import com.lq.slackbot.domain.ModalResponse;
+import com.lq.slackbot.domain.ModalView;
 import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.domain.schedule.ScheduleRepository;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -18,9 +20,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -111,7 +114,7 @@ public class MessageService {
 
 		for (Schedule schedule : allByUsed) {
 			blockList.add(ModalBlock.builder()
-					.block_id("scheduleMessage_"+schedule.getName())
+					.block_id("scheduleMessage_" + schedule.getName())
 					.type("section")
 					.text(ModalBlock.Content.builder().type("mrkdwn").text("*" +
 							schedule.getName() +
@@ -125,8 +128,8 @@ public class MessageService {
 					.block_id("scheduleUpdate_" + schedule.getName())
 					.type("actions")
 					.elements(Arrays.asList(
-							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).value("scheduleUpdate_action_"+ schedule.getName()).build(),
-							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).value("scheduleDeleted_action_"+schedule.getName()).build()
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).value("scheduleUpdate_action_" + schedule.getName()).build(),
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).value("scheduleDeleted_action_" + schedule.getName()).build()
 					))
 					.build());
 		}
@@ -199,15 +202,15 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("actions")
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
-						.action_id("scheduler")
-						.type("button")
-						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄 생성").emoji(false).build())
-						.build(),
+								.action_id("scheduler")
+								.type("button")
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄 생성").emoji(false).build())
+								.build(),
 						ModalBlock.Elements.builder()
-						.action_id("schedulerList")
-						.type("button")
-						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄 리스트").emoji(false).build())
-						.build()))
+								.action_id("schedulerList")
+								.type("button")
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("스케줄 리스트").emoji(false).build())
+								.build()))
 				.build());
 
 		return gson.toJson(blockList);
@@ -241,7 +244,7 @@ public class MessageService {
 	}
 
 	public static void sendByCoffeeRequest(final String channel) {
-		send(SystemUtils.POST_MESSAGE,Message.builder()
+		send(SystemUtils.POST_MESSAGE, Message.builder()
 				.channel(channel)
 				.text("커피 뽑기")
 				.blocks(CoffeeBlack())
@@ -256,6 +259,10 @@ public class MessageService {
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("into").build())
 				.build());
 		return gson.toJson(blockList);
+	}
+
+	public static void update() {
+
 	}
 
 

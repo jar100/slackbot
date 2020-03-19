@@ -83,6 +83,10 @@ public class SlackMessageEvent {
 		return SystemUtils.VIEW_SUBMISSION.equals(this.type);
 	}
 
+	public boolean isCoffee() {
+		return this.type.equals("coffee_in");
+	}
+
 
 	public String getScheduleMessages() {
 		return this.view.state.values.scheduleMessage.scheduleMessage.value;
