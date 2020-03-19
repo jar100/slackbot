@@ -17,10 +17,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -244,22 +241,21 @@ public class MessageService {
 		send(SystemUtils.POST_MESSAGE, Message.builder()
 				.channel(channel)
 				.text("커피 뽑기")
-				.blocks(CoffeeBlack(null))
+				.blocks(CoffeeBlack(Collections.emptyList()))
 				.build());
 	}
 
-	private static String CoffeeBlack(List<SlackUser> users) {
-		String joinUsers = userList(users);
+	private static String CoffeeBlack(Actions actions) {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("참가자는 버튼을 눌러주세요 %s", joinUsers)).build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getMessage().getText() + " @%s", actions.getMessage().getUser())).build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
 		return gson.toJson(blockList);
 	}
 
-	public static void update(List<SlackUser> users) {
+	public static void update() {
 		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
 				.channel("123")
 				.text("커피 뽑기")
