@@ -70,8 +70,14 @@ public class SlackController {
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		log.info("모달블럭 : {}",payload1);
 		log.info("get action value : {}",actions.getActions().get(0).getValue());
+		if(actions.isCoffeeAction()) {
+			MessageService.update(actions);
+			log.info("커피 이밴트 발생");
+			return ResponseEntity.ok().build();
+		}
+
 		if (actions.getAction() != null) {
-			//메세지 팝업창
+			//메세지 팝업창 스캐줄버튼은 엑션이 아니다...
 			MessageService.sendMessageByModal(actions,payload1.getChannelId());
 		} else if (payload1.isViewSubmission()) {
 			//동작스케줄 창띄우기
@@ -82,11 +88,7 @@ public class SlackController {
 					.jobDataMap(payload1.getScheduleMessages())
 					.build());
 			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
-		} else if(actions.isCoffeeAction()) {
-			MessageService.update(actions);
-			log.info("커피 이밴트 발생");
 		}
-
 		return ResponseEntity.ok().build();
 	}
 
