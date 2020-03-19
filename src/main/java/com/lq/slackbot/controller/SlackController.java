@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.schedule.JobRequest;
+import com.lq.slackbot.service.CoffeeService;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
@@ -14,7 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 @RestController
 @Slf4j
@@ -24,13 +26,15 @@ public class SlackController {
 	private final MessageEventService messageEventService;
 	private final SchedulerService schelduleService;
 	private final SlackMessageHandler messageHandler;
+	private final CoffeeService coffeeService;
 
-	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final SchedulerService schelduleService, final SlackMessageHandler messageHandler) {
+	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final SchedulerService schelduleService, final SlackMessageHandler messageHandler, final CoffeeService coffeeService) {
 		this.objectMapper = objectMapper;
 		this.service = service;
 		this.messageEventService = messageEventService;
 		this.schelduleService = schelduleService;
 		this.messageHandler = messageHandler;
+		this.coffeeService = coffeeService;
 	}
 
 	@GetMapping("/init")
@@ -63,7 +67,7 @@ public class SlackController {
 	}
 
 	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
-	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload ) throws JsonProcessingException {
+	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload ) throws JsonProcessingException, NoSuchAlgorithmException {
 		log.info("payload : {}" , payload);
 		final Actions actions = objectMapper.readValue(payload, Actions.class);
 		log.info("엑션스 : {}",actions);
@@ -71,9 +75,15 @@ public class SlackController {
 		log.info("모달블럭 : {}",payload1);
 		log.info("get action value : {}",actions.getActions().get(0).getValue());
 		if(actions.isCoffeeAction()) {
-			log.info("coffee text : {}",actions.getMessage().blocks.get(0).getText());
+			log.info("coffee text : {}",actions.getMessage().getBlocks().get(0).getText());
 			MessageService.update(actions);
 			log.info("커피 이밴트 발생");
+			return ResponseEntity.ok().build();
+		}
+		if (actions.getActions().get(0).getAction_id().equals("coffee_action")) {
+			final String[] s = actions.getUpdateCoffeeMessage().split(", ");
+			log.info("유저리스트 : {} ", s);
+			MessageService.updateCoffeeBlackOk(actions,coffeeService.pickUser(Arrays.asList(s)));
 			return ResponseEntity.ok().build();
 		}
 

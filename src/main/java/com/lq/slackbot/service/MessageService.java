@@ -264,16 +264,25 @@ public class MessageService {
 	}
 
 	private static String updateCoffeeBlack(Actions actions) {
+		String comma = "";
+		if (actions.getUpdateCoffeeMessage().length() > 1) {
+			comma = ",";
+		}
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getMessage().getText() + " <!%s>", actions.getMessage().getUser())).build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("plain_text")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getMessage().getUser())).build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
-						.action_id("coffe_action")
+						.action_id("coffee_action")
 						.type("button")
 						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("뽑기시작").emoji(false).build())
 						.build()
@@ -281,6 +290,24 @@ public class MessageService {
 				.build());
 		return gson.toJson(blockList);
 	}
+
+	public static String updateCoffeeBlackOk(Actions actions, String user) {
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text("뽑기가 완료 되었습니다.").build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("plain_text")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(actions.getUpdateCoffeeMessage()).build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("plain_text")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("당첨자는 %s 입니다.", user)).build())
+				.build());
+		return gson.toJson(blockList);
+	}
+
 
 	public static void update(Actions actions) {
 		send(SystemUtils.UPDATE_MESSAGE,Message.builder()

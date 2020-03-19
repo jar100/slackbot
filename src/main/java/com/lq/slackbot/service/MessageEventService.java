@@ -18,14 +18,12 @@ import java.util.Map;
 public class MessageEventService {
 	private MessageService messageService;
 	private WorkLogService workLogService;
-	private CoffeeService coffeeService;
 	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
 
 	@Autowired
-	public MessageEventService(final MessageService messageService, final WorkLogService workLogService, final CoffeeService coffeeService) {
+	public MessageEventService(final MessageService messageService, final WorkLogService workLogService) {
 		this.messageService = messageService;
 		this.workLogService = workLogService;
-		this.coffeeService = coffeeService;
 	}
 
 	public void run(final SlackRequest request) {
@@ -33,10 +31,7 @@ public class MessageEventService {
 		final String text = request.getEvent().getText();
 		log.info("text : {}", text);
 		if (!"message_changed".equals(request.getEvent().getSubtype()) ) {
-
 		}
-
-
 		if (StringUtils.isEmpty(text)) {
 			log.error("택스트를 찾을 수 없음");
 			return;

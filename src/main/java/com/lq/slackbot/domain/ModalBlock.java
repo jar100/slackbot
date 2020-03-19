@@ -43,4 +43,7 @@ public class ModalBlock {
 		Boolean multiline;
 	}
 
+	public String getMessageText() {
+		return this.text.text;
+	}
 }

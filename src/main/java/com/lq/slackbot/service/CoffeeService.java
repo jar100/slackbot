@@ -11,7 +11,7 @@ import java.util.Random;
 @Service
 public class CoffeeService {
 
-	public SlackUser pickUser(List<SlackUser> userList) throws NoSuchAlgorithmException {
+	public String pickUser(List<String> userList) throws NoSuchAlgorithmException {
 		Random rand = SecureRandom.getInstanceStrong();
 		final int i = rand.nextInt(userList.size());
 		return userList.get(i);

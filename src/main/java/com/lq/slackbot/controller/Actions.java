@@ -45,10 +45,16 @@ public class Actions {
 		private String text;
 		private String user;
 		private String ts;
-		List<ModalBlock> blocks;
+		private List<ModalBlock> blocks;
 	}
 
 	public boolean isCoffeeAction() {
 		return "coffee_into".equals(this.actions.get(0).value);
+	}
+	public String getUpdateCoffeeMessage() {
+		if (this.message.blocks.size() > 1) {
+			return this.message.blocks.get(1).getMessageText();
+		}
+		return "";
 	}
 }
