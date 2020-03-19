@@ -1,5 +1,6 @@
 package com.lq.slackbot.controller;
 
+import com.lq.slackbot.domain.Message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,7 @@ import java.util.List;
 public class Actions {
 	private List<Acution> actions;
 	private String trigger_id;
-	private String ts;
-	private String user;
+	private ActionData message;
 
 	public Object getAction() {
 		if (actions == null) {
@@ -30,5 +30,20 @@ public class Actions {
 	@NoArgsConstructor
 	public static class Acution {
 		private String action_id;
+		private String value;
+	}
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ActionData {
+		private String type;
+		private String text;
+		private String user;
+		private String ts;
+	}
+
+	public boolean isCoffeeAction() {
+		return "coffee_into".equals(this.actions.get(0).value);
 	}
 }

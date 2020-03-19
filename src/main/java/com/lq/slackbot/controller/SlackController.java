@@ -65,27 +65,25 @@ public class SlackController {
 	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
 	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload ) throws JsonProcessingException {
 		log.info("payload : {}" , payload);
-//		final String payload = body.get("payload");
-//		log.info("페이로드 : {}",payload);
-//		final Actions actions = objectMapper.readValue(payload, Actions.class);
-//		log.info("엑션스 : {}",actions);
-//		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
-//		log.info("모달블럭 : {}",payload1);
-//		if (actions.getAction() != null) {
-//			//메세지 팝업창
-//			MessageService.sendMessageByModal(actions,payload1.getChannelId());
-//		} else if (payload1.isViewSubmission()) {
-//			//동작스케줄 창띄우기
-//			final ResponseEntity<ApiResponse> apiResponseResponseEntity = schelduleService.addSchedule(JobRequest.builder()
-//					.jobGroup(payload1.getSubmissionChannelId())
-//					.jobName(payload1.getScheduleTitle())
-//					.cronExpression(payload1.getScheduleTimes())
-//					.jobDataMap(payload1.getScheduleMessages())
-//					.build());
-//			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
-//		} else if(payload1.isCoffee()) {
-//			MessageService.update();
-//		}
+		final Actions actions = objectMapper.readValue(payload, Actions.class);
+		log.info("엑션스 : {}",actions);
+		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
+		log.info("모달블럭 : {}",payload1);
+		if (actions.getAction() != null) {
+			//메세지 팝업창
+			MessageService.sendMessageByModal(actions,payload1.getChannelId());
+		} else if (payload1.isViewSubmission()) {
+			//동작스케줄 창띄우기
+			final ResponseEntity<ApiResponse> apiResponseResponseEntity = schelduleService.addSchedule(JobRequest.builder()
+					.jobGroup(payload1.getSubmissionChannelId())
+					.jobName(payload1.getScheduleTitle())
+					.cronExpression(payload1.getScheduleTimes())
+					.jobDataMap(payload1.getScheduleMessages())
+					.build());
+			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
+		} else if(actions.isCoffeeAction()) {
+//			MessageService.update(actions);
+		}
 
 		return ResponseEntity.ok().build();
 	}

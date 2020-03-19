@@ -254,7 +254,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("참가자는 버튼을 눌러주세요 %s", joinUsers)).build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
 				.build());
 		return gson.toJson(blockList);
 	}
