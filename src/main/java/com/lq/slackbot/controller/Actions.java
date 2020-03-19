@@ -1,5 +1,7 @@
 package com.lq.slackbot.controller;
 
+import com.lq.slackbot.domain.Blocks;
+import com.lq.slackbot.domain.Channel;
 import com.lq.slackbot.domain.Message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +18,7 @@ public class Actions {
 	private List<Acution> actions;
 	private String trigger_id;
 	private ActionData message;
+	private Channel channel;
 
 	public Object getAction() {
 		if (actions == null) {
@@ -41,6 +44,7 @@ public class Actions {
 		private String text;
 		private String user;
 		private String ts;
+		private Blocks blocks;
 	}
 
 	public boolean isCoffeeAction() {
