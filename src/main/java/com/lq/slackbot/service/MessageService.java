@@ -266,18 +266,17 @@ public class MessageService {
 	private static String updateCoffeeBlack(Actions actions) {
 		String comma = "";
 		log.info("aptpwl ; {}",actions.getUpdateCoffeeMessage());
-		if (actions.getUpdateCoffeeMessage().length() > 1) {
-			comma = ",";
-		}
+		final String joinUsers = createJoinUser(actions, comma);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).value("coffee_into").build())
 				.build());
+
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getUser().getId())).build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(joinUsers).build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
@@ -289,6 +288,17 @@ public class MessageService {
 				))
 				.build());
 		return gson.toJson(blockList);
+	}
+
+	private static String createJoinUser(final Actions actions, String comma) {
+		if (actions.getUpdateCoffeeMessage().length() > 1) {
+			comma = ",";
+		}
+		final List<String> beforeUsers = Arrays.asList(actions.getUpdateCoffeeMessage().split(","));
+		if(beforeUsers.contains(String.format("<@%s>",actions.getUser().getId()))) {
+			return beforeUsers.toString();
+		}
+		return String.format(beforeUsers + comma + "<@%s>", actions.getUser().getId());
 	}
 
 	public static void sendByCoffeeResult(Actions actions, String user) {
