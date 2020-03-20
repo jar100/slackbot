@@ -249,7 +249,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).value("coffee_into").build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
@@ -292,9 +292,10 @@ public class MessageService {
 	}
 
 	public static void sendByCoffeeResult(Actions actions, String user) {
-		send(SystemUtils.POST_MESSAGE, Message.builder()
+		send(SystemUtils.UPDATE_MESSAGE, Message.builder()
 				.channel(actions.getChannel().getId())
 				.text("커피 뽑기")
+				.ts(actions.getMessage().getTs())
 				.blocks(updateCoffeeBlackOk(actions,user))
 				.build());
 	}
