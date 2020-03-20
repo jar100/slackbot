@@ -273,11 +273,11 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).value("coffee_into").build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getUser().getSlackId())).build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getUser().getId())).build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
@@ -334,16 +334,6 @@ public class MessageService {
 				.build());
 	}
 
-	private static String userList(List<SlackUser> users) {
-		if (users.isEmpty()) {
-			return "";
-		}
-		String userList = "@" + users.remove(0).getSlackId();
-		for (SlackUser user : users) {
-			userList = userList + ", @" + user.getSlackId();
-		}
-		return userList;
-	}
 
 	public String getToken() {
 		return SystemUtils.TOKEN;
