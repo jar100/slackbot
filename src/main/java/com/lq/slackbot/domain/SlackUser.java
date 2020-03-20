@@ -13,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SlackUser {
-	private String slackId;
+	private String id;
 	private String name;
 
 
@@ -22,11 +22,11 @@ public class SlackUser {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		final SlackUser slackUser = (SlackUser) o;
-		return Objects.equals(slackId, slackUser.slackId);
+		return Objects.equals(id, slackUser.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(slackId);
+		return Objects.hash(id);
 	}
 }
