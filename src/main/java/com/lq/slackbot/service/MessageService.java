@@ -264,9 +264,8 @@ public class MessageService {
 	}
 
 	private static String updateCoffeeBlack(Actions actions) {
-		String comma = "";
 		log.info("aptpwl ; {}",actions.getUpdateCoffeeMessage());
-		final String joinUsers = createJoinUser(actions, comma);
+		final String joinUsers = createJoinUser(actions);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -290,13 +289,24 @@ public class MessageService {
 		return gson.toJson(blockList);
 	}
 
-	private static String createJoinUser(final Actions actions, String comma) {
+	private static String createJoinUser(final Actions actions) {
+		String comma = "";
 		if (actions.getUpdateCoffeeMessage().length() > 1) {
 			comma = ",";
 		}
 		final List<String> beforeUsers = Arrays.asList(actions.getUpdateCoffeeMessage().split(","));
-		if(beforeUsers.contains(String.format("<@%s>",actions.getUser().getId()))) {
-			return actions.getUpdateCoffeeMessage();
+		final String target = String.format("<@%s>", actions.getUser().getId());
+		if(beforeUsers.contains(target)) {
+			beforeUsers.remove(target);
+			String message = "";
+			if (beforeUsers.size() == 0) {
+				return message;
+			}
+			message = beforeUsers.remove(0);
+			for (String beforeUser : beforeUsers) {
+				message = message + comma + beforeUser;
+			}
+			return message;
 		}
 		return String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getUser().getId());
 	}
@@ -321,7 +331,7 @@ public class MessageService {
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("당첨자는 %s 입니다.", user)).build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format("당첨자는 :tada: %s :tada: 입니다.", user)).build())
 				.build());
 		return gson.toJson(blockList);
 	}
