@@ -296,9 +296,9 @@ public class MessageService {
 		}
 		final List<String> beforeUsers = Arrays.asList(actions.getUpdateCoffeeMessage().split(","));
 		if(beforeUsers.contains(String.format("<@%s>",actions.getUser().getId()))) {
-			return beforeUsers.toString();
+			return actions.getUpdateCoffeeMessage();
 		}
-		return String.format(beforeUsers + comma + "<@%s>", actions.getUser().getId());
+		return String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getUser().getId());
 	}
 
 	public static void sendByCoffeeResult(Actions actions, String user) {
