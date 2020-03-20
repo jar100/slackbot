@@ -17,8 +17,8 @@ class CoffeeServiceTest {
 	@Test
 	void name() {
 		List<SlackUser> userList = new ArrayList<>();
-		userList.add(SlackUser.builder().slackId("123").build());
-		userList.add(SlackUser.builder().slackId("1234").build());
+		userList.add(SlackUser.builder().id("123").build());
+		userList.add(SlackUser.builder().id("1234").build());
 //		assertThat(coffeeService.pickUser()).isEqualTo(SlackUser.builder().slackId("123").build());
 	}
 }

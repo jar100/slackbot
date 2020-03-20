@@ -5,12 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 class MessageEventServiceTest {
-	@Autowired
 	private MessageEventService messageEventService;
+
+	@Test
+	void name22() {
+		List<String> aaa = new ArrayList<>();
+		aaa.add("123");
+		aaa.remove("123");
+	}
 
 	@Test
 	void name() {

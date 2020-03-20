@@ -294,7 +294,7 @@ public class MessageService {
 		if (actions.getUpdateCoffeeMessage().length() > 1) {
 			comma = ",";
 		}
-		final List<String> beforeUsers = Arrays.asList(actions.getUpdateCoffeeMessage().split(","));
+		final List<String> beforeUsers = new ArrayList<>(Arrays.asList(actions.getUpdateCoffeeMessage().split(",")));
 		final String target = String.format("<@%s>", actions.getUser().getId());
 		if(beforeUsers.contains(target)) {
 			beforeUsers.remove(target);
