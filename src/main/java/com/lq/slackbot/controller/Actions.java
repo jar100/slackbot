@@ -1,9 +1,6 @@
 package com.lq.slackbot.controller;
 
-import com.lq.slackbot.domain.Blocks;
-import com.lq.slackbot.domain.Channel;
-import com.lq.slackbot.domain.Message;
-import com.lq.slackbot.domain.ModalBlock;
+import com.lq.slackbot.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Actions {
+	private SlackUser user;
 	private List<Acution> actions;
 	private String trigger_id;
 	private ActionData message;

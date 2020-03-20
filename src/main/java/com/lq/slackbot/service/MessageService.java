@@ -277,8 +277,7 @@ public class MessageService {
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getMessage().getUser())).build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("Choose").build()).value("coffee_into").build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(String.format(actions.getUpdateCoffeeMessage() + comma + "<@%s>", actions.getUser().getSlackId())).build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
@@ -292,6 +291,13 @@ public class MessageService {
 		return gson.toJson(blockList);
 	}
 
+	public static void sendByCoffeeResult(Actions actions, String user) {
+		send(SystemUtils.POST_MESSAGE, Message.builder()
+				.channel(actions.getChannel().getId())
+				.text("커피 뽑기")
+				.blocks(updateCoffeeBlackOk(actions,user))
+				.build());
+	}
 	public static String updateCoffeeBlackOk(Actions actions, String user) {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
@@ -311,6 +317,15 @@ public class MessageService {
 
 
 	public static void update(Actions actions) {
+		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
+				.channel(actions.getChannel().getId())
+				.text("커피 뽑기")
+				.ts(actions.getMessage().getTs())
+				.blocks(updateCoffeeBlack(actions))
+				.build());
+	}
+
+	public static void resultCoffee(Actions actions) {
 		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
 				.channel(actions.getChannel().getId())
 				.text("커피 뽑기")

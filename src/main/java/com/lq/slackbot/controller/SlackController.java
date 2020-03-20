@@ -81,7 +81,7 @@ public class SlackController {
 			return ResponseEntity.ok().build();
 		}
 		if (actions.getActions().get(0).getAction_id().equals("coffee_action")) {
-			final String[] s = actions.getUpdateCoffeeMessage().split(", ");
+			final String[] s = actions.getUpdateCoffeeMessage().split(",");
 			log.info("유저리스트 : {} ", s);
 			MessageService.updateCoffeeBlackOk(actions,coffeeService.pickUser(Arrays.asList(s)));
 			return ResponseEntity.ok().build();
