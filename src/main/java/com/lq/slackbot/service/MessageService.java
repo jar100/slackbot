@@ -296,10 +296,13 @@ public class MessageService {
 		}
 		final List<String> beforeUsers = new ArrayList<>(Arrays.asList(actions.getUpdateCoffeeMessage().split(",")));
 		final String target = String.format("<@%s>", actions.getUser().getId());
+		log.info("택스트 변환전 : {}", beforeUsers);
 		if(beforeUsers.contains(target)) {
 			beforeUsers.remove(target);
 			String message = "";
+			log.info("택스트 변환 후 : {}", beforeUsers);
 			if (beforeUsers.size() == 0) {
+				log.info("택스트 엠티리스트 출력 ");
 				return message;
 			}
 			message = beforeUsers.remove(0);
