@@ -53,6 +53,7 @@ public class MessageEventService {
 			//b2b and test 체널만 개인메세지 가게 수정
 			if (channel.equals("GT9V0K9RS") || channel.equals("GHJBH4UG4")) {
 				channel = request.getUserId();
+				log.info(channel);
 			}
 
 			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser());
@@ -70,6 +71,16 @@ public class MessageEventService {
 		}
 		if (text.contains("퇴근!")) {
 			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
+
+			//todo refactoring 봇 테스트만 메세지 보내게 변경
+			String channel = request.getChannel();
+			//b2b and test 체널만 개인메세지 가게 수정
+			if (channel.equals("GT9V0K9RS") || channel.equals("GHJBH4UG4")) {
+				channel = request.getUserId();
+				log.info(channel);
+			}
+
+
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 						.channel(request.getChannel())
