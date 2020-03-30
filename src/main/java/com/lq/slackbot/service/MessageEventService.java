@@ -83,12 +83,12 @@ public class MessageEventService {
 
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
-						.channel(request.getChannel())
+						.channel(channel)
 						.text(result.getUserName() + "님 퇴근 실패!")
 						.build());
 			}
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
-					.channel(request.getChannel())
+					.channel(channel)
 					.text(String.format("%s 님 퇴근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 			return;
