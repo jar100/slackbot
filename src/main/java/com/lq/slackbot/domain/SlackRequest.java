@@ -24,4 +24,11 @@ public class SlackRequest {
 	public String eventType() {
 		return event.getType().toUpperCase();
 	}
+
+	public String getUserId() {
+		if (event == null) {
+			return "";
+		}
+		return event.getUser();
+	}
 }
