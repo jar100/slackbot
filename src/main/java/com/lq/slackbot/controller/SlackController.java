@@ -48,11 +48,12 @@ public class SlackController {
 		return ResponseEntity.ok("ok");
 	}
 
+	//이벤트 리스너
 	@PostMapping("/slack/events")
 	public ResponseEntity<?> handleEvents(@RequestBody JsonNode reqJson) throws JsonProcessingException {
+		log.info("events request : {}",reqJson.toString());
 		final SlackRequest slackRequest = objectMapper.convertValue(reqJson, SlackRequest.class);
 		log.info("slack request : {}", slackRequest);
-		log.info(reqJson.toString());
 
 		switch (RequestType.of(reqJson.get("type").asText())) {
 			case URL_VERIFICATION:
@@ -66,6 +67,7 @@ public class SlackController {
 
 	}
 
+	//모달이 아니라 동적 핸들링
 	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
 	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload ) throws JsonProcessingException, NoSuchAlgorithmException {
 		log.info("payload : {}" , payload);
@@ -74,19 +76,14 @@ public class SlackController {
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		log.info("모달블럭 : {}",payload1);
 		log.info("get action value : {}",actions.getActions().get(0).getValue());
-		if(actions.isCoffeeAction()) {
-			log.info("coffee text : {}",actions.getMessage().getBlocks().get(1).getText());
-			MessageService.update(actions);
-			log.info("커피 이밴트 발생");
-			return ResponseEntity.ok().build();
-		}
-		if (actions.getActions().get(0).getAction_id().equals("coffee_action")) {
-			final String[] s = actions.getUpdateCoffeeMessage().split(",");
-			log.info("유저리스트 : {} ", s);
-			MessageService.sendByCoffeeResult(actions,coffeeService.pickUser(Arrays.asList(s)));
-			return ResponseEntity.ok().build();
-		}
 
+		// 커피 Run
+		if (actions.isCoffeeAction()) {
+			return coffeeService.run(actions);
+		}
+		// 커피 End
+
+		//todo  payload1 를 actions 와 통합 할 수 있을거같다.
 		if (actions.getAction() != null) {
 			//메세지 팝업창 스캐줄버튼은 엑션이 아니다...
 			MessageService.sendMessageByModal(actions,payload1.getChannelId());
@@ -105,7 +102,7 @@ public class SlackController {
 
 	/**
 	 * 응답을 먼저 반환해야 slack에서 재요청을 안보냄 그래서 비동기처리
-	 * 여기도 리퀘스트 통일시켜야함... slackRequest == payload
+	 * 여기도 리퀘스트 통일시켜야함... slackRequest == Actions
 	 * */
 	@Async
 	public void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {

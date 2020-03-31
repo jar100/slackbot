@@ -31,7 +31,7 @@ public class MessageEventService {
 		final String text = request.getEvent().getText();
 		log.info("text : {}", text);
 		if (!"message_changed".equals(request.getEvent().getSubtype()) ) {
-			// 왜 넣었는지 이해가 가지 않음
+			// 왜 넣었는지 까먹음
 			log.info("test message_changed");
 		}
 
@@ -40,12 +40,15 @@ public class MessageEventService {
 			return;
 		}
 
+
+		// 점심 이벤트
 		if (text.contains(MessageEventType.LUNCH.getLabel())) {
 			restaurantEvent(request);
-			log.info(message);
 			return;
 		}
 
+
+		// todo 출퇴근 서비스, 출퇴근 매서드로 분할 하자. 출퇴근 start
 		if (text.contains("출근!")) {
 			// 출근컨트롤러
 			//todo refactoring 봇 테스트만 메세지 보내게 변경
@@ -93,6 +96,10 @@ public class MessageEventService {
 					.build());
 			return;
 		}
+		// 출퇴근 end
+
+
+
 		if (text.contains("커피!")) {
 			MessageService.sendByCoffeeRequest(request.getChannel());
 			return;
@@ -101,6 +108,11 @@ public class MessageEventService {
 
 	private String restaurantEvent(final SlackRequest request) {
 		String restaurant = null;
+		//체널이 구글닥스랑 메핑되있는지 검증
+		//https://docs.google.com/spreadsheets/d/1yHrBv9kbhjSJ0vrGxk_T6_ML9chOICOQrJi9FaY_PfY/edit?usp=sharing
+		// 있으면 레스토랑리스트를 구글닥스에서 가져옴
+
+
 		resetRestaurantByChannel(request);
 		restaurant = findRestaurant(request.getChannel());
 		messageService.sendMessageV3(request.getChannel(), restaurant);

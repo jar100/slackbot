@@ -19,4 +19,12 @@ public class WebClientConfig {
 				.defaultHeader(HttpHeaders.CONTENT_TYPE,"application/json;charset=UTF-8")
 				.build();
 	}
+
+	@Bean
+	public WebClient googleClient() {
+		return WebClient.builder()
+				.baseUrl(SystemUtils.GOOGLE_SPREADSHEETS_URL)
+				.defaultHeader(HttpHeaders.CONTENT_TYPE,"application/json;charset=UTF-8")
+				.build();
+	}
 }

@@ -27,6 +27,8 @@ public class Actions {
 	}
 
 
+
+
 	@Data
 	@AllArgsConstructor
 	@NoArgsConstructor
@@ -46,9 +48,18 @@ public class Actions {
 		private List<ModalBlock> blocks;
 	}
 
-	public boolean isCoffeeAction() {
+	public boolean isCoffeeMemberIn() {
 		return "coffee_into".equals(this.actions.get(0).value);
 	}
+
+	public boolean isCoffeeDoAction() {
+		return "coffee_action".equals(this.actions.get(0).action_id);
+	}
+
+	public boolean isCoffeeAction() {
+		return isCoffeeDoAction() || isCoffeeDoAction();
+	}
+
 	public String getUpdateCoffeeMessage() {
 		if (this.message.blocks.size() > 2) {
 			return this.message.blocks.get(1).getMessageText();

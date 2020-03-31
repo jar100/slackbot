@@ -1,14 +1,19 @@
 package com.lq.slackbot.service;
 
+import com.lq.slackbot.controller.Actions;
 import com.lq.slackbot.domain.SlackUser;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class CoffeeService {
 
 	public String pickUser(List<String> userList) throws NoSuchAlgorithmException {
@@ -19,5 +24,21 @@ public class CoffeeService {
 
 	public List<SlackUser> list() {
 		return null;
+	}
+
+	public ResponseEntity<?> run(Actions actions) throws NoSuchAlgorithmException {
+		if(actions.isCoffeeMemberIn()) {
+			log.info("coffee text : {}",actions.getMessage().getBlocks().get(1).getText());
+			MessageService.update(actions);
+			return ResponseEntity.ok().build();
+		}
+		//커피 뽑기 시작
+		if (actions.isCoffeeDoAction()) {
+			final String[] s = actions.getUpdateCoffeeMessage().split(",");
+			log.info("유저리스트 : {} ", s);
+			MessageService.sendByCoffeeResult(actions,pickUser(Arrays.asList(s)));
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.ok().build();
 	}
 }
