@@ -43,13 +43,13 @@ public class Scheduler {
 	}
 
 
-	@Scheduled(cron = "0 0 15 * * THU")
-//	@Scheduled(cron = "0 */1 *? * * THU")
-	public void scheduleMessage() {
-		log.info("실행시간 webHook: {}", LocalDateTime.now());
-		send(Message.builder().text("<!here> \n LQ_TechCS 문서를 작성 해주세요 \n " + SystemUtils.SLACK_BOT_B2B_URL
-		).build());
-	}
+//	@Scheduled(cron = "0 0 15 * * THU")
+////	@Scheduled(cron = "0 */1 *? * * THU")
+//	public void scheduleMessage() {
+//		log.info("실행시간 webHook: {}", LocalDateTime.now());
+//		send(Message.builder().text("<!here> \n LQ_TechCS 문서를 작성 해주세요 \n " + SystemUtils.SLACK_BOT_B2B_URL
+//		).build());
+//	}
 
 	private WebClient initWebClient() {
 		ExchangeStrategies strategies = ExchangeStrategies.builder()
