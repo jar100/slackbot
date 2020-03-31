@@ -16,7 +16,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 @RestController
 @Slf4j
@@ -75,16 +74,19 @@ public class SlackController {
 		log.info("엑션스 : {}",actions);
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		log.info("모달블럭 : {}",payload1);
-		log.info("get action value : {}",actions.getActions().get(0).getValue());
 
 		// 커피 Run
 		if (actions.isCoffeeAction()) {
-			log.info("12321312312");
 			return coffeeService.run(actions);
 		}
 		// 커피 End
 
 		//todo  payload1 를 actions 와 통합 할 수 있을거같다.
+		schedule(actions, payload1);
+		return ResponseEntity.ok().build();
+	}
+
+	private void schedule(final Actions actions, final SlackMessageEvent payload1) {
 		if (actions.getAction() != null) {
 			//메세지 팝업창 스캐줄버튼은 엑션이 아니다...
 			MessageService.sendMessageByModal(actions,payload1.getChannelId());
@@ -98,7 +100,6 @@ public class SlackController {
 					.build());
 			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
 		}
-		return ResponseEntity.ok().build();
 	}
 
 	/**

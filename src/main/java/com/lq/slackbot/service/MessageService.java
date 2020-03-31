@@ -38,7 +38,7 @@ public class MessageService {
 			view = createSchedulerBlock();
 		}
 		if (body.getAction().equals("schedulerList")) {
-			view = createSchedulerListBlock();
+			view = createSchedulerListBlock(channel);
 			final ModalView modalView = ModalView.builder()
 					.type("modal")
 					.callback_id("scheduleModal_" + channel)
@@ -78,16 +78,17 @@ public class MessageService {
 		send(SystemUtils.MODAL_URL, response);
 	}
 
-	private static String createSchedulerListBlock() {
+	private static String createSchedulerListBlock(final String channel) {
 		Gson gson = new Gson();
-		List<ModalBlock> blockList = getScheduleListBlocks();
+		List<ModalBlock> blockList = getScheduleListBlocks(channel);
 		return gson.toJson(blockList);
 	}
 
-	private static List<ModalBlock> getScheduleListBlocks() {
+	private static List<ModalBlock> getScheduleListBlocks(final String channel) {
 		// 스캐줄리스트를 가져온다.
 		// 가져온리스트로 블럭을 에드한다.
-		final List<Schedule> allByUsed = scheduleRepository.findAllByUsed(true);
+		final List<Schedule> allByUsed = scheduleRepository.findAllByUsedAndChannel(true,channel);
+		log.info("allByUsed {}",allByUsed);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")

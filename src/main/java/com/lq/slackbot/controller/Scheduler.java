@@ -77,8 +77,8 @@ public class Scheduler {
 		messageEventService.resetRestaurant();
 	}
 
-	@Scheduled(cron = "0 */10 *? * * *")
-	private void getChannelList() {
-
-	}
+//	@Scheduled(cron = "0 */10 *? * * *")
+//	private void getChannelList() {
+//
+//	}
 }
