@@ -57,6 +57,10 @@ public class Actions {
 	}
 
 	public boolean isCoffeeAction() {
+		if (this.actions == null) {
+			return false;
+		}
+
 		return isCoffeeMemberIn() || isCoffeeDoAction();
 	}
 
