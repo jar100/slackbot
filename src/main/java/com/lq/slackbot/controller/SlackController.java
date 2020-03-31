@@ -79,6 +79,7 @@ public class SlackController {
 
 		// 커피 Run
 		if (actions.isCoffeeAction()) {
+			log.info("12321312312");
 			return coffeeService.run(actions);
 		}
 		// 커피 End

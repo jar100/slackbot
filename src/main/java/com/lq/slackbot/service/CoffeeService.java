@@ -34,11 +34,21 @@ public class CoffeeService {
 		}
 		//커피 뽑기 시작
 		if (actions.isCoffeeDoAction()) {
-			final String[] s = actions.getUpdateCoffeeMessage().split(",");
-			log.info("유저리스트 : {} ", s);
-			MessageService.sendByCoffeeResult(actions,pickUser(Arrays.asList(s)));
+			final String updateCoffeeMessage = actions.getUpdateCoffeeMessage();
+			if (updateCoffeeMessage.isEmpty()) {
+				log.info("not send");
+				return ResponseEntity.ok().build();
+			}
+			final List<String> arg = Arrays.asList(updateCoffeeMessage.split(","));
+			log.info("유저리스트 : {} isEmpty {} size : {}", arg,arg.isEmpty(), arg.size());
+
+			MessageService.sendByCoffeeResult(actions,pickUser(arg));
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.ok().build();
+	}
+
+	public boolean notSend(List<String> users) {
+		return users.isEmpty();
 	}
 }

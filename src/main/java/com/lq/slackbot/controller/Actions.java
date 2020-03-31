@@ -57,7 +57,7 @@ public class Actions {
 	}
 
 	public boolean isCoffeeAction() {
-		return isCoffeeDoAction() || isCoffeeDoAction();
+		return isCoffeeMemberIn() || isCoffeeDoAction();
 	}
 
 	public String getUpdateCoffeeMessage() {

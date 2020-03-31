@@ -254,7 +254,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("actions")
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
-								.action_id("coffe_action")
+								.action_id("coffee_action")
 								.type("button")
 								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("뽑기시작").emoji(false).build())
 								.build()

@@ -55,4 +55,11 @@ class CoffeeServiceTest {
 		final int i = rand.nextInt(userList.size());
 		return userList.get(i);
 	}
+
+	@Test
+	void listCheck() {
+		final List<Object> objects = Arrays.asList();
+		System.out.println(objects.isEmpty());
+
+	}
 }
