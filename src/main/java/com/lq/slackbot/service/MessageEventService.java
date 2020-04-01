@@ -101,7 +101,7 @@ public class MessageEventService {
 
 
 		if (text.contains("커피!")) {
-			MessageService.sendByCoffeeRequest(request.getChannel());
+			MessageService.sendByCoffeeRequest(request);
 			return;
 		}
 	}

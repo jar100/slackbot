@@ -33,7 +33,7 @@ public class CoffeeService {
 			return ResponseEntity.ok().build();
 		}
 		//커피 뽑기 시작
-		if (actions.isCoffeeDoAction()) {
+		if (actions.isCoffeeDoAction() && actions.isStartUser()) {
 			final String updateCoffeeMessage = actions.getUpdateCoffeeMessage();
 			if (updateCoffeeMessage.isEmpty()) {
 				log.info("not send");

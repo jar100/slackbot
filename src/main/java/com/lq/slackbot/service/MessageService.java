@@ -238,14 +238,14 @@ public class MessageService {
 		log.info("WebClient Response: {}", response);
 	}
 
-	public static void sendByCoffeeRequest(final String channel) {
+	public static void sendByCoffeeRequest(final SlackRequest request) {
 		send(SystemUtils.POST_MESSAGE, Message.builder()
-				.channel(channel)
+				.channel(request.getChannel())
 				.text("커피 뽑기")
-				.blocks(coffeeBlack())
+				.blocks(coffeeBlack(request.getUserId()))
 				.build());
 	}
-	private static String coffeeBlack() {
+	private static String coffeeBlack(final String userId) {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -254,6 +254,7 @@ public class MessageService {
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
+				.block_id(userId)
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 								.action_id("coffee_action")
 								.type("button")
@@ -281,6 +282,7 @@ public class MessageService {
 		}
 		blockList.add(ModalBlock.builder()
 				.type("actions")
+				.block_id(actions.getActions().get(0).getBlock_id())
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 						.action_id("coffee_action")
 						.type("button")

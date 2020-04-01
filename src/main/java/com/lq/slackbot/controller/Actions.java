@@ -26,7 +26,12 @@ public class Actions {
 		return actions.get(0).action_id;
 	}
 
-
+	public boolean isStartUser() {
+		if (actions.isEmpty()) {
+			return false;
+		}
+		return user.equals(SlackUser.builder().id(actions.get(0).block_id).build());
+	}
 
 
 	@Data
@@ -34,6 +39,7 @@ public class Actions {
 	@NoArgsConstructor
 	public static class Acution {
 		private String action_id;
+		private String block_id;
 		private String value;
 	}
 

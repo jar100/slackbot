@@ -17,6 +17,7 @@ public class SlackUser {
 	private String name;
 
 
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
