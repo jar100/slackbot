@@ -250,7 +250,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).value("coffee_into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value("coffee_into").build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
@@ -272,7 +272,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).value("coffee_into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value("coffee_into").build())
 				.build());
 		if (!joinUsers.isEmpty()) {
 			blockList.add(ModalBlock.builder()
