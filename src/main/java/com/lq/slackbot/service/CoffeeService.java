@@ -36,7 +36,7 @@ public class CoffeeService {
 		//검증
 		log.info("스타트 유저 검증 : {}", actions.isStartUser());
 
-		if (actions.isCoffeeDoAction()) {
+		if (actions.isCoffeeDoAction() && actions.isStartUser()) {
 			final String updateCoffeeMessage = actions.getUpdateCoffeeMessage();
 			if (updateCoffeeMessage.isEmpty()) {
 				log.info("not send");

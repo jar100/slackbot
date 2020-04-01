@@ -26,11 +26,19 @@ public class Actions {
 		return actions.get(0).action_id;
 	}
 
+	public String getValue() {
+		if (actions.isEmpty()) {
+			return "";
+		}
+		return actions.get(0).getValue();
+	}
+
+
 	public boolean isStartUser() {
 		if (actions.isEmpty()) {
 			return false;
 		}
-		return user.equals(SlackUser.builder().id(actions.get(0).block_id).build());
+		return user.equals(SlackUser.builder().id(actions.get(0).value).build());
 	}
 
 
@@ -55,7 +63,7 @@ public class Actions {
 	}
 
 	public boolean isCoffeeMemberIn() {
-		return "coffee_into".equals(this.actions.get(0).value);
+		return "coffee_into".equals(this.actions.get(0).action_id);
 	}
 
 	public boolean isCoffeeDoAction() {

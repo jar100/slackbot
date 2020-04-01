@@ -250,13 +250,14 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value("coffee_into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value(userId).build())
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
 				.block_id(userId)
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 								.action_id("coffee_action")
+								.value(userId)
 								.type("button")
 								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("뽑기시작").emoji(false).build())
 								.build()
@@ -272,7 +273,7 @@ public class MessageService {
 		blockList.add(ModalBlock.builder()
 				.type("section")
 				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
-				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value("coffee_into").build())
+				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value(actions.getValue()).build())
 				.build());
 		if (!joinUsers.isEmpty()) {
 			blockList.add(ModalBlock.builder()
@@ -285,6 +286,7 @@ public class MessageService {
 				.block_id(actions.getActions().get(0).getBlock_id())
 				.elements(Arrays.asList(ModalBlock.Elements.builder()
 						.action_id("coffee_action")
+						.value(actions.getValue())
 						.type("button")
 						.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("뽑기시작").emoji(false).build())
 						.build()
