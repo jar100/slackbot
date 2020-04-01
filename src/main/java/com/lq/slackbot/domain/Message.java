@@ -15,4 +15,7 @@ public class Message {
 	private String blocks;
 	private String ts;
 
+	//postEphemeral
+	private String attachments;
+	private String user;
 }

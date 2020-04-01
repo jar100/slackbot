@@ -33,7 +33,7 @@ class CoffeeServiceTest {
 		int zero = 0;
 		int two = 0;
 		String[] userList = {"a", "b", "c"};
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100000; i++) {
 			String user = pickUser(Arrays.asList(userList));
 			switch (user) {
 				case "a":
