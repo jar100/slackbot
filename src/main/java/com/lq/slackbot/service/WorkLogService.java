@@ -54,15 +54,25 @@ public class WorkLogService {
 		}
 		final Mono<String> stringMono = byebye.bodyToMono(String.class);
 		log.info("퇴근성공 : {}", stringMono.block());
-		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), LocalDate.now().toString(), LocalDate.now().toString());
-		log.info("format : {}",format);
-		final ClientResponse dailyWork = workLogClient.get().uri(format).exchange().block();
-		log.info("daily work httpcode; {}",dailyWork.statusCode());
-		final Mono<String> listMono = dailyWork.bodyToMono(String.class);
-		final Mono<List> listMono1 = dailyWork.bodyToMono(List.class);
-		log.info("테스트 : {} , 리스트 : {}",listMono.block(),listMono1.block());
+//		final String format = String.format("/api/get_all?userId=%s&startDate=%s&endDate=%s", request.getUser_id(), LocalDate.now().toString(), LocalDate.now().toString());
+//		log.info("format : {}",format);
+//		final ClientResponse dailyWork = workLogClient.get().uri(format).exchange().block();
+//		log.info("daily work httpcode; {}",dailyWork.statusCode());
+//		final Mono<String> listMono = dailyWork.bodyToMono(String.class);
+//		final Mono<List> listMono1 = dailyWork.bodyToMono(List.class);
+//		log.info("테스트 : {} , 리스트 : {}",listMono.block(),listMono1.block());
 		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
+	}
 
-
+	public WorkLogResult vacation(String slackId) {
+		final WorkLogUser login = login(slackId);
+		final WorkLogRequest request = login.toWorkLogRequest("VACATION");
+		final ClientResponse response = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(request)).exchange().block();
+		if (response.statusCode() != HttpStatus.OK) {
+			return WorkLogResult.builder().result(false).userName(login.getReal_name()).build();
+		}
+		final Mono<String> stringMono = response.bodyToMono(String.class);
+		log.info("휴가성공 : {}", stringMono.block());
+		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
 	}
 }

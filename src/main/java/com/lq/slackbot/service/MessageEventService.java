@@ -53,12 +53,6 @@ public class MessageEventService {
 			// 출근컨트롤러
 			//todo refactoring 봇 테스트만 메세지 보내게 변경
 			String channel = request.getChannel();
-			//b2b and test 체널만 개인메세지 가게 수정
-//			if (channel.equals("GT9V0K9RS") || channel.equals("GHJBH4UG4")) {
-//				channel = request.getUserId();
-//				log.info(channel);
-//			}
-
 			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser());
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
@@ -78,16 +72,8 @@ public class MessageEventService {
 		}
 		if (text.contains("퇴근!")) {
 			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
-
-			//todo refactoring 봇 테스트만 메세지 보내게 변경
 			String channel = request.getChannel();
 			//b2b and test 체널만 개인메세지 가게 수정
-//			if (channel.equals("GT9V0K9RS") || channel.equals("GHJBH4UG4")) {
-//				channel = request.getUserId();
-//				log.info(channel);
-//			}
-
-
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
 						.attachments("출퇴근")
@@ -104,6 +90,28 @@ public class MessageEventService {
 					.build());
 			return;
 		}
+		if (text.contains("휴가!")) {
+			final WorkLogResult result = workLogService.vacation(request.getEvent().getUser());
+			String channel = request.getChannel();
+			//b2b and test 체널만 개인메세지 가게 수정
+			if (!result.isResult()) {
+				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
+						.attachments("출퇴근")
+						.user(request.getUserId())
+						.channel(channel)
+						.text(result.getUserName() + "님 휴가 실패!")
+						.build());
+			}
+			MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
+					.attachments("출퇴근")
+					.user(request.getUserId())
+					.channel(channel)
+					.text(String.format("%s 님 휴가 사용 성공! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.build());
+			return;
+		}
+
+
 		// 출퇴근 end
 
 
