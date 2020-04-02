@@ -241,10 +241,9 @@ public class SchedulerService implements InitializingBean {
 		scheduleRepository.findAllByUsed(true).forEach(this::accept);
 	}
 
-	private void accept(Schedule e) {
-		final JobRequest jobRequest = e.toJobRequest();
-		if (validJob(jobRequest)) {
-			addJob(jobRequest, CronJob.class);
+	private void accept(Schedule schedule) { ;
+		if (validJob(schedule)) {
+			addJob(schedule, CronJob.class);
 		}
 	}
 }
