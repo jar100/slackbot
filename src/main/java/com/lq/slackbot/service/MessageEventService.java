@@ -27,7 +27,6 @@ public class MessageEventService {
 	}
 
 	public void run(final SlackRequest request) {
-		String message = null;
 		final String text = request.getEvent().getText();
 		log.info("text : {}", text);
 		if (!"message_changed".equals(request.getEvent().getSubtype()) ) {
@@ -40,15 +39,25 @@ public class MessageEventService {
 			return;
 		}
 
-
 		// 점심 이벤트
 		if (text.contains(MessageEventType.LUNCH.getLabel())) {
 			restaurantEvent(request);
 			return;
 		}
 
-
 		// todo 출퇴근 서비스, 출퇴근 매서드로 분할 하자. 출퇴근 start
+		if (work(request, text)) return;
+		// 출퇴근 end
+
+		if (text.contains("커피!")) {
+			MessageService.sendByCoffeeRequest(request);
+			return;
+		}
+	}
+
+
+	//todo  출퇴근 컨트롤러로 빼자
+	private boolean work(final SlackRequest request, final String text) {
 		if (text.contains("출근!")) {
 			// 출근컨트롤러
 			//todo refactoring 봇 테스트만 메세지 보내게 변경
@@ -68,7 +77,7 @@ public class MessageEventService {
 					.channel(channel)
 					.text(String.format("%s 님 출근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
-			return;
+			return true;
 		}
 		if (text.contains("퇴근!")) {
 			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
@@ -88,7 +97,7 @@ public class MessageEventService {
 					.channel(channel)
 					.text(String.format("%s 님 퇴근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
-			return;
+			return true;
 		}
 		if (text.contains("휴가!")) {
 			final WorkLogResult result = workLogService.vacation(request.getEvent().getUser());
@@ -108,18 +117,9 @@ public class MessageEventService {
 					.channel(channel)
 					.text(String.format("%s 님 휴가 사용 성공! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
-			return;
+			return true;
 		}
-
-
-		// 출퇴근 end
-
-
-
-		if (text.contains("커피!")) {
-			MessageService.sendByCoffeeRequest(request);
-			return;
-		}
+		return false;
 	}
 
 	private String restaurantEvent(final SlackRequest request) {

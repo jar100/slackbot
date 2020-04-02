@@ -57,6 +57,7 @@ public class MessageService {
 			return;
 		}
 
+
 		if (StringUtils.isEmpty(view)) {
 			return;
 		}
@@ -109,7 +110,7 @@ public class MessageService {
 
 		for (Schedule schedule : allByUsed) {
 			blockList.add(ModalBlock.builder()
-					.block_id("scheduleMessage_" + schedule.getName())
+					.block_id("scheduleMessage_" + schedule.getIdToString())
 					.type("section")
 					.text(ModalBlock.Content.builder().type("mrkdwn").text("*" +
 							schedule.getName() +
@@ -120,11 +121,11 @@ public class MessageService {
 							"\n").build())
 					.build());
 			blockList.add(ModalBlock.builder()
-					.block_id("scheduleUpdate_" + schedule.getName())
+					//.block_id( schedule.getIdToString())
 					.type("actions")
 					.elements(Arrays.asList(
-							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).value("scheduleUpdate_action_" + schedule.getName()).build(),
-							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).value("scheduleDeleted_action_" + schedule.getName()).build()
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).action_id("scheduleUpdate_action").value(schedule.getIdToString()).build(),
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).action_id("scheduleDeleted_action").value(schedule.getIdToString()).build()
 					))
 					.build());
 		}

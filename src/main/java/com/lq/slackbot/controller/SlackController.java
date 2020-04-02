@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
-import com.lq.slackbot.domain.schedule.JobRequest;
+import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.service.CoffeeService;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
@@ -50,7 +50,7 @@ public class SlackController {
 	//이벤트 리스너
 	@PostMapping("/slack/events")
 	public ResponseEntity<?> handleEvents(@RequestBody JsonNode reqJson) throws JsonProcessingException {
-		log.info("events request : {}",reqJson.toString());
+		log.info("events request : {}", reqJson.toString());
 		final SlackRequest slackRequest = objectMapper.convertValue(reqJson, SlackRequest.class);
 		log.info("slack request : {}", slackRequest);
 
@@ -67,13 +67,13 @@ public class SlackController {
 	}
 
 	//모달이 아니라 동적 핸들링
-	@PostMapping(value = "/slack/modal", produces="text/plain;charset=UTF-8")
-	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload ) throws JsonProcessingException, NoSuchAlgorithmException {
-		log.info("payload : {}" , payload);
+	@PostMapping(value = "/slack/modal", produces = "text/plain;charset=UTF-8")
+	public ResponseEntity<?> event(@RequestParam(name = "payload") String payload) throws JsonProcessingException, NoSuchAlgorithmException {
+		log.info("payload : {}", payload);
 		final Actions actions = objectMapper.readValue(payload, Actions.class);
-		log.info("엑션스 : {}",actions);
+		log.info("엑션스 : {}", actions);
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
-		log.info("모달블럭 : {}",payload1);
+		log.info("모달블럭 : {}", payload1);
 
 		// 커피 Run
 		if (actions.isCoffeeAction()) {
@@ -88,24 +88,35 @@ public class SlackController {
 
 	private void schedule(final Actions actions, final SlackMessageEvent payload1) {
 		if (actions.getAction() != null) {
-			//메세지 팝업창 스캐줄버튼은 엑션이 아니다...
-			MessageService.sendMessageByModal(actions,payload1.getChannelId());
-		} else if (payload1.isViewSubmission()) {
-			//동작스케줄 창띄우기
-			final ResponseEntity<ApiResponse> apiResponseResponseEntity = schelduleService.addSchedule(JobRequest.builder()
-					.jobGroup(payload1.getSubmissionChannelId())
-					.jobName(payload1.getScheduleTitle())
+			if (actions.getAction().equals("scheduleDeleted_action")) {
+				final String value = actions.getValue();
+				schelduleService.deleteJobs(value);
+			}
+
+
+
+
+			MessageService.sendMessageByModal(actions, payload1.getChannelId());
+			return;
+		}
+		//모달창의 서브밋은 엑션이 이나디ㅏ.
+		if (payload1.isViewSubmission()) {
+			//스캐줄 생성
+			final ResponseEntity<ApiResponse> apiResponseResponseEntity = schelduleService.addSchedule(Schedule.builder()
+					.channel(payload1.getSubmissionChannelId())
+					.name(payload1.getScheduleTitle())
 					.cronExpression(payload1.getScheduleTimes())
-					.jobDataMap(payload1.getScheduleMessages())
+					.message(payload1.getScheduleMessages())
+					.used(true)
 					.build());
-			MessageService.sendMessageV3(payload1.getSubmissionChannelId(),apiResponseResponseEntity.getBody().getMessage());
+			MessageService.sendMessageV3(payload1.getSubmissionChannelId(), apiResponseResponseEntity.getBody().getMessage());
 		}
 	}
 
 	/**
 	 * 응답을 먼저 반환해야 slack에서 재요청을 안보냄 그래서 비동기처리
 	 * 여기도 리퀘스트 통일시켜야함... slackRequest == Actions
-	 * */
+	 */
 	@Async
 	public void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {
 		final EventType of = EventType.of(slackRequest.eventType());

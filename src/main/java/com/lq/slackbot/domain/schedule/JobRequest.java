@@ -16,5 +16,10 @@ public class JobRequest {
 	private String cronExpression;
 	private String jobDataMap;
 	private String channelName;
+	private Long jobId;
 
+
+	public boolean isUpdateJob() {
+		return jobId != null;
+	}
 }

@@ -42,13 +42,13 @@ public class SlackMessageHandler {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("Hello World").build());
-		} else if (text.contains("명령어")) {
+		} else if (text.contains("schedule!")) {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("test")
 					.blocks(createSelectBlock())
 					.build());
-		} else if (text.contains("schedule!")) {
+		} else if (text.contains("schedule2!")) {
 			// @adfqwef schedule! "제목" "클론식" "메세지ㅁㄴㅇㄹㅁㄴㄹㅇㅁㄴㅇㄹㄴㅇ ㄹ"
 			final String[] split = text.split("\"");
 			final ResponseEntity<ApiResponse> responseEntity = schedulerService.addSchedule(JobRequest.builder()

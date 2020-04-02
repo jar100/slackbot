@@ -35,4 +35,17 @@ public class Schedule {
 	public JobRequest toJobRequest(){
 		return JobRequest.builder().jobGroup(this.channel).jobName(this.name).cronExpression(this.cronExpression).jobDataMap(this.message).build();
 	}
+
+	public Schedule unUsed() {
+		this.used = false;
+		return this;
+	}
+
+	public String getIdToString() {
+		return "" + id;
+	}
+
+	public boolean isUpdateJob() {
+		return id != null;
+	}
 }
