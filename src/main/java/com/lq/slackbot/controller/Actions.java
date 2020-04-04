@@ -33,33 +33,16 @@ public class Actions {
 		return actions.get(0).getValue();
 	}
 
+	public String getChannelName() {
+		return channel.getName();
+	}
+
 
 	public boolean isStartUser() {
 		if (actions.isEmpty()) {
 			return false;
 		}
 		return user.equals(SlackUser.builder().id(actions.get(0).value).build());
-	}
-
-
-	@Data
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class Acution {
-		private String action_id;
-		private String block_id;
-		private String value;
-	}
-
-	@Data
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class ActionData {
-		private String type;
-		private String text;
-		private String user;
-		private String ts;
-		private List<ModalBlock> blocks;
 	}
 
 	public boolean isCoffeeMemberIn() {
@@ -83,5 +66,40 @@ public class Actions {
 			return this.message.blocks.get(1).getMessageText();
 		}
 		return "";
+	}
+	public boolean isRestaurantList() {
+		return "restaurantList".equals(this.actions.get(0).action_id);
+	}
+
+	public boolean isRetryRestaurant() {
+		return "retry_restaurant".equals(this.actions.get(0).action_id);
+	}
+
+	public boolean isRestaurantAction() {
+		if (this.actions == null) {
+			return false;
+		}
+		return isRestaurantList() || isRetryRestaurant();
+	}
+
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class Acution {
+		private String action_id;
+		private String block_id;
+		private String value;
+	}
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ActionData {
+		private String type;
+		private String text;
+		private String user;
+		private String ts;
+		private List<ModalBlock> blocks;
 	}
 }

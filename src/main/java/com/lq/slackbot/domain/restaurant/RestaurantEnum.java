@@ -1,11 +1,13 @@
-package com.lq.slackbot.domain;
+package com.lq.slackbot.domain.restaurant;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum Restaurant {
+
+//일단 디폴트로 만들어놓고 추가하는 형식으로 할까??
+public enum RestaurantEnum {
 	NO1(1, "후레쉬빌"),
 	NO2(2, "록스플레이트"),
 	NO3(3, "이태리부대찌개"),
@@ -24,7 +26,7 @@ public enum Restaurant {
 	private int index;
 	private String name;
 
-	Restaurant(final int index, final String name) {
+	RestaurantEnum(final int index, final String name) {
 		this.index = index;
 		this.name = name;
 	}
@@ -33,10 +35,14 @@ public enum Restaurant {
 //		return Arrays.stream(values()).filter(o->o.index == index).findFirst().orElse(NONE);
 //	}
 
-	public static List<Restaurant> list() {
-		final List<Restaurant> collect = Arrays.stream(values()).collect(Collectors.toList());
+	public static List<RestaurantEnum> list() {
+		final List<RestaurantEnum> collect = Arrays.stream(values()).collect(Collectors.toList());
 		Collections.shuffle(collect);
 		return collect;
+	}
+
+	public Restaurant ToRestaurant(String channel) {
+		return Restaurant.builder().name(this.name).channel(channel).count(0).build();
 	}
 
 	public String getName() {

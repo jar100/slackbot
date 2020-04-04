@@ -1,4 +1,4 @@
-package com.lq.slackbot.domain;
+package com.lq.slackbot.domain.worklog;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.schedule.Schedule;
-import com.lq.slackbot.service.CoffeeService;
-import com.lq.slackbot.service.MessageEventService;
-import com.lq.slackbot.service.MessageService;
-import com.lq.slackbot.service.SchedulerService;
+import com.lq.slackbot.service.*;
 import com.lq.slackbot.utils.SlackMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +23,16 @@ public class SlackController {
 	private final SchedulerService schelduleService;
 	private final SlackMessageHandler messageHandler;
 	private final CoffeeService coffeeService;
+	private final RestaurantService restaurantService;
 
-	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final SchedulerService schelduleService, final SlackMessageHandler messageHandler, final CoffeeService coffeeService) {
+	public SlackController(final ObjectMapper objectMapper, final MessageService service, final MessageEventService messageEventService, final SchedulerService schelduleService, final SlackMessageHandler messageHandler, final CoffeeService coffeeService, final RestaurantService restaurantService) {
 		this.objectMapper = objectMapper;
 		this.service = service;
 		this.messageEventService = messageEventService;
 		this.schelduleService = schelduleService;
 		this.messageHandler = messageHandler;
 		this.coffeeService = coffeeService;
+		this.restaurantService = restaurantService;
 	}
 
 	@GetMapping("/init")
@@ -75,11 +74,17 @@ public class SlackController {
 		final SlackMessageEvent payload1 = objectMapper.readValue(payload, SlackMessageEvent.class);
 		log.info("모달블럭 : {}", payload1);
 
-		// 커피 Run
+		// 커피 Start
 		if (actions.isCoffeeAction()) {
 			return coffeeService.run(actions);
 		}
 		// 커피 End
+
+		// 밥 Start
+		if (actions.isRestaurantAction()) {
+			return 	restaurantService.run(actions);
+		}
+		// 밥 End
 
 		//todo  payload1 를 actions 와 통합 할 수 있을거같다.
 		schedule(actions, payload1);
@@ -94,7 +99,7 @@ public class SlackController {
 				//todo 모달창에서 수정시 업데이트
 				//삭제한 리스트 하나 삭제, 리스트 업데이트 반영
 			}
-			MessageService.sendMessageByModal(actions, payload1.getChannelId());
+			MessageService.sendMessageByModal(actions);
 			return;
 		}
 		//모달창의 서브밋은 엑션이 이나디ㅏ.

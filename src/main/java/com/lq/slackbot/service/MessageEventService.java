@@ -1,6 +1,8 @@
 package com.lq.slackbot.service;
 
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.restaurant.RestaurantEnum;
+import com.lq.slackbot.domain.worklog.WorkLogResult;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ public class MessageEventService {
 	private MessageService messageService;
 	private WorkLogService workLogService;
 	private RestaurantService restaurantService;
-	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
+	private Map<String, List<RestaurantEnum>> slackChannels = new HashMap<>();
 
 	@Autowired
 	public MessageEventService(final MessageService messageService, final WorkLogService workLogService, final RestaurantService restaurantService) {
@@ -144,15 +146,15 @@ public class MessageEventService {
 
 	private void resetRestaurantByChannel(final SlackRequest request) {
 		if (request.getEvent().getText().contains("초기화")) {
-			slackChannels.put(request.getChannel(), Restaurant.list());
+			slackChannels.put(request.getChannel(), RestaurantEnum.list());
 			messageService.sendMessageV3(request.getChannel(),"초기화 합니다.");
 		}
 	}
 
 	public String findRestaurant(String sessionKey) {
-		final List<Restaurant> restaurantList = slackChannels.get(sessionKey);
+		final List<RestaurantEnum> restaurantList = slackChannels.get(sessionKey);
 		if (restaurantList == null || restaurantList.isEmpty()) {
-			slackChannels.put(sessionKey,Restaurant.list());
+			slackChannels.put(sessionKey, RestaurantEnum.list());
 		}
 		return slackChannels.get(sessionKey).remove(0).getName();
 	}

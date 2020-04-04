@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.lq.slackbot.controller.Actions;
 import com.lq.slackbot.domain.*;
+import com.lq.slackbot.domain.restaurant.Restaurant;
 import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.domain.schedule.ScheduleRepository;
 import com.lq.slackbot.utils.SystemUtils;
@@ -32,57 +33,87 @@ public class MessageService {
 		this.scheduleRepository = scheduleRepository;
 	}
 
-	public static void sendMessageByModal(Actions body, String channel) {
+	public static void sendMessageByModal(Actions body) {
 		String view = null;
 		if (body.getAction().equals("scheduler")) {
 			view = createSchedulerBlock();
 		}
 		if (body.getAction().equals("schedulerList")) {
-			view = createSchedulerListBlock(channel);
-			final ModalView modalView = ModalView.builder()
-					.type("modal")
-					.callback_id("scheduleModal_" + channel)
-					.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
-					.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
-					.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
-					.blocks(view)
-					.build();
-
-			ModalResponse response = ModalResponse.builder()
-					.trigger_id(body.getTrigger_id())
-					.view(modalView)
-					.build();
-
-			send(SystemUtils.MODAL_URL, response);
+			view = ModalBlacktToJson(getScheduleListBlocks(body.getChannelName()));
+			sendModal(body, view);
 			return;
 		}
-
 
 		if (StringUtils.isEmpty(view)) {
 			return;
 		}
+		sendModal(body, view);
+	}
 
-		final ModalView modalView = ModalView.builder()
+	private static String ModalBlacktToJson(List<ModalBlock> blockList) {
+		Gson gson = new Gson();
+		return gson.toJson(blockList);
+	}
+
+
+	private static List<ModalBlock> createRestaurantListBlack(final String channelName, final List<Restaurant> byChannelOrderByCountDesc) {
+		log.info("bob List {}, channel : {}",byChannelOrderByCountDesc, channelName);
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.block_id("schedulerList")
+				.text(ModalBlock.Content.builder()
+						.type(SystemUtils.PLAIN_TEXT)
+						.text(":wave: 반복할 메세지를 세팅해 주세요")
+						.emoji(true)
+						.build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("divider")
+				.build());
+		//포문
+		if (byChannelOrderByCountDesc.isEmpty()) {
+			return blockList;
+		}
+
+		// 세팅할 리스트들을 넣어준다.
+		for (Restaurant object : byChannelOrderByCountDesc) {
+			final String text = object.view();
+			blockList.add(ModalBlock.builder()
+//					.block_id("scheduleMessage_" + schedule.getIdToString())
+					.type("section")
+					.text(ModalBlock.Content.builder().type("mrkdwn").text(text).build())
+					.build());
+			blockList.add(ModalBlock.builder()
+					//.block_id( schedule.getIdToString())
+					.type("actions")
+					.elements(Arrays.asList(
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).action_id("scheduleUpdate_action").value(object.actionValue()).build(),
+							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).action_id("scheduleDeleted_action").value(object.actionValue()).build()
+					))
+					.build());
+		}
+		return blockList;
+	}
+
+	private static void sendModal(final Actions body, final String view) {
+		final ModalView modalView = getModalView(body, view);
+		ModalResponse response = ModalResponse.builder()
+				.trigger_id(body.getTrigger_id())
+				.view(modalView)
+				.build();
+		send(SystemUtils.MODAL_URL, response);
+	}
+
+	private static ModalView getModalView(final Actions body, final String view) {
+		return ModalView.builder()
 				.type("modal")
-				.callback_id("scheduleModal_" + channel)
+				.callback_id("scheduleModal_" + body.getChannelName())
 				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
 				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
 				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
 				.blocks(view)
 				.build();
-
-		ModalResponse response = ModalResponse.builder()
-				.trigger_id(body.getTrigger_id())
-				.view(modalView)
-				.build();
-
-		send(SystemUtils.MODAL_URL, response);
-	}
-
-	private static String createSchedulerListBlock(final String channel) {
-		Gson gson = new Gson();
-		List<ModalBlock> blockList = getScheduleListBlocks(channel);
-		return gson.toJson(blockList);
 	}
 
 	private static List<ModalBlock> getScheduleListBlocks(final String channel) {
@@ -221,16 +252,32 @@ public class MessageService {
 				.build());
 		blockList.add(ModalBlock.builder()
 				.type("actions")
-				.elements(Arrays.asList(ModalBlock.Elements.builder()
+				.elements(Arrays.asList(
+						//모달창
+						ModalBlock.Elements.builder()
 								.action_id("restaurantList")
 								.type("button")
-								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("통").emoji(false).build())
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("밥리스트").emoji(false).build())
 								.build(),
+//						//모달창
+//						ModalBlock.Elements.builder()
+//								.action_id("add_restaurant")
+//								.type("button")
+//								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("밥추가").emoji(false).build())
+//								.build(),
+//						//모달창
+//						ModalBlock.Elements.builder()
+//								.action_id("select_restaurant")
+//								.type("button")
+//								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("수동선택").emoji(false).build())
+//								.build(),
+						//메세지수정
 						ModalBlock.Elements.builder()
-								.action_id("retry_restaurant")계
+								.action_id("retry_restaurant")
 								.type("button")
 								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("다시").emoji(false).build())
 								.build(),
+						//메세지수정
 						ModalBlock.Elements.builder()
 								.action_id("submit_restaurant")
 								.type("button")
@@ -247,7 +294,7 @@ public class MessageService {
 	}
 
 	public static void sendMessageByRestaurant(String channel, String restaurant) {
-		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text("test").blocks(createRestaurantBlack(restaurant)).build());
+		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text("밥").blocks(createRestaurantBlack(restaurant)).build());
 
 	}
 
@@ -302,7 +349,6 @@ public class MessageService {
 	}
 
 	private static String updateCoffeeBlack(Actions actions) {
-		log.info("aptpwl ; {}",actions.getUpdateCoffeeMessage());
 		final String joinUsers = createJoinUser(actions);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
@@ -390,15 +436,23 @@ public class MessageService {
 				.build());
 	}
 
-	public static void resultCoffee(Actions actions) {
-		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
-				.channel(actions.getChannel().getId())
-				.text("커피 뽑기")
-				.ts(actions.getMessage().getTs())
-				.blocks(updateCoffeeBlack(actions))
-				.build());
+	public static void sendMessageByModalV2(final Actions actions, final List<Restaurant> byChannelOrderByCountDesc) {
+		String view = null;
+		if(actions.isRestaurantList()) {
+			view = ModalBlacktToJson(createRestaurantListBlack(actions.getChannelName(),byChannelOrderByCountDesc));
+			sendModal(actions, view);
+			return;
+		}
 	}
 
+	public static void updateByRestaurant(Actions actions, String restaurant) {
+		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
+				.channel(actions.getChannel().getId())
+				.text("밥")
+				.ts(actions.getMessage().getTs())
+				.blocks(createRestaurantBlack(restaurant))
+				.build());
+	}
 
 	public String getToken() {
 		return SystemUtils.TOKEN;

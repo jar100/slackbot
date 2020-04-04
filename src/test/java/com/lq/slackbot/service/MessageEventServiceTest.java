@@ -1,9 +1,7 @@
 package com.lq.slackbot.service;
 
-import com.lq.slackbot.domain.Restaurant;
+import com.lq.slackbot.domain.restaurant.RestaurantEnum;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +20,7 @@ class MessageEventServiceTest {
 
 	@Test
 	void name() {
-		final double random = Math.random() * (Restaurant.values().length - 1);
+		final double random = Math.random() * (RestaurantEnum.values().length - 1);
 		System.out.println(random);
 
 	}

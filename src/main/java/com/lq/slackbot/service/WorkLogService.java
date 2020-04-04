@@ -1,20 +1,15 @@
 package com.lq.slackbot.service;
 
-import com.lq.slackbot.domain.WorkLogRequest;
-import com.lq.slackbot.domain.WorkLogResult;
-import com.lq.slackbot.domain.WorkLogUser;
+import com.lq.slackbot.domain.worklog.WorkLogRequest;
+import com.lq.slackbot.domain.worklog.WorkLogResult;
+import com.lq.slackbot.domain.worklog.WorkLogUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Slf4j
 @Service
