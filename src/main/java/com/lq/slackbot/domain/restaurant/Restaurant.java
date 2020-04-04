@@ -26,7 +26,7 @@ public class Restaurant {
 	private String channel;
 
 	@Builder.Default
-	private boolean use = true;
+	private boolean isUse = true;
 
 	public String actionValue() {
 		return name + "_" + id;
