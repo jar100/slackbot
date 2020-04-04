@@ -75,11 +75,15 @@ public class Actions {
 		return "retry_restaurant".equals(this.actions.get(0).action_id);
 	}
 
+	public boolean isSubmitRestaurant() {
+		return "submit_restaurant".equals(this.actions.get(0).action_id);
+	}
+
 	public boolean isRestaurantAction() {
 		if (this.actions == null) {
 			return false;
 		}
-		return isRestaurantList() || isRetryRestaurant();
+		return isRestaurantList() || isRetryRestaurant() || isSubmitRestaurant();
 	}
 
 

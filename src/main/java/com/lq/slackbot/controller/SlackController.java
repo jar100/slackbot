@@ -82,7 +82,7 @@ public class SlackController {
 
 		// 밥 Start
 		if (actions.isRestaurantAction()) {
-			return 	restaurantService.run(actions);
+			return restaurantService.run(actions);
 		}
 		// 밥 End
 

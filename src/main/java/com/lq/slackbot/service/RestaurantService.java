@@ -71,6 +71,11 @@ public class RestaurantService {
 			MessageService.updateByRestaurant(actions,restaurant);
 		}
 
+		if (actions.isSubmitRestaurant()) {
+			MessageService.sendMessageV3(actions.getChannelName(),tempRestaurant.get(actions.getChannelName()).getName());
+		}
+
+
 		return ResponseEntity.ok().build();
 
 	}
