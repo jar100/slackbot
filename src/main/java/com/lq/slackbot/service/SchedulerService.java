@@ -36,7 +36,7 @@ public class SchedulerService implements InitializingBean {
 		try {
 			jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(jobKey);
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			log.info("스캐줄 생성실패 : {}", e.getMessage(), e);
 			return false;
 		}
 		return jobDetail != null;
@@ -114,7 +114,6 @@ public class SchedulerService implements InitializingBean {
 	}
 
 	public JobStatusResponse getAllJobs() {
-		JobResponse jobResponse;
 		JobStatusResponse jobStatusResponse = new JobStatusResponse();
 		List<JobResponse> jobs = new ArrayList<>();
 		int numOfRunningJobs = 0;
@@ -151,7 +150,7 @@ public class SchedulerService implements InitializingBean {
 	public ResponseEntity<ApiResponse> addSchedule(final JobRequest jobRequest) {
 		boolean isSuccess = false;
 		Schedule save = null;
-		if (!jobRequest.isUpdateJob() && validJob(jobRequest)) {
+		if (!jobRequest.isUpdateJob() && Boolean.TRUE.equals(validJob(jobRequest))) {
 			save = scheduleRepository.save(Schedule.builder()
 					.channel(jobRequest.getJobGroup())
 					.name(jobRequest.getJobName())
@@ -169,7 +168,7 @@ public class SchedulerService implements InitializingBean {
 
 	public ResponseEntity<ApiResponse> addSchedule(Schedule save) {
 		boolean isSuccess = false;
-		if (!save.isUpdateJob() && validJob(save)) {
+		if (!save.isUpdateJob() && Boolean.TRUE.equals(validJob(save))) {
 			save = scheduleRepository.save(save);
 			isSuccess = addJob(save, CronJob.class);
 			if (!isSuccess) {
@@ -241,8 +240,8 @@ public class SchedulerService implements InitializingBean {
 		scheduleRepository.findAllByUsed(true).forEach(this::accept);
 	}
 
-	private void accept(Schedule schedule) { ;
-		if (validJob(schedule)) {
+	private void accept(Schedule schedule) {
+		if (Boolean.TRUE.equals(validJob(schedule))) {
 			addJob(schedule, CronJob.class);
 		}
 	}

@@ -23,4 +23,28 @@ class RestaurantServiceTest {
 		final String stringMono = block.bodyToMono(String.class).block();
 		System.out.println(stringMono);
 	}
+
+
+	@Test
+	void findRestaurantList() {
+		// 레스토랑을 불러온다.
+	}
+
+	@Test
+	void 다시_돌리기() {
+		//dailyList 를 사용해 다시 돌린다.(1스택) 바로 이전에 뽑은건 나오지 않는다.\
+	}
+
+	@Test
+	void commit_restaurant() {
+		//오늘 레스토랑을 선택한다.
+		// 채널에 해당하는 레스토랑 리스트 에 선택한 음식의 카운트를 증가시킨다.
+
+	}
+
+	@Test
+	void 통계_획인() {
+		//해당하는 채널의 레스토랑의 순위를 뽑는다.
+
+	}
 }

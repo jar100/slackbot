@@ -212,9 +212,43 @@ public class MessageService {
 		return gson.toJson(blockList);
 	}
 
+	public static String createRestaurantBlack(String restaurant) {
+		Gson gson = new Gson();
+		List<ModalBlock> blockList = new ArrayList();
+		blockList.add(ModalBlock.builder()
+				.type("section")
+				.text(ModalBlock.Content.builder().type("mrkdwn").text(restaurant).build())
+				.build());
+		blockList.add(ModalBlock.builder()
+				.type("actions")
+				.elements(Arrays.asList(ModalBlock.Elements.builder()
+								.action_id("restaurantList")
+								.type("button")
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("통").emoji(false).build())
+								.build(),
+						ModalBlock.Elements.builder()
+								.action_id("retry_restaurant")계
+								.type("button")
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("다시").emoji(false).build())
+								.build(),
+						ModalBlock.Elements.builder()
+								.action_id("submit_restaurant")
+								.type("button")
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("선택").emoji(false).build())
+								.build()))
+				.build());
+
+		return gson.toJson(blockList);
+	}
+
 
 	public static void sendMessageV3(String channel, String message) {
 		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text(message).build());
+	}
+
+	public static void sendMessageByRestaurant(String channel, String restaurant) {
+		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text("test").blocks(createRestaurantBlack(restaurant)).build());
+
 	}
 
 

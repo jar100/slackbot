@@ -18,12 +18,14 @@ import java.util.Map;
 public class MessageEventService {
 	private MessageService messageService;
 	private WorkLogService workLogService;
+	private RestaurantService restaurantService;
 	private Map<String, List<Restaurant>> slackChannels = new HashMap<>();
 
 	@Autowired
-	public MessageEventService(final MessageService messageService, final WorkLogService workLogService) {
+	public MessageEventService(final MessageService messageService, final WorkLogService workLogService, final RestaurantService restaurantService) {
 		this.messageService = messageService;
 		this.workLogService = workLogService;
+		this.restaurantService = restaurantService;
 	}
 
 	public void run(final SlackRequest request) {
@@ -45,7 +47,13 @@ public class MessageEventService {
 			return;
 		}
 
+		if (text.contains("밥2!")) {
+			restaurantService.restaurantEvent(request);
+			return;
+		}
+
 		// todo 출퇴근 서비스, 출퇴근 매서드로 분할 하자. 출퇴근 start
+		// 분기처리와 엑션처리를 분리해야한다. 분기 엑션 한번에 하면 별로임.
 		if (work(request, text)) return;
 		// 출퇴근 end
 
@@ -122,13 +130,12 @@ public class MessageEventService {
 		return false;
 	}
 
+	public void resetRestaurant() {
+		slackChannels = new HashMap<>();
+	}
+
 	private String restaurantEvent(final SlackRequest request) {
 		String restaurant = null;
-		//체널이 구글닥스랑 메핑되있는지 검증
-		//https://docs.google.com/spreadsheets/d/1yHrBv9kbhjSJ0vrGxk_T6_ML9chOICOQrJi9FaY_PfY/edit?usp=sharing
-		// 있으면 레스토랑리스트를 구글닥스에서 가져옴
-
-
 		resetRestaurantByChannel(request);
 		restaurant = findRestaurant(request.getChannel());
 		messageService.sendMessageV3(request.getChannel(), restaurant);
@@ -140,10 +147,6 @@ public class MessageEventService {
 			slackChannels.put(request.getChannel(), Restaurant.list());
 			messageService.sendMessageV3(request.getChannel(),"초기화 합니다.");
 		}
-	}
-
-	public void resetRestaurant() {
-		slackChannels = new HashMap<>();
 	}
 
 	public String findRestaurant(String sessionKey) {

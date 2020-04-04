@@ -91,11 +91,9 @@ public class SlackController {
 			if (actions.getAction().equals("scheduleDeleted_action")) {
 				final String value = actions.getValue();
 				schelduleService.deleteJobs(value);
+				//todo 모달창에서 수정시 업데이트
+				//삭제한 리스트 하나 삭제, 리스트 업데이트 반영
 			}
-
-
-
-
 			MessageService.sendMessageByModal(actions, payload1.getChannelId());
 			return;
 		}
