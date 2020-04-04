@@ -73,6 +73,7 @@ public class RestaurantService {
 
 		if (actions.isSubmitRestaurant()) {
 			final Restaurant restaurant = tempRestaurant.get(actions.getChannelId());
+
 			log.info("결정 : {}", restaurant.getName());
 			restaurant.increaseCount();
 			restaurantRepository.save(restaurant);
