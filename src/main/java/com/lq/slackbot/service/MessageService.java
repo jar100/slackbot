@@ -39,7 +39,7 @@ public class MessageService {
 			view = createSchedulerBlock();
 		}
 		if (body.getAction().equals("schedulerList")) {
-			view = ModalBlacktToJson(getScheduleListBlocks(body.getChannelName()));
+			view = ModalBlacktToJson(getScheduleListBlocks(body.getChannelId()));
 			sendModal(body, view);
 			return;
 		}
@@ -108,7 +108,7 @@ public class MessageService {
 	private static ModalView getModalView(final Actions body, final String view) {
 		return ModalView.builder()
 				.type("modal")
-				.callback_id("scheduleModal_" + body.getChannelName())
+				.callback_id("scheduleModal_" + body.getChannelId())
 				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
 				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
 				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
@@ -295,7 +295,6 @@ public class MessageService {
 
 	public static void sendMessageByRestaurant(String channel, String restaurant) {
 		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text("밥").blocks(createRestaurantBlack(restaurant)).build());
-
 	}
 
 
@@ -439,7 +438,7 @@ public class MessageService {
 	public static void sendMessageByModalV2(final Actions actions, final List<Restaurant> byChannelOrderByCountDesc) {
 		String view = null;
 		if(actions.isRestaurantList()) {
-			view = ModalBlacktToJson(createRestaurantListBlack(actions.getChannelName(),byChannelOrderByCountDesc));
+			view = ModalBlacktToJson(createRestaurantListBlack(actions.getChannelId(),byChannelOrderByCountDesc));
 			sendModal(actions, view);
 			return;
 		}
@@ -451,6 +450,14 @@ public class MessageService {
 				.text("밥")
 				.ts(actions.getMessage().getTs())
 				.blocks(createRestaurantBlack(restaurant))
+				.build());
+	}
+
+	public static void updateResult(Actions actions, String message) {
+		send(SystemUtils.UPDATE_MESSAGE,Message.builder()
+				.channel(actions.getChannel().getId())
+				.text(message)
+				.ts(actions.getMessage().getTs())
 				.build());
 	}
 

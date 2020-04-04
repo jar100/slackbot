@@ -59,20 +59,24 @@ public class RestaurantService {
 
 	public ResponseEntity<?> run(final Actions actions) {
 		if (actions.isRestaurantList()) {
-			List<Restaurant> byChannelOrderByCountDesc = getRestaurant(actions.getChannelName());
+			List<Restaurant> byChannelOrderByCountDesc = getRestaurant(actions.getChannelId());
 			MessageService.sendMessageByModalV2(actions, byChannelOrderByCountDesc);
 			return ResponseEntity.ok().build();
 		}
 
 		if (actions.isRetryRestaurant()) {
-			final List<Restaurant> restaurant1 = getRestaurant(actions.getChannelName());
+			final List<Restaurant> restaurant1 = getRestaurant(actions.getChannelId());
 			String restaurant = findRestaurant(restaurant1);
 			log.info("다시뽑기 : {}",restaurant);
 			MessageService.updateByRestaurant(actions,restaurant);
 		}
 
 		if (actions.isSubmitRestaurant()) {
-			MessageService.sendMessageV3(actions.getChannelName(),tempRestaurant.get(actions.getChannelName()).getName());
+			final Restaurant restaurant = tempRestaurant.get(actions.getChannelId());
+			log.info("결정 : {}", restaurant.getName());
+			restaurant.increaseCount();
+			restaurantRepository.save(restaurant);
+			MessageService.updateResult(actions, restaurant.getName());
 		}
 
 

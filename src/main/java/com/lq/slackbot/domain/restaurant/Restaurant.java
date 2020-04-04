@@ -1,6 +1,7 @@
 package com.lq.slackbot.domain.restaurant;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,9 @@ public class Restaurant {
 	private long count;
 
 	private String channel;
+
+	@Builder.Default
+	private boolean use = true;
 
 	public String actionValue() {
 		return name + "_" + id;
@@ -49,5 +53,9 @@ public class Restaurant {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, name, channel);
+	}
+
+	public void increaseCount() {
+		count ++;
 	}
 }

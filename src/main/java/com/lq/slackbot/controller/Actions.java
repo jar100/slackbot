@@ -33,8 +33,8 @@ public class Actions {
 		return actions.get(0).getValue();
 	}
 
-	public String getChannelName() {
-		return channel.getName();
+	public String getChannelId() {
+		return channel.getId();
 	}
 
 
