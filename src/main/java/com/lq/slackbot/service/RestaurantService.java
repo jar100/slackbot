@@ -100,8 +100,9 @@ public class RestaurantService {
 	}
 
 	public List<Restaurant> getRestaurantByUsed(String channel) {
-		List<Restaurant> byChannelOrderByCountDesc = restaurantRepository.findByChannelAndIsUedOrderByCountDesc(channel,true);
-		if (byChannelOrderByCountDesc.isEmpty()) {
+		final List<Restaurant> byChannelOrderByCountDesc1 = restaurantRepository.findByChannelOrderByCountDesc(channel);
+		List<Restaurant> byChannelOrderByCountDesc = byChannelOrderByCountDesc1.stream().filter(Restaurant::isUse).collect(Collectors.toList());
+		if (byChannelOrderByCountDesc1.isEmpty()) {
 			final List<Restaurant> collect = RestaurantEnum.list().stream().map(e -> e.ToRestaurant(channel)).collect(Collectors.toList());
 			byChannelOrderByCountDesc = restaurantRepository.saveAll(collect);
 		}

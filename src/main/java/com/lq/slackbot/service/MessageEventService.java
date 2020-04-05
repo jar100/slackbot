@@ -44,12 +44,12 @@ public class MessageEventService {
 		}
 
 		// 점심 이벤트
-		if (text.contains(MessageEventType.LUNCH.getLabel())) {
-			restaurantEvent(request);
-			return;
-		}
+//		if (text.contains(MessageEventType.LUNCH.getLabel())) {
+//			restaurantEvent(request);
+//			return;
+//		}
 
-		if (text.contains("밥2!")) {
+		if (text.contains("밥!")) {
 			restaurantService.restaurantEvent(request);
 			return;
 		}

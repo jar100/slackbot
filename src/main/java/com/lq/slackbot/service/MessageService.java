@@ -267,13 +267,13 @@ public class MessageService {
 								.action_id("restaurantList")
 								.value("restaurantList_" + rand.nextInt(50))
 								.type("button")
-								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("밥리스트").emoji(false).build())
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("식당리스트").emoji(false).build())
 								.build(),
 						//메세지수정
 						ModalBlock.Elements.builder()
 								.action_id("retry_restaurant")
 								.type("button")
-								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("다시").emoji(false).build())
+								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("다시뽑기").emoji(false).build())
 								.build(),
 						//메세지수정
 						ModalBlock.Elements.builder()
