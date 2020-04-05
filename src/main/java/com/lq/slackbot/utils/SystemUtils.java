@@ -10,6 +10,7 @@ public class SystemUtils {
 	public static final String UPDATE_MESSAGE = "/chat.update";
 	public static final String CHANNEL_LIST = "/groups.list";
 	public static final String MODAL_URL = "/views.open";
+	public static final String MODAL_UPDATE_URL = "/views.update";
 	public static final String PLAIN_TEXT = "plain_text";
 	public static final String SLACK_BOT_B2B_URL = System.getenv("SLACK_BOT_B2B_URL");
 

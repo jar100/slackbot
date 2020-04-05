@@ -1,6 +1,7 @@
 package com.lq.slackbot.service;
 
 import com.lq.slackbot.controller.Actions;
+import com.lq.slackbot.domain.Channel;
 import com.lq.slackbot.domain.SlackRequest;
 import com.lq.slackbot.domain.restaurant.Restaurant;
 import com.lq.slackbot.domain.restaurant.RestaurantEnum;
@@ -9,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +27,7 @@ public class RestaurantService {
 
 	public String restaurantEvent(final SlackRequest request) {
 		String restaurant = null;
-		final List<Restaurant> restaurant1 = getRestaurant(request.getChannel());
+		final List<Restaurant> restaurant1 = getRestaurantByUsed(request.getChannel());
 		restaurant = findRestaurant(restaurant1);
 		MessageService.sendMessageByRestaurant(request.getChannel(), restaurant);
 		return restaurant;
@@ -64,8 +62,25 @@ public class RestaurantService {
 			return ResponseEntity.ok().build();
 		}
 
+		if (actions.isRestaurantOnOff()) {
+			final String value = actions.getValue();
+			final String[] s = value.split("_");
+			final Optional<Restaurant> byId = restaurantRepository.findById(Long.valueOf(s[1]));
+			if (!byId.isPresent()) {
+				return ResponseEntity.ok().build();
+			}
+			final Restaurant restaurant = byId.get();
+			restaurant.updateUse(actions.getAction());
+			restaurantRepository.save(restaurant);
+			actions.setChannel(Channel.builder().id(s[0]).build());
+			List<Restaurant> byChannelOrderByCountDesc = getRestaurant(s[0]);
+			MessageService.sendMessageByModalUpdate(actions, byChannelOrderByCountDesc);
+
+			return ResponseEntity.ok().build();
+		}
+
 		if (actions.isRetryRestaurant()) {
-			final List<Restaurant> restaurant1 = getRestaurant(actions.getChannelId());
+			final List<Restaurant> restaurant1 = getRestaurantByUsed(actions.getChannelId());
 			String restaurant = findRestaurant(restaurant1);
 			log.info("다시뽑기 : {}",restaurant);
 			MessageService.updateByRestaurant(actions,restaurant);
@@ -73,7 +88,6 @@ public class RestaurantService {
 
 		if (actions.isSubmitRestaurant()) {
 			final Restaurant restaurant = tempRestaurant.get(actions.getChannelId());
-
 			log.info("결정 : {}", restaurant.getName());
 			restaurant.increaseCount();
 			restaurantRepository.save(restaurant);
@@ -83,6 +97,15 @@ public class RestaurantService {
 
 		return ResponseEntity.ok().build();
 
+	}
+
+	public List<Restaurant> getRestaurantByUsed(String channel) {
+		List<Restaurant> byChannelOrderByCountDesc = restaurantRepository.findByChannelAndIsUedOrderByCountDesc(channel,true);
+		if (byChannelOrderByCountDesc.isEmpty()) {
+			final List<Restaurant> collect = RestaurantEnum.list().stream().map(e -> e.ToRestaurant(channel)).collect(Collectors.toList());
+			byChannelOrderByCountDesc = restaurantRepository.saveAll(collect);
+		}
+		return byChannelOrderByCountDesc;
 	}
 
 	public List<Restaurant> getRestaurant(String channel) {

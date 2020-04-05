@@ -18,8 +18,17 @@ public class Actions {
 	private String trigger_id;
 	private ActionData message;
 	private Channel channel;
+	private PayloadView view;
 
-	public Object getAction() {
+
+	public String getExternalId() {
+		return view.getExternal_id();
+	}
+
+	public String getRootViewId() {
+		return view.getRoot_view_id();
+	}
+	public String getAction() {
 		if (actions == null) {
 			return null;
 		}
@@ -83,7 +92,11 @@ public class Actions {
 		if (this.actions == null) {
 			return false;
 		}
-		return isRestaurantList() || isRetryRestaurant() || isSubmitRestaurant();
+		return isRestaurantList() || isRetryRestaurant() || isSubmitRestaurant() || isRestaurantOnOff();
+	}
+
+	public boolean isRestaurantOnOff() {
+		return "restaurant_on".equals(this.actions.get(0).action_id) || "restaurant_off".equals(this.actions.get(0).action_id);
 	}
 
 

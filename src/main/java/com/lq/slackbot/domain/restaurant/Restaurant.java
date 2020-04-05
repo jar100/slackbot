@@ -1,7 +1,9 @@
 package com.lq.slackbot.domain.restaurant;
 
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,15 +31,29 @@ public class Restaurant {
 	private boolean isUse = true;
 
 	public String actionValue() {
-		return name + "_" + id;
+		return channel + "_" + id;
 	}
 
 	public String view() {
 		return "*" +
 				this.name +
 				"*\n" +
-				this.count+
+				this.count +
 				"\n";
+	}
+
+	public String buttonStyle() {
+		if (isUse) {
+			return "primary";
+		}
+		return "danger";
+	}
+
+	public String viewOnOff() {
+		if (isUse) {
+			return "ON";
+		}
+		return "OFF";
 	}
 
 	@Override
@@ -56,6 +72,33 @@ public class Restaurant {
 	}
 
 	public void increaseCount() {
-		count ++;
+		count++;
+	}
+
+	public String blockId() {
+		return String.format("restaurant_%s_%s", channel, id);
+	}
+
+	public String onAction() {
+		return "restaurant_on";
+	}
+
+	public String offAction() {
+		return "restaurant_off";
+	}
+
+	public String onOffAction() {
+		if (isUse) {
+			return offAction();
+		}
+		return onAction();
+	}
+
+	public void updateUse(String action) {
+		if ("restaurant_off".equals(action)) {
+			this.isUse = false;
+			return;
+		}
+		this.isUse = true;
 	}
 }

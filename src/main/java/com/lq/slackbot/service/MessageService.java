@@ -18,6 +18,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.*;
 
 @Service
@@ -61,7 +63,7 @@ public class MessageService {
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.block_id("schedulerList")
+				.block_id("restaurantList")
 				.text(ModalBlock.Content.builder()
 						.type(SystemUtils.PLAIN_TEXT)
 						.text(":wave: 반복할 메세지를 세팅해 주세요")
@@ -80,17 +82,16 @@ public class MessageService {
 		for (Restaurant object : byChannelOrderByCountDesc) {
 			final String text = object.view();
 			blockList.add(ModalBlock.builder()
-//					.block_id("scheduleMessage_" + schedule.getIdToString())
+					.block_id(object.blockId())
 					.type("section")
 					.text(ModalBlock.Content.builder().type("mrkdwn").text(text).build())
-					.build());
-			blockList.add(ModalBlock.builder()
-					//.block_id( schedule.getIdToString())
-					.type("actions")
-					.elements(Arrays.asList(
-							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("수정").emoji(true).build()).action_id("scheduleUpdate_action").value(object.actionValue()).build(),
-							ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("삭제").emoji(true).build()).action_id("scheduleDeleted_action").value(object.actionValue()).build()
-					))
+					.accessory(ModalBlock.Elements.builder()
+							.type("button")
+							.action_id(object.onOffAction())
+							.value(object.actionValue())
+							.text(ModalBlock.Content.builder().type("plain_text").text(object.viewOnOff()).build())
+							.style(object.buttonStyle())
+							.build())
 					.build());
 		}
 		return blockList;
@@ -101,6 +102,7 @@ public class MessageService {
 		ModalResponse response = ModalResponse.builder()
 				.trigger_id(body.getTrigger_id())
 				.view(modalView)
+				//.external_id("asewtweqr")
 				.build();
 		send(SystemUtils.MODAL_URL, response);
 	}
@@ -108,7 +110,7 @@ public class MessageService {
 	private static ModalView getModalView(final Actions body, final String view) {
 		return ModalView.builder()
 				.type("modal")
-				.callback_id("scheduleModal_" + body.getChannelId())
+				.callback_id(body.getAction())
 				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
 				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
 				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())
@@ -245,6 +247,13 @@ public class MessageService {
 
 	public static String createRestaurantBlack(String restaurant) {
 		Gson gson = new Gson();
+		Random rand = null;
+		try {
+			rand = SecureRandom.getInstanceStrong();
+		} catch (NoSuchAlgorithmException e) {
+			log.info("rand exception : {}",e.getMessage(), e);
+		}
+
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
@@ -256,21 +265,10 @@ public class MessageService {
 						//모달창
 						ModalBlock.Elements.builder()
 								.action_id("restaurantList")
+								.value("restaurantList_" + rand.nextInt(50))
 								.type("button")
 								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("밥리스트").emoji(false).build())
 								.build(),
-//						//모달창
-//						ModalBlock.Elements.builder()
-//								.action_id("add_restaurant")
-//								.type("button")
-//								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("밥추가").emoji(false).build())
-//								.build(),
-//						//모달창
-//						ModalBlock.Elements.builder()
-//								.action_id("select_restaurant")
-//								.type("button")
-//								.text(ModalBlock.Content.builder().type(SystemUtils.PLAIN_TEXT).text("수동선택").emoji(false).build())
-//								.build(),
 						//메세지수정
 						ModalBlock.Elements.builder()
 								.action_id("retry_restaurant")
@@ -442,6 +440,26 @@ public class MessageService {
 			sendModal(actions, view);
 			return;
 		}
+	}
+
+	public static void sendMessageByModalUpdate(final Actions actions, final List<Restaurant> byChannelOrderByCountDesc) {
+		String view = null;
+		if(actions.isRestaurantOnOff()) {
+			view = ModalBlacktToJson(createRestaurantListBlack(actions.getChannelId(),byChannelOrderByCountDesc));
+			sendModalUpdate(actions, view);
+			return;
+		}
+	}
+
+	private static void sendModalUpdate(final Actions actions, final String view) {
+		final ModalView modalView = getModalView(actions, view);
+		ModalResponse response = ModalResponse.builder()
+				.trigger_id(actions.getTrigger_id())
+				.view(modalView)
+				.view_id(actions.getRootViewId())
+				.build();
+		log.info("업데이트 : {}",gson.toJson(response));
+		send(SystemUtils.MODAL_UPDATE_URL, response);
 	}
 
 	public static void updateByRestaurant(Actions actions, String restaurant) {

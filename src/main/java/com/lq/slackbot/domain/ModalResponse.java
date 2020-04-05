@@ -11,4 +11,6 @@ import java.util.List;
 public class ModalResponse {
 	private String trigger_id;
 	private ModalView view;
+//	private String external_id;
+	private String view_id;
 }

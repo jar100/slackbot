@@ -41,6 +41,7 @@ public class ModalBlock {
 		String action_id;
 		String value;
 		Boolean multiline;
+		String style;
 	}
 
 	public String getMessageText() {
