@@ -62,7 +62,7 @@ public class SchedulerController {
 				"사랑하는 :heartpulse::heartbeat:" +
 				"<@" +name + ">"+
 				":heartbeat::heartpulse:\n" +
-				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ","");
+				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ",BirthdayImg.ONE.getUrl());
 	}
 
 	@RequestMapping(value = "/deleteJob", method = RequestMethod.POST)
