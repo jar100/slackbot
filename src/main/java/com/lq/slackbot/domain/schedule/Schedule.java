@@ -29,6 +29,8 @@ public class Schedule {
 
 	private String channel;
 
+	private String target;
+
 	private Boolean used;
 
 

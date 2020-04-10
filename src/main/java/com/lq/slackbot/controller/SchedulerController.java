@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.schedule.JobRequest;
 import com.lq.slackbot.domain.schedule.JobStatusResponse;
+import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.service.ChannelService;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
@@ -46,6 +47,10 @@ public class SchedulerController {
 		return scheduleService.addSchedule(jobRequest);
 	}
 
+	@PostMapping(value = "/job2")
+	public ResponseEntity<?> addScheduleJobV2(@RequestBody Schedule schedule) {
+		return scheduleService.addSchedule(schedule);
+	}
 
 	@GetMapping("/birthday")
 	public void birthday() {
@@ -57,7 +62,7 @@ public class SchedulerController {
 				"사랑하는 :heartpulse::heartbeat:" +
 				"<@" +name + ">"+
 				":heartbeat::heartpulse:\n" +
-				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ","https://storage.googleapis.com/jjalbot-jjals/2018/12/14MhdDWm15/zzal.jpg");
+				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ","");
 	}
 
 	@RequestMapping(value = "/deleteJob", method = RequestMethod.POST)

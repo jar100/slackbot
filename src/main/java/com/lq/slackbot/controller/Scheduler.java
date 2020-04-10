@@ -1,6 +1,7 @@
 package com.lq.slackbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lq.slackbot.domain.BirthdayImg;
 import com.lq.slackbot.domain.Message;
 import com.lq.slackbot.service.MessageEventService;
 import com.lq.slackbot.service.MessageService;
@@ -45,10 +46,19 @@ public class Scheduler {
 
 
 //	@Scheduled(cron = "0 0 15 * * THU")
-	@Scheduled(cron = "0 */1 *? * * THU")
-	public void scheduleMessage() {
+//	@Scheduled(cron = "0 */1 *? * * THU")
+	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
 		MessageService.sendBirthdayMessage("GT9V0K9RS", ":birthday-hangul::kiss::car::sunny::han-yo:","123");
+		log.info("실행시간 webHook: {}", LocalDateTime.now());
+		String channel = "GT9V0K9RS";
+		String name = "UH7BR30LQ";
+		MessageService.sendBirthdayMessage(channel, "<!here>\n" +
+				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
+				"사랑하는 :heartpulse::heartbeat:" +
+				"<@" +name + ">"+
+				":heartbeat::heartpulse:\n" +
+				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ", BirthdayImg.ONE.getUrl());
 	}
 
 	private WebClient initWebClient() {
