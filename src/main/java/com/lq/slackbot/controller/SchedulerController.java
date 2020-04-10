@@ -55,8 +55,10 @@ public class SchedulerController {
 	@GetMapping("/birthday")
 	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
-		String channel = "GT9V0K9RS";
-		String name = "UH7BR30LQ";
+		//on_lqt
+		String channel = "GHCQ4856Y";
+		//경연님아이
+		String name = "UN09A698S";
 		MessageService.sendBirthdayMessage(channel, "<!here>\n" +
 				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 				"사랑하는 :heartpulse::heartbeat:" +

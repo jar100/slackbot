@@ -45,13 +45,13 @@ public class Scheduler {
 	}
 
 
-//	@Scheduled(cron = "0 0 9 11 4 ?")
-	@Scheduled(cron="0 0 21 10 4 ?")
+	@Scheduled(cron = "0 0 9 11 4 ?")
 	public void birthday() {
-//		MessageService.sendBirthdayMessage("GT9V0K9RS", ":birthday-hangul::kiss::car::sunny::han-yo:","123");
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
-		String channel = "GT9V0K9RS";
-		String name = "UH7BR30LQ";
+		//on_lqt
+		String channel = "GHCQ4856Y";
+		//경연님아이
+		String name = "UN09A698S";
 		MessageService.sendBirthdayMessage(channel, "<!here>\n" +
 				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 				"사랑하는 :heartpulse::heartbeat:" +
