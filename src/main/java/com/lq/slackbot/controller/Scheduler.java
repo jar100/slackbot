@@ -46,7 +46,7 @@ public class Scheduler {
 
 
 //	@Scheduled(cron = "0 0 15 * * THU")
-//	@Scheduled(cron = "0 */1 *? * * THU")
+	@Scheduled(cron="0 0 21 10 4 ?")
 	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
 		MessageService.sendBirthdayMessage("GT9V0K9RS", ":birthday-hangul::kiss::car::sunny::han-yo:","123");
