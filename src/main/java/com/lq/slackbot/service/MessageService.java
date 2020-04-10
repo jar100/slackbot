@@ -296,7 +296,7 @@ public class MessageService {
 				.image_bytes(229463)
 				.image_height(683)
 				.image_width(717)
-				.image_url("https://storage.googleapis.com/jjalbot-jjals/2018/12/14MhdDWm15/zzal.jpg")
+				.image_url(img)
 				.build())).build());
 	}
 
