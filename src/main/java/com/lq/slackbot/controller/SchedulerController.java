@@ -50,7 +50,8 @@ public class SchedulerController {
 	@GetMapping("/birthday")
 	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
-		MessageService.sendBirthdayMessage("GT9V0K9RS", ":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
+		MessageService.sendBirthdayMessage("GT9V0K9RS", "<!here>" +
+				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 				"사랑하는 :heartpulse::heartbeat:경연님 :heartbeat::heartpulse:\n" +
 				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ","https://storage.googleapis.com/jjalbot-jjals/2018/12/14MhdDWm15/zzal.jpg");
 	}
