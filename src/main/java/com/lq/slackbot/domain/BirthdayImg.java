@@ -1,7 +1,7 @@
 package com.lq.slackbot.domain;
 
 public enum BirthdayImg {
-	ONE("https://user-images.githubusercontent.com/39078045/78988597-56baf980-7b6c-11ea-8f91-196629cbecc4.jpg");
+	ONE("https://files.slack.com/files-pri/T07SR86Q5-F0126GKMXJL/hbd__1_.jpg");
 
 	private String url;
 
