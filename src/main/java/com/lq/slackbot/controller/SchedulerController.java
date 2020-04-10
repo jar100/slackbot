@@ -5,6 +5,7 @@ import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.schedule.JobRequest;
 import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.service.ChannelService;
+import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Slf4j
@@ -42,6 +44,13 @@ public class SchedulerController {
 	@RequestMapping(value = "/job", method = RequestMethod.POST)
 	public ResponseEntity<?> addScheduleJob(@RequestBody JobRequest jobRequest) {
 		return scheduleService.addSchedule(jobRequest);
+	}
+
+
+	@GetMapping("/birthday")
+	public void birthday() {
+		log.info("실행시간 webHook: {}", LocalDateTime.now());
+		MessageService.sendBirthdayMessage("GT9V0K9RS", ":birthday-hangul::kiss::car::sunny::han-yo:","123");
 	}
 
 	@RequestMapping(value = "/deleteJob", method = RequestMethod.POST)

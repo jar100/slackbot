@@ -28,24 +28,19 @@ class CoffeeServiceTest {
 
 	@Test
 	void coffeePick() throws NoSuchAlgorithmException {
+		String users = "@gh.baek,@wanki.lee,@hancheon.park,@Joongyeop Ji,@seuk.jung,@jihun.lee";
+		final String[] split = users.split(",");
 		Random rand = SecureRandom.getInstanceStrong();
 		int one = 0;
 		int zero = 0;
 		int two = 0;
 		String[] userList = {"a", "b", "c"};
-		for (int i = 0; i < 100000; i++) {
-			String user = pickUser(Arrays.asList(userList));
-			switch (user) {
-				case "a":
-					zero ++;
-					break;
-				case "b":
-					one ++;
-					break;
-				case "c":
-					two ++;
-					break;
-			}
+		final List<String> userList1 = Arrays.asList(split);
+		System.out.println(userList1);
+		System.out.println("////////");
+		for (int i = 0; i < 10; i++) {
+			String user = pickUser(userList1);
+			System.out.println(user);
 		}
 		System.out.println(String.format("a : %d, b : %d, c : %d",zero,one,two));
 	}

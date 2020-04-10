@@ -291,6 +291,15 @@ public class MessageService {
 		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text(message).build());
 	}
 
+	public static void sendBirthdayMessage(String channel, String message, String img) {
+		send(SystemUtils.POST_MESSAGE, ImgMessage.builder().channel(channel).text(message).attachments(Arrays.asList(ImgMessage.Attachment.builder()
+				.image_bytes(229463)
+				.image_height(683)
+				.image_width(717)
+				.image_url("https://storage.googleapis.com/jjalbot-jjals/2018/12/14MhdDWm15/zzal.jpg")
+				.build())).build());
+	}
+
 	public static void sendMessageByRestaurant(String channel, String restaurant) {
 		send(SystemUtils.POST_MESSAGE, Message.builder().channel(channel).text("밥").blocks(createRestaurantBlack(restaurant)).build());
 	}
