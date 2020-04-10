@@ -293,9 +293,9 @@ public class MessageService {
 
 	public static void sendBirthdayMessage(String channel, String message, String img) {
 		send(SystemUtils.POST_MESSAGE, ImgMessage.builder().channel(channel).text(message).attachments(Arrays.asList(ImgMessage.Attachment.builder()
-				.image_bytes(229463)
-				.image_height(683)
-				.image_width(717)
+//				.image_bytes(229463)
+				.image_height(800)
+				.image_width(750)
 				.image_url(img)
 				.build())).build());
 	}
