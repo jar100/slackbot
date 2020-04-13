@@ -108,9 +108,15 @@ public class MessageService {
 	}
 
 	private static ModalView getModalView(final Actions body, final String view) {
+		Random random = null;
+		try {
+			random = SecureRandom.getInstanceStrong();
+		} catch (NoSuchAlgorithmException e) {
+			log.info("NoSuchAlgorithmException : {}", e.getMessage(), e);
+		}
 		return ModalView.builder()
 				.type("modal")
-				.callback_id(body.getAction())
+				.callback_id(body.getAction() + "_" + random.nextInt(20))
 				.title(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("b2b 봇").emoji(true).build())
 				.submit(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("submit").emoji(true).build())
 				.close(ModalView.Content.builder().type(SystemUtils.PLAIN_TEXT).text("cancel").emoji(true).build())

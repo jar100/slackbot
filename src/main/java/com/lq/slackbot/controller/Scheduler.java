@@ -45,7 +45,8 @@ public class Scheduler {
 	}
 
 
-	@Scheduled(cron = "0 0 9 11 4 ?")
+//	@Scheduled(cron = "0 0 9 11 4 ?")
+//	끝 성공
 	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
 		//on_lqt
