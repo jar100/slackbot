@@ -10,6 +10,8 @@ import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class JobUtils {
@@ -39,7 +41,10 @@ public class JobUtils {
 			factoryBean.setJobDataMap(createJobDataMap("message", schedule.getMessage()));
 		}
 		if (schedule.hasImg()) {
-			factoryBean.setJobDataMap(createJobDataMap("img", schedule.getImg()));
+			Map<String, String> map = new HashMap();
+			map.put("message", schedule.getMessage());
+			map.put("img", schedule.getImg());
+			factoryBean.setJobDataMap(createJobDataMap(map));
 		}
 		factoryBean.afterPropertiesSet();
 		return factoryBean.getObject();
@@ -54,6 +59,12 @@ public class JobUtils {
 	private static JobDataMap createJobDataMap(String key, String jobDataMap) {
 		JobDataMap jobDataMap1 = new JobDataMap();
 		jobDataMap1.put(key, jobDataMap);
+		return jobDataMap1;
+	}
+
+	private static JobDataMap createJobDataMap(Map<String, String> map) {
+		JobDataMap jobDataMap1 = new JobDataMap();
+		jobDataMap1.putAll(map);
 		return jobDataMap1;
 	}
 
