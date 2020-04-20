@@ -30,3 +30,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### 구글 시트 엑세스토큰 ###
+src/main/resources/slackbot-274412-8881e7b5dd75.json

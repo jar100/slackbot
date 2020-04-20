@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,6 +34,9 @@ public class Schedule {
 
 	private Boolean used;
 
+	@Builder.Default
+	private String img = null;
+
 
 	public JobRequest toJobRequest(){
 		return JobRequest.builder().jobGroup(this.channel).jobName(this.name).cronExpression(this.cronExpression).jobDataMap(this.message).build();
@@ -49,5 +53,16 @@ public class Schedule {
 
 	public boolean isUpdateJob() {
 		return id != null;
+	}
+
+	public boolean hasImg() {
+		if (StringUtils.isEmpty(img)) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean notImg() {
+		return !hasImg();
 	}
 }

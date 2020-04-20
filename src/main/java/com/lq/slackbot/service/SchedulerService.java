@@ -147,6 +147,7 @@ public class SchedulerService implements InitializingBean {
 		return !isJobExists(jobKey);
 	}
 
+	//스캐줄을 생성하는 곳
 	public ResponseEntity<ApiResponse> addSchedule(final JobRequest jobRequest) {
 		boolean isSuccess = false;
 		Schedule save = null;
@@ -241,7 +242,7 @@ public class SchedulerService implements InitializingBean {
 	}
 
 	private void accept(Schedule schedule) {
-		if (Boolean.TRUE.equals(validJob(schedule))) {
+		if (Boolean.TRUE.equals(validJob(schedule)) && schedule.notImg()) {
 			addJob(schedule, CronJob.class);
 		}
 	}
