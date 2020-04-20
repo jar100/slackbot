@@ -83,9 +83,12 @@ public class SheetService {
 
 		// 아래의 샘플 구글 시트 URL에서 중간의 문자열이 spreed sheet id에 해당한다.
 		// https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-		String spreadsheetId = "18tQPZ7GgWWnqevzdB9gIeB-J1k9kqN7o_WT1c_isWJE";
+		//실재문서
+//		String spreadsheetId = "18tQPZ7GgWWnqevzdB9gIeB-J1k9kqN7o_WT1c_isWJE";
+//		테스트문서
+		String spreadsheetId = "102eeX8KzZlmfZAM0XB1LSuZcn0Gv9AONWX_EIB6JSA8";
 
-		String range = "A3:C50";
+		String range = "A3:450";
 		ValueRange response = service.spreadsheets().values()
 				.get(spreadsheetId, range)
 				.execute();
