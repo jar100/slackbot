@@ -189,7 +189,7 @@ public class SchedulerService implements InitializingBean {
 
 	public ResponseEntity<ApiResponse> addSchedule(Schedule save) {
 		boolean isSuccess;
-		if (!save.isUpdateJob() && Boolean.TRUE.equals(validJob(save)) && save.notImg()) {
+		if (Boolean.TRUE.equals(validJob(save)) && save.notImg()) {
 			save = scheduleRepository.save(save);
 			isSuccess = addJob(save, CronJob.class);
 			if (!isSuccess) {
@@ -198,7 +198,7 @@ public class SchedulerService implements InitializingBean {
 			return apiResponse(isSuccess);
 		}
 
-		if (!save.isUpdateJob() && Boolean.TRUE.equals(validJob(save)) && save.hasImg()) {
+		if (Boolean.TRUE.equals(validJob(save)) && save.hasImg()) {
 			save = scheduleRepository.save(save);
 			isSuccess = addJob(save, ImgCronJob.class);
 			if (!isSuccess) {
