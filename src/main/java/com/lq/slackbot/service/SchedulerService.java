@@ -289,6 +289,7 @@ public class SchedulerService implements InitializingBean {
 	}
 
 	public Schedule getSchedule(final long scheduleId) {
-		scheduleRepository.findById(scheduleId);
+		final Optional<Schedule> byId = scheduleRepository.findById(scheduleId);
+		return byId.orElse(null);
 	}
 }
