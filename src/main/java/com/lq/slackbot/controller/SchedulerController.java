@@ -69,6 +69,7 @@ public class SchedulerController {
 
 	@PutMapping("/updateSchedule")
 	public boolean updateSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+		log.info("request : {}", scheduleRequest);
 		final Schedule schedule = scheduleService.getSchedule(scheduleRequest.getScheduleId());
 		schedule.updateData(scheduleRequest);
 		return scheduleService.updateJob(schedule);
