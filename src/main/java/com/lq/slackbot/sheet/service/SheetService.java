@@ -145,7 +145,8 @@ public class SheetService {
 					final Schedule byName = scheduleRepository.findByName(row.get(0).toString());
 					if (byName != null) {
 						byName.updateData(ScheduleRequest.builder()
-								.message("<!here>\n" +
+								.message("테스트!!!!!\n" +
+										"<!here>\n" +
 										":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 										"사랑하는 :heartpulse::heartbeat:" +
 										row.get(0) +
@@ -159,15 +160,19 @@ public class SheetService {
 
 					} else {
 						final Schedule schedule = Schedule.builder()
+								.name(row.get(0).toString())
 								.channel("GT9V0K9RS")
-								.message("<!here>\n" +
+								.message(
+										"테스트!!!!!\n" +
+										"<!here>\n" +
 										":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 										"사랑하는 :heartpulse::heartbeat:" +
-										row.get(0) +
-										"님 <@" +row.get(3) + ">"+
+										row.get(0).toString() +
+										"님 <@" +row.get(3).toString() + ">"+
 										":heartbeat::heartpulse:\n" +
 										"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ")
 								.img(BirthdayImg.ONE.getUrl())
+								.used(Boolean.TRUE)
 								.cronExpression(toCronExpression(row.get(1).toString()))
 								.build();
 						scheduleList.add(schedule);
