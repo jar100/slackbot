@@ -16,7 +16,7 @@ public class JobUtils {
 
 	public static JobDetail createJob(JobRequest jobRequest, Class<? extends Job> clazz, ApplicationContext context) {
 		JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
-		factoryBean.setJobClass(CronJob.class);
+		factoryBean.setJobClass(clazz);
 		factoryBean.setDurability(false);
 		factoryBean.setName(jobRequest.getJobName());
 		factoryBean.setGroup(jobRequest.getJobGroup());
@@ -30,13 +30,16 @@ public class JobUtils {
 
 	public static JobDetail createJob(Schedule schedule, Class<? extends Job> clazz, ApplicationContext context) {
 		JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
-		factoryBean.setJobClass(CronJob.class);
+		factoryBean.setJobClass(clazz);
 		factoryBean.setDurability(false);
 		factoryBean.setName(schedule.getId()+"");
 		factoryBean.setGroup(schedule.getChannel());
 		factoryBean.setApplicationContext(context);
 		if (schedule.getMessage() != null) {
 			factoryBean.setJobDataMap(createJobDataMap("message", schedule.getMessage()));
+		}
+		if (schedule.hasImg()) {
+			factoryBean.setJobDataMap(createJobDataMap("img", schedule.getImg()));
 		}
 		factoryBean.afterPropertiesSet();
 		return factoryBean.getObject();

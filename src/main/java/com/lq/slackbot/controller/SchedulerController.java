@@ -67,6 +67,13 @@ public class SchedulerController {
 				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ",BirthdayImg.ONE.getUrl());
 	}
 
+	@PutMapping("/updateSchedule")
+	public boolean updateSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+		final Schedule schedule = scheduleService.getSchedule(scheduleRequest.getScheduleId());
+		schedule.updateData(scheduleRequest);
+		return scheduleService.updateJob(schedule);
+	}
+
 	@RequestMapping(value = "/deleteJob", method = RequestMethod.POST)
 	public ResponseEntity<?> deleteScheduleJob(@RequestBody JobRequest jobRequest) {
 		JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());

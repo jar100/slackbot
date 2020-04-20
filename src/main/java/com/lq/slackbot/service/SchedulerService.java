@@ -108,11 +108,27 @@ public class SchedulerService implements InitializingBean {
 			JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());
 			JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(jobKey);
 			jobDetail.getJobDataMap().put("message", jobRequest.getJobDataMap());
+			//메세지만 수정한다. 수정하고 업데이트 시켜야함.
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
 	}
 
+	public boolean updateJob(Schedule schedule) {
+		JobKey jobKey = new JobKey(schedule.getIdToString(), schedule.getChannel());
+		try {
+			if (isJobExists(jobKey)) {
+				deleteJob(jobKey);
+			}
+			addSchedule(schedule);
+			return true;
+		} catch (Exception e) {
+			log.error("error occurred while scheduling with jobKey : {} or , cronExpression : {} by updateJob", jobKey, schedule.getCronExpression(), e);
+		}
+		return false;
+	}
+
+	//모든잡을 가져온다.
 	public JobStatusResponse getAllJobs() {
 		JobStatusResponse jobStatusResponse = new JobStatusResponse();
 		List<JobResponse> jobs = new ArrayList<>();
@@ -137,6 +153,8 @@ public class SchedulerService implements InitializingBean {
 		jobStatusResponse.setJobs(jobs);
 		return jobStatusResponse;
 	}
+
+	@Deprecated
 	private Boolean validJob(JobRequest jobRequest) {
 		JobKey jobKey = new JobKey(jobRequest.getJobName(), jobRequest.getJobGroup());
 		return !isJobExists(jobKey);
@@ -147,7 +165,8 @@ public class SchedulerService implements InitializingBean {
 		return !isJobExists(jobKey);
 	}
 
-	//스캐줄을 생성하는 곳
+	//스캐줄을 생성하는
+	@Deprecated
 	public ResponseEntity<ApiResponse> addSchedule(final JobRequest jobRequest) {
 		boolean isSuccess = false;
 		Schedule save = null;
@@ -168,15 +187,26 @@ public class SchedulerService implements InitializingBean {
 	}
 
 	public ResponseEntity<ApiResponse> addSchedule(Schedule save) {
-		boolean isSuccess = false;
-		if (!save.isUpdateJob() && Boolean.TRUE.equals(validJob(save))) {
+		boolean isSuccess;
+		if (!save.isUpdateJob() && Boolean.TRUE.equals(validJob(save)) && save.notImg()) {
 			save = scheduleRepository.save(save);
 			isSuccess = addJob(save, CronJob.class);
 			if (!isSuccess) {
 				scheduleRepository.save(save.unUsed());
 			}
+			return apiResponse(isSuccess);
 		}
-		return apiResponse(isSuccess);
+
+		if (!save.isUpdateJob() && Boolean.TRUE.equals(validJob(save)) && save.hasImg()) {
+			save = scheduleRepository.save(save);
+			isSuccess = addJob(save, ImgCronJob.class);
+			if (!isSuccess) {
+				scheduleRepository.save(save.unUsed());
+			}
+			return apiResponse(isSuccess);
+		}
+
+		return apiResponse(false);
 	}
 
 	private ResponseEntity<ApiResponse> apiResponse(final boolean isSuccess) {
@@ -186,6 +216,9 @@ public class SchedulerService implements InitializingBean {
 		return new ResponseEntity<>(new ApiResponse(false, "Job created false"), HttpStatus.CREATED);
 	}
 
+
+	//채널의 모든 잡을 삭제시킨다.
+	@Deprecated
 	public void deleteGroup(final String channelId) {
 		try {
 			final List<JobKey> collect = new ArrayList<>(schedulerFactoryBean.getScheduler().getJobKeys(GroupMatcher.jobGroupEquals(channelId)));
@@ -195,6 +228,7 @@ public class SchedulerService implements InitializingBean {
 		}
 	}
 
+	//채널에있는 모든잡을 가져온다.
 	public JobStatusResponse getAllJobGroup(final String channelId) {
 		JobStatusResponse jobStatusResponse = new JobStatusResponse();
 		List<JobResponse> jobs = new ArrayList<>();
@@ -213,6 +247,7 @@ public class SchedulerService implements InitializingBean {
 		return jobStatusResponse;
 	}
 
+	//실행중인 잡을 가져온다.
 	private List<JobResponse> createJobs(String channelId) throws SchedulerException {
 		final Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		List<JobResponse> jobs = new ArrayList<>();
@@ -236,6 +271,7 @@ public class SchedulerService implements InitializingBean {
 		return jobs;
 	}
 
+	//init
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		scheduleRepository.findAllByUsed(true).forEach(this::accept);
@@ -244,6 +280,15 @@ public class SchedulerService implements InitializingBean {
 	private void accept(Schedule schedule) {
 		if (Boolean.TRUE.equals(validJob(schedule)) && schedule.notImg()) {
 			addJob(schedule, CronJob.class);
+			return;
 		}
+		if (Boolean.TRUE.equals(validJob(schedule)) && schedule.hasImg()) {
+			addJob(schedule, ImgCronJob.class);
+			return;
+		}
+	}
+
+	public Schedule getSchedule(final long scheduleId) {
+		scheduleRepository.findById(scheduleId);
 	}
 }

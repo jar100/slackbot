@@ -1,5 +1,6 @@
 package com.lq.slackbot.domain.schedule;
 
+import com.lq.slackbot.domain.ScheduleRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,5 +65,17 @@ public class Schedule {
 
 	public boolean notImg() {
 		return !hasImg();
+	}
+
+	public void updateData(final ScheduleRequest scheduleRequest) {
+		if (scheduleRequest.getImg() != null) {
+			this.img = scheduleRequest.getImg();
+		}
+		if (scheduleRequest.getCronExpression() != null) {
+			this.cronExpression = scheduleRequest.getCronExpression();
+		}
+		if (scheduleRequest.getMessage() != null) {
+			this.message = scheduleRequest.getMessage();
+		}
 	}
 }
