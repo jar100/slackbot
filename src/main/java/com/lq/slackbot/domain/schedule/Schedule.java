@@ -1,10 +1,7 @@
 package com.lq.slackbot.domain.schedule;
 
 import com.lq.slackbot.domain.ScheduleRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
@@ -15,6 +12,7 @@ import javax.persistence.Id;
 @Entity
 @Builder
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Schedule {

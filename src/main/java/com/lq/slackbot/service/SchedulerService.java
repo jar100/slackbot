@@ -115,6 +115,7 @@ public class SchedulerService implements InitializingBean {
 	}
 
 	public boolean updateJob(Schedule schedule) {
+		log.info("update to schedule : {}", schedule);
 		JobKey jobKey = new JobKey(schedule.getIdToString(), schedule.getChannel());
 		try {
 			if (isJobExists(jobKey)) {
