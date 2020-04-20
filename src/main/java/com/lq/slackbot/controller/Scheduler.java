@@ -61,6 +61,12 @@ public class Scheduler {
 				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ", BirthdayImg.ONE.getUrl());
 	}
 
+
+//	@Scheduled(cron = "0 0 1 * * ?")
+	public void birthdayList() {
+
+	}
+
 	private WebClient initWebClient() {
 		ExchangeStrategies strategies = ExchangeStrategies.builder()
 				.codecs(config ->

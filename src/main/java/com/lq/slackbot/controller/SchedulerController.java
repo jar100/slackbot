@@ -8,6 +8,7 @@ import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.service.ChannelService;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
+import com.lq.slackbot.sheet.service.SheetService;
 import com.lq.slackbot.utils.SystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -36,10 +39,12 @@ public class SchedulerController {
 //
 	private SchedulerService scheduleService;
 	private ChannelService channelService;
+	private SheetService sheetService;
 
-	public SchedulerController(final SchedulerService scheduleService, final ChannelService channelService) {
+	public SchedulerController(final SchedulerService scheduleService, final ChannelService channelService, final SheetService sheetService) {
 		this.scheduleService = scheduleService;
 		this.channelService = channelService;
+		this.sheetService = sheetService;
 	}
 
 	@RequestMapping(value = "/job", method = RequestMethod.POST)
@@ -56,16 +61,29 @@ public class SchedulerController {
 	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
 		//on_lqt
-		String channel = "GHCQ4856Y";
-		//경연님아이
-		String name = "UN09A698S";
-		MessageService.sendBirthdayMessage(channel, "<!here>\n" +
+//		String channel = "GHCQ4856Y";
+		//bot_test
+		String channel = "GT9V0K9RS";
+		//testid
+		String name = "UKTREM9U0";
+		MessageService.sendBirthdayMessage(channel, "테스트!!!!!" +
+				"<!here>\n" +
 				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 				"사랑하는 :heartpulse::heartbeat:" +
 				"<@" +name + ">"+
 				":heartbeat::heartpulse:\n" +
 				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ",BirthdayImg.ONE.getUrl());
 	}
+
+	@GetMapping("/birthday2")
+	public void birthdayV2() throws IOException {
+		log.info("실행시간 webHook: {}", LocalDateTime.now());
+		final List<Schedule> scheduleList = sheetService.getScheduleList();
+		for (Schedule schedule : scheduleList) {
+			scheduleService.updateJob(schedule);
+		}
+	}
+
 
 	@PutMapping("/updateSchedule")
 	public boolean updateSchedule(@RequestBody ScheduleRequest scheduleRequest) {
