@@ -2,7 +2,7 @@ package com.lq.slackbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.lq.slackbot.controller.Actions;
+import com.lq.slackbot.domain.Actions;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.restaurant.Restaurant;
 import com.lq.slackbot.domain.schedule.Schedule;

@@ -1,4 +1,4 @@
-package com.lq.slackbot.controller;
+package com.lq.slackbot.domain;
 
 import com.lq.slackbot.domain.*;
 import lombok.AllArgsConstructor;

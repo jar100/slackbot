@@ -2,8 +2,9 @@ package com.lq.slackbot.service;
 
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.restaurant.RestaurantEnum;
-import com.lq.slackbot.domain.worklog.WorkLogResult;
+import com.lq.slackbot.worklog.domain.WorkLogResult;
 import com.lq.slackbot.utils.SystemUtils;
+import com.lq.slackbot.worklog.service.WorkLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

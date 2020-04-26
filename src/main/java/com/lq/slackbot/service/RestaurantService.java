@@ -1,6 +1,6 @@
 package com.lq.slackbot.service;
 
-import com.lq.slackbot.controller.Actions;
+import com.lq.slackbot.domain.Actions;
 import com.lq.slackbot.domain.Channel;
 import com.lq.slackbot.domain.SlackRequest;
 import com.lq.slackbot.domain.restaurant.Restaurant;

@@ -1,6 +1,6 @@
 package com.lq.slackbot.service;
 
-import com.lq.slackbot.controller.Actions;
+import com.lq.slackbot.domain.Actions;
 import com.lq.slackbot.domain.SlackUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

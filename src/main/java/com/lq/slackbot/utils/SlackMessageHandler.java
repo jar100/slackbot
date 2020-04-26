@@ -8,7 +8,6 @@ import com.lq.slackbot.domain.schedule.JobRequest;
 import com.lq.slackbot.domain.schedule.JobStatusResponse;
 import com.lq.slackbot.service.MessageService;
 import com.lq.slackbot.service.SchedulerService;
-import com.lq.slackbot.service.WorkLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.springframework.http.ResponseEntity;

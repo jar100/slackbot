@@ -16,6 +16,6 @@ public class SystemUtils {
 	public static final String SLACK_BOT_B2B_URL = System.getenv("SLACK_BOT_B2B_URL");
 
 	public static final String VIEW_SUBMISSION = "view_submission";
-	public static final String WORK_LOG_URL = "https://yanolja-cx-work-log.now.sh";
+	public static final String WORK_LOG_URL = "https://yawork.yowu.dev";
 	public static final String GOOGLE_SPREADSHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/";
 }

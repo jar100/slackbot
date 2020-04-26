@@ -1,8 +1,8 @@
-package com.lq.slackbot.service;
+package com.lq.slackbot.worklog.service;
 
-import com.lq.slackbot.domain.worklog.WorkLogRequest;
-import com.lq.slackbot.domain.worklog.WorkLogResult;
-import com.lq.slackbot.domain.worklog.WorkLogUser;
+import com.lq.slackbot.worklog.domain.WorkLogRequest;
+import com.lq.slackbot.worklog.domain.WorkLogResult;
+import com.lq.slackbot.worklog.domain.WorkLogUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

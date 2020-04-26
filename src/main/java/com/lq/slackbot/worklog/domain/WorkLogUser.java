@@ -1,4 +1,4 @@
-package com.lq.slackbot.domain.worklog;
+package com.lq.slackbot.worklog.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

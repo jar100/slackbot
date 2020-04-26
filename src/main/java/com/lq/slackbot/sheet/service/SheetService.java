@@ -144,15 +144,9 @@ public class SheetService {
 				if (!row.isEmpty()) {
 					final Schedule byName = scheduleRepository.findByName(row.get(0).toString());
 					if (byName != null) {
+						//업데이트
 						byName.updateData(ScheduleRequest.builder()
-								.message("테스트!!!!!\n" +
-										"<!here>\n" +
-										":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
-										"사랑하는 :heartpulse::heartbeat:" +
-										row.get(0) +
-										"님 <@" +row.get(3) + ">"+
-										":heartbeat::heartpulse:\n" +
-										"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ")
+								.message(birthdayMessage(row.get(0), row.get(3)))
 								.img(BirthdayImg.ONE.getUrl())
 								.cronExpression(toCronExpression(row.get(1).toString()))
 								.build());
@@ -162,15 +156,7 @@ public class SheetService {
 						final Schedule schedule = Schedule.builder()
 								.name(row.get(0).toString())
 								.channel("GT9V0K9RS")
-								.message(
-										"테스트!!!!!\n" +
-										"<!here>\n" +
-										":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
-										"사랑하는 :heartpulse::heartbeat:" +
-										row.get(0).toString() +
-										"님 <@" +row.get(3).toString() + ">"+
-										":heartbeat::heartpulse:\n" +
-										"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ")
+								.message(birthdayMessage(row.get(0).toString(), row.get(3).toString()))
 								.img(BirthdayImg.ONE.getUrl())
 								.used(Boolean.TRUE)
 								.cronExpression(toCronExpression(row.get(1).toString()))
@@ -182,6 +168,16 @@ public class SheetService {
 			}
 		}
 		return scheduleList;
+	}
+		
+	private String birthdayMessage(final Object o, final Object o2) {
+		return  "<!here>\n" +
+				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
+				"사랑하는 :heartpulse::heartbeat:" +
+				o +
+				"님 <@" + o2 + ">" +
+				":heartbeat::heartpulse:\n" +
+				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ";
 	}
 
 	private String toCronExpression(final String toString) {
