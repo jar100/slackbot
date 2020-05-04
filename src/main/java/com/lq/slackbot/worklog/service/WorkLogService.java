@@ -70,4 +70,16 @@ public class WorkLogService {
 		log.info("휴가성공 : {}", stringMono.block());
 		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
 	}
+
+	public WorkLogResult startWork(final String user, final String text) {
+		final WorkLogUser login = login(user);
+		final WorkLogRequest request = login.toWorkLogRequest("VACATION");
+		final ClientResponse response = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(request)).exchange().block();
+		if (response.statusCode() != HttpStatus.OK) {
+			return WorkLogResult.builder().result(false).userName(login.getReal_name()).build();
+		}
+		final Mono<String> stringMono = response.bodyToMono(String.class);
+		log.info("휴가성공 : {}", stringMono.block());
+		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
+	}
 }

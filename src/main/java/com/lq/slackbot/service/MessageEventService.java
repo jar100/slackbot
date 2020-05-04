@@ -73,7 +73,7 @@ public class MessageEventService {
 			// 출근컨트롤러
 			//todo refactoring 봇 테스트만 메세지 보내게 변경
 			String channel = request.getChannel();
-			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser());
+			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser(), text);
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
 						.attachments("출퇴근")
@@ -86,7 +86,7 @@ public class MessageEventService {
 					.attachments("출퇴근")
 					.user(request.getUserId())
 					.channel(channel)
-					.text(String.format("%s 님 출근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 출근 완료! %n <https://yawork.yowu.dev/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 			return true;
 		}
@@ -106,7 +106,7 @@ public class MessageEventService {
 					.attachments("출퇴근")
 					.user(request.getUserId())
 					.channel(channel)
-					.text(String.format("%s 님 퇴근 완료! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 퇴근 완료! %n <https://yawork.yowu.dev/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 			return true;
 		}

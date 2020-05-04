@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +32,19 @@ public class WorkLogUser {
 				.auth_user_id(this.userUid)
 				.target_date(LocalDate.now().format(formatter))
 				.time(ZonedDateTime.now(seoulZoneOffset).toString())
+				.build();
+	}
+
+	public WorkLogRequest toWorkLogRequest(String type, String time) {
+		final LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		ZoneOffset seoulZoneOffset = ZoneOffset.of("+09:00");
+		return WorkLogRequest.builder()
+				.type(type)
+				.user_id(this.id)
+				.auth_user_id(this.userUid)
+				.target_date(LocalDate.now().format(formatter))
+				.time(ZonedDateTime.of(LocalDateTime.now().withHour(3).withMinute(30), seoulZoneOffset).toString())
 				.build();
 	}
 }
