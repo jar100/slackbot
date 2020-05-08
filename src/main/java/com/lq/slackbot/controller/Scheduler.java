@@ -45,20 +45,20 @@ public class Scheduler {
 	}
 
 
-//	@Scheduled(cron = "0 0 9 11 4 ?")
+	@Scheduled(cron = "0 0 9 9 5 ?")
 //	끝 성공
 	public void birthday() {
 		log.info("실행시간 webHook: {}", LocalDateTime.now());
 		//on_lqt
 		String channel = "GHCQ4856Y";
-		//경연님아이
-		String name = "UN09A698S";
+		//지훈님
+		String name = "U010Y4TPSP9";
 		MessageService.sendBirthdayMessage(channel, "<!here>\n" +
 				":birthday-hangul::kiss::car::sunny::han-yo: \n 생일 축하합니다~ 생일 축하합니다~:tada:\n" +
 				"사랑하는 :heartpulse::heartbeat:" +
 				"<@" +name + ">"+
 				":heartbeat::heartpulse:\n" +
-				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ", BirthdayImg.ONE.getUrl());
+				"생일 축하합니다~~~:clapping:  와아아아아아ㅏㅏㅏ", BirthdayImg.TWO.getUrl());
 	}
 
 
