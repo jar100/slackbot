@@ -6,8 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.concurrent.Executor;
 
 @Configuration
 public class WebClientConfig {
@@ -27,4 +30,16 @@ public class WebClientConfig {
 				.defaultHeader(HttpHeaders.CONTENT_TYPE,"application/json;charset=UTF-8")
 				.build();
 	}
+
+	@Bean(name = "threadPoolTaskExecutor")
+	public Executor threadPoolTaskExecutor() {
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		taskExecutor.setCorePoolSize(15);
+		taskExecutor.setMaxPoolSize(40);
+		taskExecutor.setQueueCapacity(30);
+		taskExecutor.setThreadNamePrefix("Executor-");
+		taskExecutor.initialize();
+		return taskExecutor;
+	}
+
 }
