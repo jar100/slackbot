@@ -3,6 +3,7 @@ package com.lq.slackbot.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.lq.slackbot.domain.*;
 import com.lq.slackbot.domain.schedule.Schedule;
 import com.lq.slackbot.service.*;
@@ -51,7 +52,8 @@ public class SlackController {
 	public ResponseEntity<?> handleEvents(@RequestBody JsonNode reqJson) throws JsonProcessingException {
 		log.info("events request : {}", reqJson.toString());
 		final SlackRequest slackRequest = objectMapper.convertValue(reqJson, SlackRequest.class);
-		log.info("slack request : {}", slackRequest);
+		Gson gson = new Gson();
+		log.info("slack request : {}", gson.toJson(slackRequest));
 
 		switch (RequestType.of(reqJson.get("type").asText())) {
 			case URL_VERIFICATION:
