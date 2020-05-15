@@ -60,6 +60,7 @@ public class SlackController {
 				return ResponseEntity.ok(reqJson.get("challenge"));
 			case EVENT_CALLBACK:
 				slackBotEvent(slackRequest);
+				log.info("나는 언제 나오는가!");
 				return ResponseEntity.ok().build();
 			default:
 				return ResponseEntity.badRequest().build();
@@ -118,11 +119,7 @@ public class SlackController {
 		}
 	}
 
-	/**
-	 * 응답을 먼저 반환해야 slack에서 재요청을 안보냄 그래서 비동기처리
-	 * 여기도 리퀘스트 통일시켜야함... slackRequest == Actions
-	 */
-	@Async("threadPoolTaskExecutor")
+
 	public void slackBotEvent(final SlackRequest slackRequest) throws JsonProcessingException {
 		final EventType of = EventType.of(slackRequest.eventType());
 		switch (of) {
