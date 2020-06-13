@@ -3,6 +3,7 @@ package com.lq.slackbot.domain;
 public enum BirthdayImg {
 	ONE("https://user-images.githubusercontent.com/39078045/78988597-56baf980-7b6c-11ea-8f91-196629cbecc4.jpg"),
 	TWO("https://user-images.githubusercontent.com/39078045/81413509-8582ba80-9180-11ea-9dee-b6586053e836.png"),
+	PHOTO_1("https://user-images.githubusercontent.com/39078045/81413509-8582ba80-9180-11ea-9dee-b6586053e836.png"),
 
 
 
