@@ -4,8 +4,10 @@ import com.lq.slackbot.domain.restaurant.RestaurantEnum;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static com.lq.slackbot.service.MessageService.joinUserCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageEventServiceTest {
@@ -16,6 +18,18 @@ class MessageEventServiceTest {
 		List<String> aaa = new ArrayList<>();
 		aaa.add("123");
 		aaa.remove("123");
+	}
+
+	@Test
+	void splitTest() {
+		String s = joinUserCount(null);
+		System.out.println(s);
+
+		s = joinUserCount("백경훈");
+		System.out.println(s);
+
+		s = joinUserCount("백경훈, 노진산 ");
+		System.out.println(s);
 	}
 
 	@Test

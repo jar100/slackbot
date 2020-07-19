@@ -362,10 +362,11 @@ public class MessageService {
 
 	private static String updateCoffeeBlack(Actions actions) {
 		final String joinUsers = createJoinUser(actions);
+		String joinUsersCountMassage = joinUserCount(joinUsers);
 		List<ModalBlock> blockList = new ArrayList();
 		blockList.add(ModalBlock.builder()
 				.type("section")
-				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요").build())
+				.text(ModalBlock.Content.builder().type("mrkdwn").text("참가자는 버튼을 눌러주세요 " + joinUsersCountMassage).build())
 				.accessory(ModalBlock.Elements.builder().type("button").text(ModalBlock.Content.builder().type("plain_text").text("참가").build()).action_id("coffee_into").value(actions.getValue()).build())
 				.build());
 		if (!joinUsers.isEmpty()) {
@@ -386,6 +387,19 @@ public class MessageService {
 				))
 				.build());
 		return gson.toJson(blockList);
+	}
+
+	static String joinUserCount(final String joinUsers) {
+		if (StringUtils.isEmpty(joinUsers)) {
+			return "";
+		}
+
+		final String[] split = joinUsers.split(",");
+		if (split.length == 0) {
+			return "";
+		}
+
+		return split.length + " 명 참가";
 	}
 
 	private static String createJoinUser(final Actions actions) {
