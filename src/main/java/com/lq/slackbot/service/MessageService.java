@@ -399,7 +399,7 @@ public class MessageService {
 			return "";
 		}
 
-		return split.length + " 명 참가";
+		return String.format("( %d 명 )",split.length);
 	}
 
 	private static String createJoinUser(final Actions actions) {
