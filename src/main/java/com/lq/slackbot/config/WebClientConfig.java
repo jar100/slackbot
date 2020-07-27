@@ -35,7 +35,7 @@ public class WebClientConfig {
 	public Executor threadPoolTaskExecutor() {
 		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 		taskExecutor.setCorePoolSize(15);
-		taskExecutor.setMaxPoolSize(40);
+		taskExecutor.setMaxPoolSize(80);
 		taskExecutor.setQueueCapacity(30);
 		taskExecutor.setThreadNamePrefix("Executor-");
 		taskExecutor.initialize();
