@@ -17,7 +17,6 @@ import javax.persistence.Id;
 @NoArgsConstructor
 public class Channel {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
 	private String name;
 }
