@@ -34,8 +34,8 @@ public class WebClientConfig {
 	@Bean(name = "threadPoolTaskExecutor")
 	public Executor threadPoolTaskExecutor() {
 		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-		taskExecutor.setCorePoolSize(15);
-		taskExecutor.setMaxPoolSize(80);
+		taskExecutor.setCorePoolSize(20);
+		taskExecutor.setMaxPoolSize(50);
 		taskExecutor.setQueueCapacity(30);
 		taskExecutor.setThreadNamePrefix("Executor-");
 		taskExecutor.initialize();

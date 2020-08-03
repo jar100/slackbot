@@ -79,7 +79,7 @@ public class WorkLogService {
 			return WorkLogResult.builder().result(false).userName(login.getReal_name()).build();
 		}
 		final Mono<String> stringMono = response.bodyToMono(String.class);
-		log.info("휴가성공 : {}", stringMono.block());
+		log.info("출근성공 : {}", stringMono.block());
 		return WorkLogResult.builder().result(true).userName(login.getReal_name()).build();
 	}
 }
