@@ -34,8 +34,8 @@ public class SlackMessageHandler {
 	 *
 	 * @param slackRequest
 	 */
-	@Async
-	public String handling(final SlackRequest slackRequest) {
+    @Async("threadPoolTaskExecutor")
+    public String handling(final SlackRequest slackRequest) {
 		final String text = slackRequest.getEvent().getText();
 		if (text.contains("하이")) {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
