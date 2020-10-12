@@ -36,7 +36,7 @@ public class MessageEventService {
 	 * 응답을 먼저 반환해야 slack에서 재요청을 안보냄 그래서 비동기처리
 	 * 여기도 리퀘스트 통일시켜야함... slackRequest == Actions
 	 */
-	@Async("threadPoolTaskExecutor")
+//	@Async("threadPoolTaskExecutor")
 	public void run(final SlackRequest request) {
 		final String text = request.getEvent().getText();
 		log.info("text : {}", text);
