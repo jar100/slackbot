@@ -44,6 +44,7 @@ public class WorkLogService {
 		final WorkLogUser login = login(slackId);
 		final WorkLogRequest request = login.toWorkLogRequest("BYEBYE");
 		final ClientResponse byebye = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(request)).exchange().block();
+		log.info("byebye request : httpCode {}, response : {}", byebye.statusCode() , byebye.bodyToMono(String.class));
 		if (byebye.statusCode() != HttpStatus.OK) {
 			return WorkLogResult.builder().result(false).userName(login.getReal_name()).build();
 		}

@@ -87,6 +87,7 @@ public class MessageEventService {
 						.channel(channel)
 						.text(result.getUserName() + "님 출근 실패!")
 						.build());
+				return true;
 			}
 			MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
 					.attachments("출퇴근")
@@ -107,6 +108,7 @@ public class MessageEventService {
 						.channel(channel)
 						.text(result.getUserName() + "님 퇴근 실패!")
 						.build());
+				return true;
 			}
 			MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
 					.attachments("출퇴근")
