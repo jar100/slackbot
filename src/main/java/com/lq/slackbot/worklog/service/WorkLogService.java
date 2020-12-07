@@ -1,9 +1,13 @@
 package com.lq.slackbot.worklog.service;
 
+import com.google.gson.Gson;
+import com.lq.slackbot.worklog.domain.WorkLogInfo;
 import com.lq.slackbot.worklog.domain.WorkLogRequest;
 import com.lq.slackbot.worklog.domain.WorkLogResult;
 import com.lq.slackbot.worklog.domain.WorkLogUser;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -40,8 +44,18 @@ public class WorkLogService {
 
 	}
 
+	public WorkLogUser getInfo(String slackId) {
+        Gson gson = new Gson();
+        final Mono<String> request = workLogClient.get().uri("/records/"+ slackId).retrieve().bodyToMono(String.class);
+        final Element elementById = Jsoup.parseBodyFragment(request.block()).getElementById("server-app-state");
+        final String s = elementById.childNodes().get(0).toString();
+        log.info("work log get userInfo : {}", s);
+        final WorkLogInfo workLogUser = gson.fromJson(s, WorkLogInfo.class);
+        return workLogUser.getUserInfo();
+    }
+
 	public WorkLogResult endWork(String slackId) {
-		final WorkLogUser login = login(slackId);
+		final WorkLogUser login = getInfo(slackId);
 		final WorkLogRequest request = login.toWorkLogRequest("BYEBYE");
 		final ClientResponse byebye = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(request)).exchange().block();
 		log.info("byebye request : httpCode {}, response : {}", byebye.statusCode() , byebye.bodyToMono(String.class));

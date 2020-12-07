@@ -37,4 +37,7 @@ class WorkLogServiceTest {
 	void byebye() {
 		workLogService.endWork("UKTREM9U0");
 	}
+
+
+
 }
