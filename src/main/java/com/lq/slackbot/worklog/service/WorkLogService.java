@@ -46,6 +46,7 @@ public class WorkLogService {
 
 	public WorkLogUser getInfo(String slackId) {
         Gson gson = new Gson();
+
         final Mono<String> request = workLogClient.get().uri("/records/"+ slackId).retrieve().bodyToMono(String.class);
         final Element elementById = Jsoup.parseBodyFragment(request.block()).getElementById("server-app-state");
         final String s = elementById.childNodes().get(0).toString();
@@ -87,7 +88,7 @@ public class WorkLogService {
 	}
 
 	public WorkLogResult startWork(final String user, final String text) {
-		final WorkLogUser login = login(user);
+		final WorkLogUser login = getInfo(user);
 		final WorkLogRequest request = login.toWorkLogRequest("WORK");
 		final ClientResponse response = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(request)).exchange().block();
 		if (response.statusCode() != HttpStatus.OK) {
