@@ -31,7 +31,7 @@ public class WorkLogService {
 	}
 
 	public WorkLogResult startWork(String slackId) {
-		final WorkLogUser login = login(slackId);
+		final WorkLogUser login = getInfo(slackId);
 		final ClientResponse work = workLogClient.post().uri("/api/work_log").body(BodyInserters.fromValue(login.toWorkLogRequest("WORK"))).exchange().block();
 		log.info("work result : {}",work.statusCode());
 
