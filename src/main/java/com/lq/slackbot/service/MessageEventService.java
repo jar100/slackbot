@@ -114,7 +114,7 @@ public class MessageEventService {
 					.attachments("출퇴근")
 					.user(request.getUserId())
 					.channel(channel)
-					.text(String.format("%s 님 퇴근 완료! %n <https://yawork.yowu.dev/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 퇴근 완료! %n <https://yawork.yowu.dev/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기> %n <https://docs.google.com/forms/d/e/1FAIpQLScKOLHZmAl6REIRJyKirSevGYhw-e8237Ram3Y8OfTIMKjV3g/viewform|원격근무 업무일지 작성>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
 					.build());
 			return true;
 		}
