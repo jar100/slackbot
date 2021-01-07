@@ -116,7 +116,7 @@ public class MessageEventService {
 					.attachments("출퇴근")
 					.user(request.getUserId())
 					.channel(channel)
-					.text(String.format("%s 님 퇴근 완료! %n <https://docs.google.com/forms/d/e/1FAIpQLScKOLHZmAl6REIRJyKirSevGYhw-e8237Ram3Y8OfTIMKjV3g/viewform|원격근무 업무일지 작성>", request.getUserId()))
+					.text(String.format("<@%s> 님 퇴근 완료! %n <https://docs.google.com/forms/d/e/1FAIpQLScKOLHZmAl6REIRJyKirSevGYhw-e8237Ram3Y8OfTIMKjV3g/viewform|원격근무 업무일지 작성>", request.getUserId()))
 					.build());
 			return true;
 		}
