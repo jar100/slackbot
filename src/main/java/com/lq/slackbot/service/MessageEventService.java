@@ -79,7 +79,8 @@ public class MessageEventService {
 			// 출근컨트롤러
 			//todo refactoring 봇 테스트만 메세지 보내게 변경
 			String channel = request.getChannel();
-			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser(), text);
+//			final WorkLogResult result = workLogService.startWork(request.getEvent().getUser(), text);
+            final WorkLogResult result = WorkLogResult.builder().result(true).build();
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
 						.attachments("출퇴근")
@@ -93,14 +94,15 @@ public class MessageEventService {
 					.attachments("출퇴근")
 					.user(request.getUserId())
 					.channel(channel)
-					.text(String.format("%s 님 출근 완료! %n <https://yawork.yowu.dev/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("<@%s> 님 출근 완료!" , request.getUserId()))
 					.build());
 			return true;
 		}
 		if (text.contains("퇴근!")) {
-			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
+//			final WorkLogResult result = workLogService.endWork(request.getEvent().getUser());
 			String channel = request.getChannel();
-			//b2b and test 체널만 개인메세지 가게 수정
+            final WorkLogResult result = WorkLogResult.builder().result(true).build();
+            //b2b and test 체널만 개인메세지 가게 수정
 			if (!result.isResult()) {
 				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
 						.attachments("출퇴근")
@@ -114,30 +116,30 @@ public class MessageEventService {
 					.attachments("출퇴근")
 					.user(request.getUserId())
 					.channel(channel)
-					.text(String.format("%s 님 퇴근 완료! %n <https://yawork.yowu.dev/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기> %n <https://docs.google.com/forms/d/e/1FAIpQLScKOLHZmAl6REIRJyKirSevGYhw-e8237Ram3Y8OfTIMKjV3g/viewform|원격근무 업무일지 작성>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+					.text(String.format("%s 님 퇴근 완료! %n <https://docs.google.com/forms/d/e/1FAIpQLScKOLHZmAl6REIRJyKirSevGYhw-e8237Ram3Y8OfTIMKjV3g/viewform|원격근무 업무일지 작성>", request.getUserId()))
 					.build());
 			return true;
 		}
-		if (text.contains("휴가!")) {
-			final WorkLogResult result = workLogService.vacation(request.getEvent().getUser());
-			String channel = request.getChannel();
-			//b2b and test 체널만 개인메세지 가게 수정
-			if (!result.isResult()) {
-				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
-						.attachments("출퇴근")
-						.user(request.getUserId())
-						.channel(channel)
-						.text(result.getUserName() + "님 휴가 실패!")
-						.build());
-			}
-			MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
-					.attachments("출퇴근")
-					.user(request.getUserId())
-					.channel(channel)
-					.text(String.format("%s 님 휴가 사용 성공! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-					.build());
-			return true;
-		}
+//		if (text.contains("휴가!")) {
+//			final WorkLogResult result = workLogService.vacation(request.getEvent().getUser());
+//			String channel = request.getChannel();
+//			//b2b and test 체널만 개인메세지 가게 수정
+//			if (!result.isResult()) {
+//				MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
+//						.attachments("출퇴근")
+//						.user(request.getUserId())
+//						.channel(channel)
+//						.text(result.getUserName() + "님 휴가 실패!")
+//						.build());
+//			}
+//			MessageService.send(SystemUtils.POST_EPHEMERAL, Message.builder()
+//					.attachments("출퇴근")
+//					.user(request.getUserId())
+//					.channel(channel)
+//					.text(String.format("%s 님 휴가 사용 성공! %n <https://yanolja-cx-work-log.now.sh/records/%s?startDate=%s&endDate=%s|워크로그에서 확인하기>", result.getUserName(), request.getEvent().getUser(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+//					.build());
+//			return true;
+//		}
 		return false;
 	}
 
