@@ -60,6 +60,7 @@ public class SlackMessageHandler {
 					.channel(slackRequest.getChannel())
 					.text(Objects.requireNonNull(responseEntity.getBody()).getMessage())
 					.build());
+			//
 		} else if (text.contains("scheduleList!")) {
 			final JobStatusResponse allJobGroup = schedulerService.getAllJobGroup(slackRequest.getChannel());
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
