@@ -41,6 +41,7 @@ public class SlackMessageHandler {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
 					.text("Hello World").build());
+
 		} else if (text.contains("schedule!")) {
 			MessageService.send(SystemUtils.POST_MESSAGE, Message.builder()
 					.channel(slackRequest.getChannel())
